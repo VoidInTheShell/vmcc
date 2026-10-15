@@ -1,0 +1,17 @@
+{
+  "tested_vcpus": 24,
+  "iterations_per_vcpu": 1000,
+  "p50_cycles": [
+    2148,
+    2561
+  ],
+  "p99_cycles": [
+    2291,
+    6876
+  ],
+  "backwards": 0,
+  "tsc_mhz": [
+    2999.883,
+    2999.939
+  ]
+}

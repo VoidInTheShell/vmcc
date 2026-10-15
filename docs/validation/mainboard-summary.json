@@ -1,0 +1,153 @@
+{
+  "status": "PERIPHERALS_V6_PASS",
+  "P_cores": 8,
+  "E_cores": 16,
+  "cores": 24,
+  "threads": 24,
+  "smt_active": 0,
+  "smbios": {
+    "version": "3.5.0",
+    "connectors": 55,
+    "slots": 9,
+    "onboard": 15,
+    "contained_objects": 25
+  },
+  "L2_MiB": 32,
+  "L3_MiB": 36,
+  "acpi": [
+    {
+      "table": "SSDT4",
+      "length": 200,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "MCFG",
+      "length": 60,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "APIC",
+      "length": 274,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "SSDT2",
+      "length": 122,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "WWWT",
+      "length": 40,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "DSDT",
+      "length": 3939,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "SSDT3",
+      "length": 1921,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "FACP",
+      "length": 268,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "SSDT1",
+      "length": 2379,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    },
+    {
+      "table": "HPET",
+      "length": 56,
+      "checksum": "PASS",
+      "oem": "ALASKA",
+      "table_id": "MS7E07"
+    }
+  ],
+  "madt_apics": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47
+  ],
+  "interrupt_overrides": [
+    {
+      "source": 0,
+      "gsi": 2,
+      "flags": 0
+    },
+    {
+      "source": 9,
+      "gsi": 9,
+      "flags": 13
+    }
+  ],
+  "pci": {
+    "00:14.2": "0x7a27",
+    "00:15.0": "0x7a4c",
+    "00:16.0": "0x7a68",
+    "00:1e.0": "0x7a28",
+    "00:1e.2": "0x7a2a",
+    "00:1f.5": "0x7a24",
+    "00:1c.3": "0x7a3b",
+    "07:00.0": "0x15f3",
+    "00:14.0": "0x7a60",
+    "00:17.0": "0x7a62",
+    "00:1f.4": "0x7a23",
+    "00:01.0": "0xa70d",
+    "00:06.0": "0xa74d",
+    "00:1b.0": "0x7a40",
+    "00:1c.0": "0x7a38",
+    "00:1c.1": "0x7a39",
+    "00:1c.2": "0x7a3a",
+    "00:1c.4": "0x7a3c",
+    "00:1d.0": "0x7a30",
+    "00:1d.4": "0x7a34"
+  },
+  "pci_irq_routes": 128,
+  "pci_irq_mode": "direct GSI16-23; APIC only",
+  "S5_SLP_TYP": 7,
+  "memory_work": "paused by user; SPD bytes/configuration unmodified"
+}

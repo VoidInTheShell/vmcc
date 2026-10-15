@@ -1,0 +1,101 @@
+[NOT DETECTED] Checking VMID... [VM::VMID]
+[NOT DETECTED] Checking CPU brand... [VM::CPU_BRAND]
+[NOT DETECTED] Checking CPUID hypervisor bit... [VM::HYPERVISOR_BIT]
+[NOT DETECTED] Checking hypervisor str... [VM::HYPERVISOR_STR]
+[NOT DETECTED] Checking thread count... [VM::THREAD_COUNT]
+[NOT DETECTED] Checking MAC addresses... [VM::MAC]
+[NOT DETECTED] Checking temperature... [VM::TEMPERATURE]
+[NOT DETECTED] Checking systemd virtualisation... [VM::SYSTEMD]
+[NOT DETECTED] Checking chassis vendor... [VM::CVENDOR]
+[NOT DETECTED] Checking chassis type... [VM::CTYPE]
+[NOT DETECTED] Checking Dockerenv... [VM::DOCKERENV]
+[NOT DETECTED] Checking dmidecode output... [VM::DMIDECODE]
+[NOT DETECTED] Checking dmesg output... [VM::DMESG]
+[NOT DETECTED] Checking hwmon presence... [VM::HWMON]
+[NOT DETECTED] Checking DLLs... [VM::DLL]
+[NOT DETECTED] Checking Wine... [VM::WINE]
+[NOT DETECTED] Checking hw.model... [VM::HWMODEL]
+[NOT DETECTED] Checking processes... [VM::PROCESSES]
+[NOT DETECTED] Checking default Linux user/host... [VM::LINUX_USER_HOST]
+[NOT DETECTED] Checking gamarue ransomware technique... [VM::GAMARUE]
+[NOT DETECTED] Checking BOCHS CPU techniques... [VM::BOCHS_CPU]
+[NOT DETECTED] Checking MacOS hw.memsize... [VM::MAC_MEMSIZE]
+[NOT DETECTED] Checking MacOS registry IO-kit... [VM::MAC_IOKIT]
+[NOT DETECTED] Checking IO registry grep... [VM::IOREG_GREP]
+[NOT DETECTED] Checking MacOS SIP... [VM::MAC_SIP]
+[NOT DETECTED] Checking device handles... [VM::HANDLES]
+[NOT DETECTED] Checking VPC invalid instructions... [VM::VPC_INVALID]
+[NOT DETECTED] Checking task segment and descriptor tables... [VM::SYSTEM_REGISTERS]
+[NOT DETECTED] Checking STR instruction... [VM::VMWARE_STR]
+[NOT DETECTED] Checking mutex strings... [VM::MUTEX]
+[NOT DETECTED] Checking thread count mismatch... [VM::THREAD_MISMATCH]
+[NOT DETECTED] Checking Cuckoo... [VM::CUCKOO]
+[NOT DETECTED] Checking Azure Hyper-V... [VM::AZURE]
+[NOT DETECTED] Checking display... [VM::DISPLAY]
+[NOT DETECTED] Checking BlueStacks folders... [VM::BLUESTACKS_FOLDERS]
+[NOT DETECTED] Checking CPUID signatures... [VM::CPUID_SIGNATURE]
+[NOT DETECTED] Checking Intel KGT signature... [VM::KGT_SIGNATURE]
+[NOT DETECTED] Checking QEMU virtual DMI directory... [VM::QEMU_VIRTUAL_DMI]
+[NOT DETECTED] Checking QEMU USB... [VM::QEMU_USB]
+[NOT DETECTED] Checking hypervisor directory (Linux)... [VM::HYPERVISOR_DIR]
+[NOT DETECTED] Checking User-mode Linux CPU... [VM::UML_CPU]
+[NOT DETECTED] Checking /dev/kmsg hypervisor message... [VM::KMSG]
+[NOT DETECTED] Checking VBox kernel module... [VM::VBOX_MODULE]
+[NOT DETECTED] Checking /proc/sysinfo... [VM::SYSINFO_PROC]
+[NOT DETECTED] Checking DMI scan... [VM::DMI_SCAN]
+[NOT DETECTED] Checking SMBIOS VM bit... [VM::SMBIOS_VM_BIT]
+[NOT DETECTED] Checking podman file... [VM::PODMAN_FILE]
+[NOT DETECTED] Checking WSL string in /proc... [VM::WSL_PROC]
+[NOT DETECTED] Checking drivers... [VM::DRIVERS]
+[NOT DETECTED] Checking virtual disks... [VM::DISK]
+[NOT DETECTED] Checking virtual GPUs... [VM::GPU_CAPABILITIES]
+[NOT DETECTED] Checking power capabilities... [VM::POWER_CAPABILITIES]
+[NOT DETECTED] Checking QEMU fw_cfg device... [VM::QEMU_FW_CFG]
+[NOT DETECTED] Checking virtual processors... [VM::VIRTUAL_PROCESSORS]
+[NOT DETECTED] Checking AMD-SEV MSR... [VM::AMD_SEV_MSR]
+[NOT DETECTED] Checking registry emulation... [VM::VIRTUAL_REGISTRY]
+[NOT DETECTED] Checking firmware... [VM::FIRMWARE]
+[NOT DETECTED] Checking low file access count... [VM::FILE_ACCESS_HISTORY]
+[NOT DETECTED] Checking container PID... [VM::CONTAINER_PID]
+[NOT DETECTED] Checking PCI vendor/device ID... [VM::DEVICES]
+[NOT DETECTED] Checking ACPI device signatures... [VM::ACPI_SIGNATURE]
+[NOT DETECTED] Checking undefined exceptions... [VM::UD]
+[NOT DETECTED] Checking DBVM hypervisor... [VM::DBVM]
+[NOT DETECTED] Checking boot logo... [VM::BOOT_LOGO]
+[NOT DETECTED] Checking system profiler... [VM::MAC_SYS]
+[NOT DETECTED] Checking kernel objects... [VM::KERNEL_OBJECTS]
+[NOT DETECTED] Checking NVRAM... [VM::NVRAM]
+[NOT DETECTED] Checking model specific registers... [VM::MSR]
+[NOT DETECTED] Checking instruction capabilities... [VM::CPU_HEURISTIC]
+[NOT DETECTED] Checking interrupt shadows... [VM::INTERRUPT_SHADOW]
+[NOT DETECTED] Checking hypervisor interception... [VM::TRAP]
+[NOT DETECTED] Checking KVM interception... [VM::KVM_INTERCEPTION]
+[NOT DETECTED] Checking single step behavior... [VM::SINGLE_STEP]
+[NOT DETECTED] Checking instructions in compat mode... [VM::EIP_OVERFLOW]
+[NOT DETECTED] Checking SVM exceptions... [VM::SVM_EXCEPTIONS]
+[NOT DETECTED] Checking cgroup namespace... [VM::CGROUP]
+[NOT DETECTED] Checking measured boot logs... [VM::MEASURED_BOOT]
+[NOT DETECTED] Checking TPM... [VM::TPM]
+[NOT DETECTED] Checking EPT/NPT hooking... [VM::HYPERVISOR_HOOK]
+[NOT DETECTED] Checking vCPU scheduling... [VM::VCPU_SCHEDULING]
+[NOT DETECTED] Checking instruction emulation... [VM::EMULATION]
+[NOT DETECTED] Checking timing anomalies... [VM::TIMER]
+
+SHA-256: 734a78a947f393b6e72638f437053898ec914df93bc452d36e504fdd6aa54a7a
+
+VM brand: Unknown
+VM type: Unknown
+VM likeliness: 0%
+VM confirmation: false
+VM detections: 0/85
+
+Unsupported detections: 38
+Supported detections: 82
+No permission detections: 0
+Disabled detections: 0
+Execution speed: 110.440952ms
+
+===== CONCLUSION: Running on bare metal =====
+
+SHA-256: 734a78a947f393b6e72638f437053898ec914df93bc452d36e504fdd6aa54a7a
+Press Enter to exit...

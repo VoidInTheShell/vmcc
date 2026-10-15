@@ -1,0 +1,8 @@
+test_independent_instances_and_binary_consistency (test_instances.Instances.test_independent_instances_and_binary_consistency) ... ok
+test_rejects_invalid_network_before_writing (test_instances.Instances.test_rejects_invalid_network_before_writing) ... ok
+test_unregistered_vm_uses_original_launcher (test_instances.Instances.test_unregistered_vm_uses_original_launcher) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 34.994s
+
+OK

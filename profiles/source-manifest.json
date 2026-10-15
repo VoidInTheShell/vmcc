@@ -1,0 +1,781 @@
+[
+  {
+    "path": "roms/seabios-hppa/src/fw/ssdt-misc.dsl",
+    "kind": "modified",
+    "before": "df42562b7202871a33e39a35817bc5ebbcb18c7bddaf995593a2c2ffbb4499cd",
+    "after": "919aab7a429bad29479a24965645d7b14790f60a43a6320f3348e6781a3eb8a3",
+    "export_sha256": "919aab7a429bad29479a24965645d7b14790f60a43a6320f3348e6781a3eb8a3",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/ppc/prep.c",
+    "kind": "modified",
+    "before": "80775441f07821a5a2e2aaded86670c72691218cf83e1e8d698e0485837c5212",
+    "after": "60aa7a573b6d5a6a57224ad110448ed2e1a689eefe673adc6d9ee199b80d7be2",
+    "export_sha256": "60aa7a573b6d5a6a57224ad110448ed2e1a689eefe673adc6d9ee199b80d7be2",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/ppc/e500plat.c",
+    "kind": "modified",
+    "before": "7e8f301e69cccd72a7d58c65912cc7b5a3507806633704ec0be7b34e0c9674d5",
+    "after": "5e582f254fb820f19f1b31f81374fcb161126b76bec0cb2d58dcdfaf866b5c41",
+    "export_sha256": "5e582f254fb820f19f1b31f81374fcb161126b76bec0cb2d58dcdfaf866b5c41",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/riscv/virt.c",
+    "kind": "modified",
+    "before": "e5a89a567f503d9a1aae75789e29e1eb7909bcc36193574a160a79dbb73e8f44",
+    "after": "68c42c2cba3a2fc2ba2c6a355b159e6ccec2a099ef1419f4fcb05974d44300d2",
+    "export_sha256": "68c42c2cba3a2fc2ba2c6a355b159e6ccec2a099ef1419f4fcb05974d44300d2",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/sd/sd.c",
+    "kind": "modified",
+    "before": "f20d5ccc9509744d007a3ca488dc5deb209b9bef9a6aa64b6d6a5023eb3c4119",
+    "after": "db7c4016d3713541887fc460aa58b3c576b0a9b484a133b89672f6abd7495bfe",
+    "export_sha256": "db7c4016d3713541887fc460aa58b3c576b0a9b484a133b89672f6abd7495bfe",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/scsi/scsi-disk.c",
+    "kind": "modified",
+    "before": "452f42c46bb2695ea6ae379f15cdc063e3c275490ebfaf6bd014f01e16bee193",
+    "after": "a82f9443acaf6754cdd6a52a04d6a809f747e3c6bef0b11c096f34ba73f5f6dc",
+    "export_sha256": "a82f9443acaf6754cdd6a52a04d6a809f747e3c6bef0b11c096f34ba73f5f6dc",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/scsi/spapr_vscsi.c",
+    "kind": "modified",
+    "before": "ccef51ff284b46b9ebfabed8bcf9147592034eceb680d9529465cf80ba3252a7",
+    "after": "12dd0df93d7da807f227a9a3010bfeb76f915f2a552e09e524d2532c05942d35",
+    "export_sha256": "12dd0df93d7da807f227a9a3010bfeb76f915f2a552e09e524d2532c05942d35",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/scsi/megasas.c",
+    "kind": "modified",
+    "before": "858718997b699ebe8cf69795dd40eb7899accd03ebd8c6222121aa3fd5920d6b",
+    "after": "1cb96079df528fc71b8f3ab0b74f662469715295aaa934b31c0da1ba613846de",
+    "export_sha256": "1cb96079df528fc71b8f3ab0b74f662469715295aaa934b31c0da1ba613846de",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/scsi/scsi-bus.c",
+    "kind": "modified",
+    "before": "b5b91748da2c3d54ae9f2577eadbec037e7c60f29d70055eeae584ea50642f15",
+    "after": "9541ad4f25014eab15ff9e112d48ec9af98e24e736a33e41529ce9ce51b83689",
+    "export_sha256": "9541ad4f25014eab15ff9e112d48ec9af98e24e736a33e41529ce9ce51b83689",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/scsi/mptconfig.c",
+    "kind": "modified",
+    "before": "378a033acb3f1ec557ea149e203bba379b9112a7c6f47c84e424b4e6b08ee6af",
+    "after": "40342d0a3af95b660eae8d1f61d1e02c0285f68d52de2fb4d02bb4160b8fb8f4",
+    "export_sha256": "40342d0a3af95b660eae8d1f61d1e02c0285f68d52de2fb4d02bb4160b8fb8f4",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/ufs/lu.c",
+    "kind": "modified",
+    "before": "eea6e98d5c594eec8be02ee431d2fdaa9dd2a0f6b2daa17e2c7e8faa4588eef1",
+    "after": "69cca612c9fa54a2241e69b99e12e138f0472e2f3ded46f922220a81da76cc42",
+    "export_sha256": "69cca612c9fa54a2241e69b99e12e138f0472e2f3ded46f922220a81da76cc42",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/ide/ich.c",
+    "kind": "modified",
+    "before": "3c5da00586e923f511d0a3f55470bc85723bca728110647c038bba889df09811",
+    "after": "bc012a9436d68f22913048d03a02f2c1e82c86f051f06c195cd1b23f7dd72201",
+    "export_sha256": "bc012a9436d68f22913048d03a02f2c1e82c86f051f06c195cd1b23f7dd72201",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/ide/core.c",
+    "kind": "modified",
+    "before": "fe104fbc5182970cde28eade0d349486ae863678a6ebaf90aa1875458d7267d0",
+    "after": "f4da769ec6c61cdb043e938888fd00c4a81faada4a995416a793bdb6543ba04c",
+    "export_sha256": "f4da769ec6c61cdb043e938888fd00c4a81faada4a995416a793bdb6543ba04c",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/ide/ahci.c",
+    "kind": "modified",
+    "before": "25ff00fbe2fd883fcca03d7bcca7be6d180c4feeda416bd2cfcd028fc047c6b2",
+    "after": "bb8d79ff4383ecc5f4d9a1e6bfef3d68a9d66b4ca9382ec1d17d5973b2f747d5",
+    "export_sha256": "bb8d79ff4383ecc5f4d9a1e6bfef3d68a9d66b4ca9382ec1d17d5973b2f747d5",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/ide/atapi.c",
+    "kind": "modified",
+    "before": "5e8f0ce1f1f158bd95dc78c54bd7b6dc38366e92c338e3402d6b819afad3c479",
+    "after": "eedb79783d17dfd6a000b0609956970c6e022c0631e4672528742a699297c748",
+    "export_sha256": "eedb79783d17dfd6a000b0609956970c6e022c0631e4672528742a699297c748",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/nvram/fw_cfg.c",
+    "kind": "modified",
+    "before": "2f4969ea910a2de4b6710e2ac9c6a51f14d95d05e72c558e34484f08f7d366c9",
+    "after": "a6d4efe8fbd3e776565b0d30571d705b1704b0fd507a3077878f5f515e0c488d",
+    "export_sha256": "a6d4efe8fbd3e776565b0d30571d705b1704b0fd507a3077878f5f515e0c488d",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/nvram/fw_cfg-acpi.c",
+    "kind": "modified",
+    "before": "3a77780eb60a565bdf0f3e201933e329606611fd6074610fffc36612af18e2a9",
+    "after": "c396de6dac182a22ca897cb1c31836db648dfd42cf1d2dbe596179ba562ce465",
+    "export_sha256": "c396de6dac182a22ca897cb1c31836db648dfd42cf1d2dbe596179ba562ce465",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/audio/hda-codec.c",
+    "kind": "modified",
+    "before": "e24ffdbbd8d5f7d629bd5e1351462fd52bf8d39c6c41d5b6dcefb911404e3759",
+    "after": "75ae2888692862a40c02106d6d72f81997fb60ec910b84520cfaa6cb462f14a2",
+    "export_sha256": "75ae2888692862a40c02106d6d72f81997fb60ec910b84520cfaa6cb462f14a2",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-storage.c",
+    "kind": "modified",
+    "before": "bec070162ef638d452a4697ef8d677e35892619cc1ecc01b0875b13f50c873ef",
+    "after": "1413536c5137c139538df21dbaae56dff6d0b89f9ab147c6eb7aaeefd19e009f",
+    "export_sha256": "1413536c5137c139538df21dbaae56dff6d0b89f9ab147c6eb7aaeefd19e009f",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/meson.build",
+    "kind": "modified",
+    "before": "12818ab4a92920cc6a33e8e650829ff0d64b7e57ac383aea7e8208f6cc7acb27",
+    "after": "e823fe18ba770381ce8f291f299f7ed252b3b2e934b15e0dbc77c23da8ab4210",
+    "export_sha256": "e823fe18ba770381ce8f291f299f7ed252b3b2e934b15e0dbc77c23da8ab4210",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-network.c",
+    "kind": "modified",
+    "before": "363993bad4851906af5a24e7117d32e2b7ec94c8b315664e9e91e3eff466b584",
+    "after": "eb55a8a6750e9e57772ce42d2e7e28fa182f7a8e31db0ddee5674eb1c26ad332",
+    "export_sha256": "eb55a8a6750e9e57772ce42d2e7e28fa182f7a8e31db0ddee5674eb1c26ad332",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-serial.c",
+    "kind": "modified",
+    "before": "a5459cde0c2b662d46412ef12b4cf253846855fa66911825437fe7fb003e0811",
+    "after": "194be023d1aad0e2e6306d21e723ada3f3acf43eeb351232a0bd015fe3752333",
+    "export_sha256": "194be023d1aad0e2e6306d21e723ada3f3acf43eeb351232a0bd015fe3752333",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/core.c",
+    "kind": "modified",
+    "before": "469715cad14010331ec896a9882ebe2f70ced97f61fa148a0d09c2f9587f5547",
+    "after": "54ed4d857d74a8f2340b995bccb1372b8fc6eef69a3d6d48fb8e2e317dc9bf3c",
+    "export_sha256": "54ed4d857d74a8f2340b995bccb1372b8fc6eef69a3d6d48fb8e2e317dc9bf3c",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-smartcard-reader.c",
+    "kind": "modified",
+    "before": "1fbe840b42295b33c9af4aeca88ec4adb8255d854e2a6b06c948e6a44fe3999d",
+    "after": "f77f038c27eefd5f43855e0fe680b6fd4036a7071d5d06bdbf26449959834847",
+    "export_sha256": "f77f038c27eefd5f43855e0fe680b6fd4036a7071d5d06bdbf26449959834847",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/desc.c",
+    "kind": "modified",
+    "before": "02a773e5d5407596bf4f7f2da211f93156017b2ebd84b3b1255e801720ab3bfe",
+    "after": "dcbdc4a34341609766cdcb572987cb7f1b92341dc0617e99efe07878a109f649",
+    "export_sha256": "dcbdc4a34341609766cdcb572987cb7f1b92341dc0617e99efe07878a109f649",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-hub.c",
+    "kind": "modified",
+    "before": "799b0f481ad1cd4a4744f6582e31357d4a2367a8bb839e2b2b5c12f1df79b3e7",
+    "after": "294f7c45db74d13a3f9e877783a8145d20b1381e99f446d7b8439b0acfc71252",
+    "export_sha256": "294f7c45db74d13a3f9e877783a8145d20b1381e99f446d7b8439b0acfc71252",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/u2f.c",
+    "kind": "modified",
+    "before": "9526b564c2cfab18e8dffe61b17cf26c91a87c9b1d00840d5823e3c0513915eb",
+    "after": "ed0a176032d90abf7922c8af61eb0f1ee958b4fbc2f67c026509ffc01da91b9d",
+    "export_sha256": "ed0a176032d90abf7922c8af61eb0f1ee958b4fbc2f67c026509ffc01da91b9d",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/u2f-emulated.c",
+    "kind": "modified",
+    "before": "720f59e6e3a783dd428429619fec82702c5f0e30618f83b0fd55d6224c2e66dd",
+    "after": "b067f98f8750b4c28d5e2acce07f7a667958304b03589f798b465846227c7d5e",
+    "export_sha256": "b067f98f8750b4c28d5e2acce07f7a667958304b03589f798b465846227c7d5e",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-uas.c",
+    "kind": "modified",
+    "before": "cb0172fdc9d04840ff2840754fa481c48116b0e5dd8d151bcc905036d6820cc1",
+    "after": "edd9955ccebd36cab1c8c94986421a15e40fec270e2b314a88a64201017718f8",
+    "export_sha256": "edd9955ccebd36cab1c8c94986421a15e40fec270e2b314a88a64201017718f8",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/hcd-xhci.c",
+    "kind": "modified",
+    "before": "70ff6ada6c639b1e875cb65fa92f2a3c279e54f0c204e9afefb6f3720db92546",
+    "after": "a7d37e7d76963a867cd969ba1ded5c827218b659a20d7ae07188ea3f553c17a1",
+    "export_sha256": "a7d37e7d76963a867cd969ba1ded5c827218b659a20d7ae07188ea3f553c17a1",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-hid.c",
+    "kind": "modified",
+    "before": "a3a5ab827a533e7ba50efb380330dc509b90beae3dd3625f70bc8185e51aa56c",
+    "after": "4f85905ee87e33f21d7ccf699a7211a25d9ab52b9b6cedeb8c8d78e03e9d8778",
+    "export_sha256": "4f85905ee87e33f21d7ccf699a7211a25d9ab52b9b6cedeb8c8d78e03e9d8778",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/hcd-xhci.h",
+    "kind": "modified",
+    "before": "b6fc5a45f422f6c43052645a299fcb17d5e9f9f44230cd4cfadffde49fbbeb43",
+    "after": "116b27c7c85290ea9a6873542756dfc6b468ea4d4266419d7b1ebc92669d66ea",
+    "export_sha256": "116b27c7c85290ea9a6873542756dfc6b468ea4d4266419d7b1ebc92669d66ea",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/bus.c",
+    "kind": "modified",
+    "before": "955ddf21724a509e97376cab867d2d1c1688216abedf189119d02ceb1f96c154",
+    "after": "f48bf7761c356f35ece2b89a37fa38cb35dbadba6e1eaa681c9cb16ca706d227",
+    "export_sha256": "f48bf7761c356f35ece2b89a37fa38cb35dbadba6e1eaa681c9cb16ca706d227",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-wacom.c",
+    "kind": "modified",
+    "before": "4395c69289eb5cd106780560d4ebf9bcf100662adcd4ea33a29c639f600a63cf",
+    "after": "f8b6c48352496ebb6e67001221f17d6e4dbfc61413b5b4bfe5a716d44d542b5e",
+    "export_sha256": "f8b6c48352496ebb6e67001221f17d6e4dbfc61413b5b4bfe5a716d44d542b5e",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-mtp.c",
+    "kind": "modified",
+    "before": "0fc272516807482675e896d4d0eac90deb27af6480c41119fa159e7cacd9b071",
+    "after": "9afa48b1a3d054eb3143d766408a4d93284526b94d46a4df072beb29183e8c6a",
+    "export_sha256": "9afa48b1a3d054eb3143d766408a4d93284526b94d46a4df072beb29183e8c6a",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/hcd-xhci-pci.c",
+    "kind": "modified",
+    "before": "a19e01aeb7ccf44b12d1e642f403e61dadd74d00acf1d24b91b93349f8e97a70",
+    "after": "91933e21535da2ab04ef685cbaf149254ddc31f976bed210c652e9f3277435b3",
+    "export_sha256": "91933e21535da2ab04ef685cbaf149254ddc31f976bed210c652e9f3277435b3",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/u2f-passthru.c",
+    "kind": "modified",
+    "before": "8d294c9e631741f6b743b677dc4d0a4388f0a4d8e821b2295f2c1c6f4260419e",
+    "after": "977b5eeaea7bd82b385741e43dfb60c57a3fdfac13ed6d04dea13e1f89123c05",
+    "export_sha256": "977b5eeaea7bd82b385741e43dfb60c57a3fdfac13ed6d04dea13e1f89123c05",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-audio.c",
+    "kind": "modified",
+    "before": "fb6c38c4b01936c3a1f6d7ae642e71f5545a726f6da611258fcc793e57c2899b",
+    "after": "cec359151951cd01b78753cc3dd9c6b29850b1704d0b78205eaf81c5de1fc4e5",
+    "export_sha256": "cec359151951cd01b78753cc3dd9c6b29850b1704d0b78205eaf81c5de1fc4e5",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/input/ps2.c",
+    "kind": "modified",
+    "before": "77214e0aa10b3c2b847cd5df0d7f67b252bf53536d3d6b9336b97b595b3777bc",
+    "after": "fe9a5009eeb0c7dbbda9a38867593a4c71ca5eb06f14c5ec9466661c5f78a5b1",
+    "export_sha256": "fe9a5009eeb0c7dbbda9a38867593a4c71ca5eb06f14c5ec9466661c5f78a5b1",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/input/hid.c",
+    "kind": "modified",
+    "before": "93cd188f44c159a6f57261c7d23b4085cf214f26da69f3f313342c32e2480a58",
+    "after": "1d3c8f450b4fd63e251057587c915eef03f3a784c1813b3d8e6074458168263e",
+    "export_sha256": "1d3c8f450b4fd63e251057587c915eef03f3a784c1813b3d8e6074458168263e",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/input/adb-mouse.c",
+    "kind": "modified",
+    "before": "1c5538de2820642f5f008a0ae1ccbe6e69de2e375d024855b8dda7157dc5aec9",
+    "after": "acd6713b07f0ab227a735c3fbb4e2e526e60a66474b9d9bed64209588c8cbd3b",
+    "export_sha256": "acd6713b07f0ab227a735c3fbb4e2e526e60a66474b9d9bed64209588c8cbd3b",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/input/virtio-input-hid.c",
+    "kind": "modified",
+    "before": "a8b76f494a38194d0468eb942352e9dd700bb8c6807c78153e17075357b06027",
+    "after": "f55ea9a0c3e8c3ebfa3943e66c89fc5e36eb3ddd5bbb652e615f5b0b0a4d3c45",
+    "export_sha256": "f55ea9a0c3e8c3ebfa3943e66c89fc5e36eb3ddd5bbb652e615f5b0b0a4d3c45",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/input/adb-kbd.c",
+    "kind": "modified",
+    "before": "595d7bc329d6fcfa83d34babf7ca790ac90620a3b3c4da67a26ca5d85bb6aeac",
+    "after": "2fb637b5f1c0f05a3f57b3d74d2b9d912b262fa7070235f14af810e597753298",
+    "export_sha256": "2fb637b5f1c0f05a3f57b3d74d2b9d912b262fa7070235f14af810e597753298",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/pci/pci.c",
+    "kind": "modified",
+    "before": "eb772795a1045c370dd9852ddf3c66a8ddce6becd64b406b0bffcf1fe31f578c",
+    "after": "a227b9983e97430e1537f2b24783d033c1b0ae4a10379faaa6cfbf517e5b2759",
+    "export_sha256": "a227b9983e97430e1537f2b24783d033c1b0ae4a10379faaa6cfbf517e5b2759",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/char/escc.c",
+    "kind": "modified",
+    "before": "6e069dfb8aabc1e17bcdca9ad7d9f4662ce36daab42c4d7349bee911c6714d5d",
+    "after": "40109c00e585e7201779b44ff90c360bda3933e8dbbee4020b636adae5ab92cf",
+    "export_sha256": "40109c00e585e7201779b44ff90c360bda3933e8dbbee4020b636adae5ab92cf",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/nvme/subsys.c",
+    "kind": "modified",
+    "before": "7687b85b7550aab1488fa0162a2aead0723ab94676a189ff4b4dbfe44111ffc0",
+    "after": "1a8e51e3168ddebc730efebc889ec1adad0a0f49efdc1b63697f2763de753204",
+    "export_sha256": "1a8e51e3168ddebc730efebc889ec1adad0a0f49efdc1b63697f2763de753204",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/nvme/ctrl.c",
+    "kind": "modified",
+    "before": "344c8027d7c0420d40f0b04aee8c194ad76df4c8103ee19aa6b01950140ca14a",
+    "after": "d4b2d7990de0a9729276b2e8709b18db42a9c2eeb4c02ae2b4dbc87900f7d02a",
+    "export_sha256": "d4b2d7990de0a9729276b2e8709b18db42a9c2eeb4c02ae2b4dbc87900f7d02a",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/net/igb_core.c",
+    "kind": "modified",
+    "before": "d4c651012502ecac5c14187f6700a021936542cefd9f7db1922a6851675c1c96",
+    "after": "8f4e3f2281a264d835aa07a46697a36f5de7191b81c694cc862d3f479391c34f",
+    "export_sha256": "8f4e3f2281a264d835aa07a46697a36f5de7191b81c694cc862d3f479391c34f",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/net/igb.c",
+    "kind": "modified",
+    "before": "dda2afd80036a841ddaf83891c5eaf5a53c8375b8c2ac544565cbc31652dbd8d",
+    "after": "a435132676adf0b2d0eb37bf771932ff8844a50d427796ea9351686f3451ac21",
+    "export_sha256": "a435132676adf0b2d0eb37bf771932ff8844a50d427796ea9351686f3451ac21",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/net/igb_core.h",
+    "kind": "modified",
+    "before": "c772cc4535cc2fcc61f759bd093219881ef1a561c4e8ef6483868fcdece0d863",
+    "after": "eea44ab5badcf3e26a39651a29fc1ee5b3ec535e8b62aab5a1b3a3d3ef5eae3f",
+    "export_sha256": "eea44ab5badcf3e26a39651a29fc1ee5b3ec535e8b62aab5a1b3a3d3ef5eae3f",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/pci-bridge/pcie_root_port.c",
+    "kind": "modified",
+    "before": "2f57b942a2d2ad747ac4d25a347748d9b032ce89a86b8a2df0e77071b5cde795",
+    "after": "0783e7fd6d92e3d1aba6944a9b72a0d8d9d3becacccfc2290ea39a427d319a16",
+    "export_sha256": "0783e7fd6d92e3d1aba6944a9b72a0d8d9d3becacccfc2290ea39a427d319a16",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/pci-bridge/ioh3420.c",
+    "kind": "modified",
+    "before": "de53fca616d30680bc4e28ac174cc30db6ca3139c694fd3337b4e3595135d9b0",
+    "after": "205d2bee9efbbf2a1eac20ac6b19375388ce49d5465e4f61d9d62d4fde9d850f",
+    "export_sha256": "205d2bee9efbbf2a1eac20ac6b19375388ce49d5465e4f61d9d62d4fde9d850f",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/acpi/vmgenid.c",
+    "kind": "modified",
+    "before": "626acc38c1fcb93d03ff9ad9ba3367b84423dcf17da8e63c14fad67bb5aba7c1",
+    "after": "f6e91fc921ff0fd3a086e88e7adb411aaaedc91333780aaedcf7e4ecbfa60f56",
+    "export_sha256": "f6e91fc921ff0fd3a086e88e7adb411aaaedc91333780aaedcf7e4ecbfa60f56",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/acpi/aml-build.c",
+    "kind": "modified",
+    "before": "638bda9a8fc86b8b182d5d0c73f67fa63be0487fb3148f50d9088af40f54a165",
+    "after": "c3d4866955b542eae72ae3e554c0229125ba5ef8d3a5ae0d1f6b60ab0df19212",
+    "export_sha256": "c3d4866955b542eae72ae3e554c0229125ba5ef8d3a5ae0d1f6b60ab0df19212",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/acpi/core.c",
+    "kind": "modified",
+    "before": "b94afa3bbdd3b6ba7bf8d42967eb169ad48958148c6a86bffefaad778ae77c0b",
+    "after": "99ac5d70f66a5b873e4bde1f2104adadf00d4bb496b10c99f83f29dad13b1944",
+    "export_sha256": "99ac5d70f66a5b873e4bde1f2104adadf00d4bb496b10c99f83f29dad13b1944",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/acpi/pci.c",
+    "kind": "modified",
+    "before": "70f885a1ceea187d0cacb4597f3384ac529af64b563f3ad9e37f3a33c205568d",
+    "after": "2a574a64de2c3b6b61d178a642d454b5b1fb83149a1dd7078d63a957a31da884",
+    "export_sha256": "2a574a64de2c3b6b61d178a642d454b5b1fb83149a1dd7078d63a957a31da884",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/acpi/cpu.c",
+    "kind": "modified",
+    "before": "8f95d013dd3de48f3b778508f612ce382d5930aafe1ee73aa2ca258dbd13de13",
+    "after": "ff48fe57d16eeee4164d2f27e4ff9910c1ef880500ff9f9d1ae393cb152ceb28",
+    "export_sha256": "ff48fe57d16eeee4164d2f27e4ff9910c1ef880500ff9f9d1ae393cb152ceb28",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i2c/smbus_eeprom.c",
+    "kind": "modified",
+    "before": "4ea5d77098afd2e1d3d58fa2b87acfc9d1b668ae994f5a4335e45201b208715c",
+    "after": "72f3bc14a93f58bd7d4d484aa077d6fea51dcd7cb06578e50e1e56756c839eb1",
+    "export_sha256": "dd3f2fc687f5533adc41a770dccd4fd7e3bc218bdc3fb2ce60d8ab4439446fa6",
+    "export_adjustment": "SPD serials normalized to 00000001-00000004"
+  },
+  {
+    "path": "hw/i2c/pm_smbus.c",
+    "kind": "modified",
+    "before": "f43fefa451ffab7b186dbf2dd8ae664728f7932a6150bcd6b5ff0c0a6253c1c0",
+    "after": "a709b0fd1c4d11447939abe2f1ce8e1b572df7e3ea43feffe8891c5186fec37b",
+    "export_sha256": "a709b0fd1c4d11447939abe2f1ce8e1b572df7e3ea43feffe8891c5186fec37b",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/m68k/virt.c",
+    "kind": "modified",
+    "before": "f94f699728d4e087229915a103c99b52a1bef1c4e3e0b9129ed03d6b1ad62fdc",
+    "after": "b3a04f179690f0e5df16adaec964f580a95188c8ec47ca43617130121e90c934",
+    "export_sha256": "b3a04f179690f0e5df16adaec964f580a95188c8ec47ca43617130121e90c934",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/misc/meson.build",
+    "kind": "modified",
+    "before": "3b3fe358ca6dbdc243a3d2a706724ed331be5f7368ace7c5df55663c34454bd9",
+    "after": "971a772f192aa936d08a811663aea54694f2e4218dfd911d29ce63a6a328c8f8",
+    "export_sha256": "971a772f192aa936d08a811663aea54694f2e4218dfd911d29ce63a6a328c8f8",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/misc/Kconfig",
+    "kind": "modified",
+    "before": "ca48f9ec560c7b4328b70a8476f3a976a5ad8e154596c8356d720e45183f2ca6",
+    "after": "9e5520edc8c2b811ef8ec9d38e8aa995cacc32a3a31290a08692641ae1948921",
+    "export_sha256": "9e5520edc8c2b811ef8ec9d38e8aa995cacc32a3a31290a08692641ae1948921",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/misc/pvpanic-isa.c",
+    "kind": "modified",
+    "before": "51e33f406ec70a7a8caa9eb1ae2d6e09e87a0d7e33f066020c7a3ebaec165540",
+    "after": "e370640b48f18ea64293b8bdbcdf8d90385f2adf2decbc33d4ba73d709ab7ca8",
+    "export_sha256": "e370640b48f18ea64293b8bdbcdf8d90385f2adf2decbc33d4ba73d709ab7ca8",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/smbios/smbios.c",
+    "kind": "modified",
+    "before": "ddbc208addc72b0d0b0414bfc790dfed79d2e59898a9bb8fde127550498b9e21",
+    "after": "de54ca6515d89dc730f85133baff6e2bf7287fea9eb211160b651a284c921276",
+    "export_sha256": "de54ca6515d89dc730f85133baff6e2bf7287fea9eb211160b651a284c921276",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/pci-host/q35.c",
+    "kind": "modified",
+    "before": "ade07f155bc8f9fd23888fb08a2f7b69763e8892268f44f747823037729b48f9",
+    "after": "dfa391839d4942dcc503a036f06ce6c3db6666712964253df416452990ccd501",
+    "export_sha256": "dfa391839d4942dcc503a036f06ce6c3db6666712964253df416452990ccd501",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/pci-host/gpex.c",
+    "kind": "modified",
+    "before": "7be94e71b237750183c7d48647e3b3aa034fb4c28a0ff9050494b41c9ac36723",
+    "after": "cf87d4b29baeec2f398b80ff177bd75f06b7498e290a4a5364c7b5b66b8b3174",
+    "export_sha256": "cf87d4b29baeec2f398b80ff177bd75f06b7498e290a4a5364c7b5b66b8b3174",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/arm/sbsa-ref.c",
+    "kind": "modified",
+    "before": "62afc0e34f58ee6e7b6ac9599f896daee8e6ab4c2bf2c3e1ae5dc2e0cf10f8ec",
+    "after": "f21566069eb1a89370c655998ac2606d1f1b3be6899c49108751decf2714e998",
+    "export_sha256": "f21566069eb1a89370c655998ac2606d1f1b3be6899c49108751decf2714e998",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i386/acpi-build.c",
+    "kind": "modified",
+    "before": "91040cf5e6e2bee5fa394991223716cd00002c622303b3b9eeb0ec2494d0a52c",
+    "after": "f994bc6fdc46cac2f60ad490dcb903bffafae4acddcb8b0282fa9cff487526be",
+    "export_sha256": "f994bc6fdc46cac2f60ad490dcb903bffafae4acddcb8b0282fa9cff487526be",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i386/pc_piix.c",
+    "kind": "modified",
+    "before": "c807d1f21ff2521f5d0e09474a731d6cc28a371974a48209268cff322851f9fc",
+    "after": "465ca64208e6b5044e4e356999fd85950aa9bbea02a534dc36a140c257396e4f",
+    "export_sha256": "465ca64208e6b5044e4e356999fd85950aa9bbea02a534dc36a140c257396e4f",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i386/x86.c",
+    "kind": "modified",
+    "before": "28f6edae0fe7b7bf1ac33d2811261306fd4d1566ea66957240aff04860d67149",
+    "after": "02d4cf9a180499a6a4430d189568d653c1eb6a466e16355f7295513e766364ab",
+    "export_sha256": "02d4cf9a180499a6a4430d189568d653c1eb6a466e16355f7295513e766364ab",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i386/pc.c",
+    "kind": "modified",
+    "before": "b95c904cdd44077042db93e8db618a6679645e43a5a96d086fd3df77d1942f9b",
+    "after": "9bb512491ff91b0aa6d3b136d451e5ca95f72c98ca7c81c89fb1fc27d0223a77",
+    "export_sha256": "9bb512491ff91b0aa6d3b136d451e5ca95f72c98ca7c81c89fb1fc27d0223a77",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i386/fw_cfg.c",
+    "kind": "modified",
+    "before": "5925cdd56cac0719c6c44e374f54d83726a576cacd6a55751a7c644305b04568",
+    "after": "f165200edfdf5c819daca1e83b5dcb8c5d056541683494eb964b20feca26d670",
+    "export_sha256": "f165200edfdf5c819daca1e83b5dcb8c5d056541683494eb964b20feca26d670",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i386/x86-common.c",
+    "kind": "modified",
+    "before": "c5ca8cfafa73e84f0f4342ffcf438e75e214587de4bd3ae0625960e347113c12",
+    "after": "47d479ba016f7b3c4576453ea7296af336fcca2d7b5b159a9fe1e22123400091",
+    "export_sha256": "47d479ba016f7b3c4576453ea7296af336fcca2d7b5b159a9fe1e22123400091",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/i386/pc_q35.c",
+    "kind": "modified",
+    "before": "01d20a9b7bbfbb573e8be4ffc3cc310afbb33db304e057d8dd1df6ed4c1b6679",
+    "after": "1cc8db854b8bf7a45d6d7745a3819992affa4aef43f91aae56fe4daad4a6c15d",
+    "export_sha256": "1cc8db854b8bf7a45d6d7745a3819992affa4aef43f91aae56fe4daad4a6c15d",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/display/edid-generate.c",
+    "kind": "modified",
+    "before": "df5ac1902c4b7542b6d47d3dbefc80f52aec12c2c67c37ef455cda31cec5df86",
+    "after": "5b9abf5e15b41fc9c485997505551ad991108dbd33a2fc55cceb75db876aec67",
+    "export_sha256": "5b9abf5e15b41fc9c485997505551ad991108dbd33a2fc55cceb75db876aec67",
+    "export_adjustment": null
+  },
+  {
+    "path": "pc-bios/s390-ccw/virtio-scsi.h",
+    "kind": "modified",
+    "before": "7f7308f7ba7319472a987f4ca054cfcf08c4e65a0028401ee94a5bd6af2ebd80",
+    "after": "4c7cc9d37832045745245a30eac82b71a67337667e30f41f44d6d89ab4058060",
+    "export_sha256": "4c7cc9d37832045745245a30eac82b71a67337667e30f41f44d6d89ab4058060",
+    "export_adjustment": null
+  },
+  {
+    "path": "pc-bios/optionrom/optionrom.h",
+    "kind": "modified",
+    "before": "2a7f9d7955430bc7a3f10fc7ba25e5ab2c38d75e42e6293a3cd6d9350882c10a",
+    "after": "bcda79eb9143d4d20556d60a2287b2849c0ff7b07630c1e8bba4386c72dc45b9",
+    "export_sha256": "bcda79eb9143d4d20556d60a2287b2849c0ff7b07630c1e8bba4386c72dc45b9",
+    "export_adjustment": null
+  },
+  {
+    "path": "block/vvfat.c",
+    "kind": "modified",
+    "before": "9f6bf10f83fd7e5fad0965ad83938dc1010ab30cb6c41e8e274c5fa96149af69",
+    "after": "7ac624e90fd881d678efc8b0ebbed12df7fe162292b8bf8e2e3e332afa782640",
+    "export_sha256": "7ac624e90fd881d678efc8b0ebbed12df7fe162292b8bf8e2e3e332afa782640",
+    "export_adjustment": null
+  },
+  {
+    "path": "block/vhdx.c",
+    "kind": "modified",
+    "before": "03dd47bc89d7467c524ea4732227e8fc8d3ff021955dde128af1e91aeec1d0ee",
+    "after": "08fb709b0b58e9ecac5ddb738554665fddff8b37f0f70a70468c25f6de82eb1a",
+    "export_sha256": "08fb709b0b58e9ecac5ddb738554665fddff8b37f0f70a70468c25f6de82eb1a",
+    "export_adjustment": null
+  },
+  {
+    "path": "include/hw/ide/ahci.h",
+    "kind": "modified",
+    "before": "6a89d19ffb89f8e6bf740bae73bc6b048a085fdf418659b2cc207425dc33db99",
+    "after": "0f87224f75e0608dcdeb7fa0d2de6471acd4853bf7fb2ac441639a7f973b1c8d",
+    "export_sha256": "0f87224f75e0608dcdeb7fa0d2de6471acd4853bf7fb2ac441639a7f973b1c8d",
+    "export_adjustment": null
+  },
+  {
+    "path": "include/hw/usb/xhci.h",
+    "kind": "modified",
+    "before": "9f1a7c472fc6a769f32d4a41576830cfcd2a301af2dc80eecf60074f02712e99",
+    "after": "72929253406eefb663b440eabcb737423677d2f70f155d651cf0d90784d54568",
+    "export_sha256": "72929253406eefb663b440eabcb737423677d2f70f155d651cf0d90784d54568",
+    "export_adjustment": null
+  },
+  {
+    "path": "include/hw/pci/pci_ids.h",
+    "kind": "modified",
+    "before": "3499ad2ff6914cb646568583489d5fd259396d3d203f19209e3fda365f7c168d",
+    "after": "a4030fd61a29c48ae16115475b402bf793522e03b59066ca509380aae91011c2",
+    "export_sha256": "a4030fd61a29c48ae16115475b402bf793522e03b59066ca509380aae91011c2",
+    "export_adjustment": null
+  },
+  {
+    "path": "include/hw/acpi/aml-build.h",
+    "kind": "modified",
+    "before": "0b1bfcba9ef45f78bd8df7f2af5ab532009a54b911571b69869afc4486bdbc07",
+    "after": "1eaace23f8c195ef21fc418b493235cff6b56532f8d6d316b0543a81400568ac",
+    "export_sha256": "1eaace23f8c195ef21fc418b493235cff6b56532f8d6d316b0543a81400568ac",
+    "export_adjustment": null
+  },
+  {
+    "path": "include/hw/southbridge/ich9.h",
+    "kind": "modified",
+    "before": "dd8bf5641443096c88806bbb070b0978835b5287e6e87b9eb9a5db0652f9a999",
+    "after": "69c9beb78f04eb7fba98d74a7a8a10ecdaafadbcfc6569c7f160d46ad8393258",
+    "export_sha256": "69c9beb78f04eb7fba98d74a7a8a10ecdaafadbcfc6569c7f160d46ad8393258",
+    "export_adjustment": null
+  },
+  {
+    "path": "include/hw/usb.h",
+    "kind": "modified",
+    "before": "88b09e1b9806e5ae3008e4ea6d27552a95db076d92f31d88c85612fd396a4bc5",
+    "after": "b3d38fb72e0f69884ccefa7bb182d7cb087570ba85e005beb2c608b66b9bef63",
+    "export_sha256": "b3d38fb72e0f69884ccefa7bb182d7cb087570ba85e005beb2c608b66b9bef63",
+    "export_adjustment": null
+  },
+  {
+    "path": "include/standard-headers/linux/qemu_fw_cfg.h",
+    "kind": "modified",
+    "before": "dfa388bc97a9d04b3debfbd491674092a09c67eb35d21a93f4bae36e2fbf7e66",
+    "after": "e8173a1bbe73410f910e542fb939bdcf73f1b4e768e9bb5b1d8c395aab8d57af",
+    "export_sha256": "e8173a1bbe73410f910e542fb939bdcf73f1b4e768e9bb5b1d8c395aab8d57af",
+    "export_adjustment": null
+  },
+  {
+    "path": "contrib/vhost-user-gpu/vhost-user-gpu.c",
+    "kind": "modified",
+    "before": "b5a6a14f6d6a7d65520d27d337ec026ad05e32eae070ff8c38fa31fd2711421e",
+    "after": "94413f24399a2a03ba8f09f9270ab3f3e4d61e761125a2b9b706724165032a00",
+    "export_sha256": "94413f24399a2a03ba8f09f9270ab3f3e4d61e761125a2b9b706724165032a00",
+    "export_adjustment": null
+  },
+  {
+    "path": "migration/rdma.c",
+    "kind": "modified",
+    "before": "2ef46dd13c21278c41f8520c9e9ccff807b2dab68899d16a8f0b08be4e940b7a",
+    "after": "74527b5e292cdf607cc3cc3d3c9d3448b96eab46f383b39a77cce94e2ba9a962",
+    "export_sha256": "74527b5e292cdf607cc3cc3d3c9d3448b96eab46f383b39a77cce94e2ba9a962",
+    "export_adjustment": null
+  },
+  {
+    "path": "chardev/msmouse.c",
+    "kind": "modified",
+    "before": "f74433b7a1676b45a2469fe11e55d98f3dff13bfb083eeddfc1c7866e06c60e2",
+    "after": "6b9f8e9cff1f2fb25dfc636f8fa3d3fcf3992eb5ba0f210b2abc153bbef6f062",
+    "export_sha256": "6b9f8e9cff1f2fb25dfc636f8fa3d3fcf3992eb5ba0f210b2abc153bbef6f062",
+    "export_adjustment": null
+  },
+  {
+    "path": "chardev/wctablet.c",
+    "kind": "modified",
+    "before": "068b8eacab41bc3b14fe7589a36b56773a826c88bdcc2111800a08482028ddaf",
+    "after": "1bd0b2155f7651e264d85e7340e61dce35243569fd422abca0ee763ff84e731c",
+    "export_sha256": "1bd0b2155f7651e264d85e7340e61dce35243569fd422abca0ee763ff84e731c",
+    "export_adjustment": null
+  },
+  {
+    "path": "target/s390x/tcg/misc_helper.c",
+    "kind": "modified",
+    "before": "bab2bb9edcb8e2f4c9c8c656b4ff5901fe048b090e460e8053706ba7bb09c970",
+    "after": "180ecca1a8430fee023280aa5de111a5c85d5731f11ca7866216739c341f6ff5",
+    "export_sha256": "180ecca1a8430fee023280aa5de111a5c85d5731f11ca7866216739c341f6ff5",
+    "export_adjustment": null
+  },
+  {
+    "path": "target/i386/kvm/kvm.c",
+    "kind": "modified",
+    "before": "f3af36964a65e8e71a48638fc6c6723754e23b3a3ed040335143aa0966b7b1fb",
+    "after": "64a723a693994612ba6f4577088e6fe1349f6d37b611b46b9f0bfbbff1cb427a",
+    "export_sha256": "64a723a693994612ba6f4577088e6fe1349f6d37b611b46b9f0bfbbff1cb427a",
+    "export_adjustment": null
+  },
+  {
+    "path": "target/i386/cpu.c",
+    "kind": "modified",
+    "before": "c5d6f67823a2c9627229dd5fae135dd41cfdb25c0e6a98f22cd74a0e1edb583c",
+    "after": "260286e9b432357743a9c81f57d68deabe9aa43ed351e89458c6ea622938e216",
+    "export_sha256": "260286e9b432357743a9c81f57d68deabe9aa43ed351e89458c6ea622938e216",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/misc/z790-me.c",
+    "kind": "added",
+    "after": "9196859cf0afd0a7ca5ad3af9ef78c046d420f42f3b181721605fcf5c5e6b8bb",
+    "export_sha256": "9196859cf0afd0a7ca5ad3af9ef78c046d420f42f3b181721605fcf5c5e6b8bb",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/misc/z790-serialio.c",
+    "kind": "added",
+    "after": "1d5a5a1aa15e2616bf2d1e42c881ab7f702fc8688082b19cbc9352dd24181235",
+    "export_sha256": "1d5a5a1aa15e2616bf2d1e42c881ab7f702fc8688082b19cbc9352dd24181235",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/misc/z790-spi.c",
+    "kind": "added",
+    "after": "3ee6ac24146f9680315d09f318c46c3a3bdb81748d861fb528ae7000d8ee336c",
+    "export_sha256": "3ee6ac24146f9680315d09f318c46c3a3bdb81748d861fb528ae7000d8ee336c",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/misc/z790-sram.c",
+    "kind": "added",
+    "after": "342df4daea0e8db3b91bdc82209f2ae3ebf55ea1ebcb2a973ec1166be62332cd",
+    "export_sha256": "342df4daea0e8db3b91bdc82209f2ae3ebf55ea1ebcb2a973ec1166be62332cd",
+    "export_adjustment": null
+  },
+  {
+    "path": "hw/usb/dev-alc4080.c",
+    "kind": "added",
+    "after": "3271f947c352afe4484f19421d85cca181682adecb38e25567864b3f0a01d817",
+    "export_sha256": "3271f947c352afe4484f19421d85cca181682adecb38e25567864b3f0a01d817",
+    "export_adjustment": null
+  }
+]

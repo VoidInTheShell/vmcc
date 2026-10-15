@@ -1,0 +1,392 @@
+{
+  "before": {
+    "resumes_without_set_dequeue": 3,
+    "mismatches": 3,
+    "cases": [
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 16059,
+        "resumed_line": 16064,
+        "expected": "0x1060e9610",
+        "actual": "0x1060e9620",
+        "match": false
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 32346,
+        "resumed_line": 32351,
+        "expected": "0x1060e9640",
+        "actual": "0x1060e9650",
+        "match": false
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 48618,
+        "resumed_line": 48623,
+        "expected": "0x1060e9600",
+        "actual": "0x1060e9610",
+        "match": false
+      }
+    ]
+  },
+  "after": {
+    "resumes_without_set_dequeue": 39,
+    "mismatches": 0,
+    "cases": [
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 32131,
+        "resumed_line": 32136,
+        "expected": "0x10fd65600",
+        "actual": "0x10fd65600",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 32143,
+        "resumed_line": 32148,
+        "expected": "0x10fd65620",
+        "actual": "0x10fd65620",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 32153,
+        "resumed_line": 32158,
+        "expected": "0x10fd65630",
+        "actual": "0x10fd65630",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 32163,
+        "resumed_line": 32168,
+        "expected": "0x10fd65640",
+        "actual": "0x10fd65640",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 48301,
+        "resumed_line": 48306,
+        "expected": "0x10fd65600",
+        "actual": "0x10fd65600",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 48313,
+        "resumed_line": 48318,
+        "expected": "0x10fd65620",
+        "actual": "0x10fd65620",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 48323,
+        "resumed_line": 48328,
+        "expected": "0x10fd65630",
+        "actual": "0x10fd65630",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 48335,
+        "resumed_line": 48340,
+        "expected": "0x10fd65650",
+        "actual": "0x10fd65650",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 64483,
+        "resumed_line": 64488,
+        "expected": "0x10fd65610",
+        "actual": "0x10fd65610",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 64493,
+        "resumed_line": 64498,
+        "expected": "0x10fd65620",
+        "actual": "0x10fd65620",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 64503,
+        "resumed_line": 64508,
+        "expected": "0x10fd65630",
+        "actual": "0x10fd65630",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 64515,
+        "resumed_line": 64520,
+        "expected": "0x10fd65650",
+        "actual": "0x10fd65650",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 80682,
+        "resumed_line": 80687,
+        "expected": "0x10fd656a0",
+        "actual": "0x10fd656a0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 80694,
+        "resumed_line": 80699,
+        "expected": "0x10fd656c0",
+        "actual": "0x10fd656c0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 80704,
+        "resumed_line": 80709,
+        "expected": "0x10fd656d0",
+        "actual": "0x10fd656d0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 80714,
+        "resumed_line": 80719,
+        "expected": "0x10fd656e0",
+        "actual": "0x10fd656e0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 80724,
+        "resumed_line": 80729,
+        "expected": "0x10fd656f0",
+        "actual": "0x10fd656f0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 96848,
+        "resumed_line": 96853,
+        "expected": "0x10fd65600",
+        "actual": "0x10fd65600",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 96860,
+        "resumed_line": 96865,
+        "expected": "0x10fd65620",
+        "actual": "0x10fd65620",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 96870,
+        "resumed_line": 96875,
+        "expected": "0x10fd65630",
+        "actual": "0x10fd65630",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 96880,
+        "resumed_line": 96885,
+        "expected": "0x10fd65640",
+        "actual": "0x10fd65640",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 113050,
+        "resumed_line": 113055,
+        "expected": "0x10fd656c0",
+        "actual": "0x10fd656c0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 113060,
+        "resumed_line": 113065,
+        "expected": "0x10fd656d0",
+        "actual": "0x10fd656d0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 113070,
+        "resumed_line": 113075,
+        "expected": "0x10fd656e0",
+        "actual": "0x10fd656e0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 113080,
+        "resumed_line": 113085,
+        "expected": "0x10fd656f0",
+        "actual": "0x10fd656f0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 113092,
+        "resumed_line": 113097,
+        "expected": "0x10fd65710",
+        "actual": "0x10fd65710",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 129230,
+        "resumed_line": 129235,
+        "expected": "0x10fd65680",
+        "actual": "0x10fd65680",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 129242,
+        "resumed_line": 129247,
+        "expected": "0x10fd656a0",
+        "actual": "0x10fd656a0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 129252,
+        "resumed_line": 129257,
+        "expected": "0x10fd656b0",
+        "actual": "0x10fd656b0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 129264,
+        "resumed_line": 129269,
+        "expected": "0x10fd656d0",
+        "actual": "0x10fd656d0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 129274,
+        "resumed_line": 129279,
+        "expected": "0x10fd656e0",
+        "actual": "0x10fd656e0",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 145396,
+        "resumed_line": 145401,
+        "expected": "0x10fd65600",
+        "actual": "0x10fd65600",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 145406,
+        "resumed_line": 145411,
+        "expected": "0x10fd65610",
+        "actual": "0x10fd65610",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 145418,
+        "resumed_line": 145423,
+        "expected": "0x10fd65630",
+        "actual": "0x10fd65630",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 145430,
+        "resumed_line": 145435,
+        "expected": "0x10fd65650",
+        "actual": "0x10fd65650",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 161586,
+        "resumed_line": 161591,
+        "expected": "0x10fd65660",
+        "actual": "0x10fd65660",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 161598,
+        "resumed_line": 161603,
+        "expected": "0x10fd65680",
+        "actual": "0x10fd65680",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 161608,
+        "resumed_line": 161613,
+        "expected": "0x10fd65690",
+        "actual": "0x10fd65690",
+        "match": true
+      },
+      {
+        "slot": 1,
+        "endpoint": 3,
+        "stopped_line": 161618,
+        "resumed_line": 161623,
+        "expected": "0x10fd656a0",
+        "actual": "0x10fd656a0",
+        "match": true
+      }
+    ]
+  }
+}

@@ -1,0 +1,27 @@
+#!/usr/bin/python3
+# SPDX-License-Identifier: GPL-2.0-or-later
+"""Copy the active Xorg cookie to the dedicated user's private runtime."""
+from pathlib import Path
+import os,pwd,stat
+account=pwd.getpwnam(Path('/etc/vmcc/streaming-user').read_text().strip())
+sddm=pwd.getpwnam('sddm')
+runtime=Path('/run/user')/str(account.pw_uid)
+for p in Path('/proc').iterdir():
+ if not p.name.isdigit():continue
+ try:
+  args=(p/'cmdline').read_bytes().split(b'\0')
+  if not args or Path(os.fsdecode(args[0])).name!='Xorg' or b'-auth' not in args:continue
+  auth=Path(os.fsdecode(args[args.index(b'-auth')+1])).resolve(strict=True)
+  if not any(auth.is_relative_to(parent) for parent in [Path('/run/sddm'),runtime,Path(account.pw_dir)]):continue
+  info=auth.stat()
+  if not stat.S_ISREG(info.st_mode) or info.st_uid not in (0,account.pw_uid,sddm.pw_uid):continue
+  data=auth.read_bytes()
+  if not data:continue
+  if runtime.stat().st_uid!=account.pw_uid:raise RuntimeError('wrong runtime owner')
+  temp=runtime/f'.sunshine-xauth-{os.getpid()}'
+  fd=os.open(temp,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)
+  try:os.write(fd,data);os.fchown(fd,account.pw_uid,account.pw_gid)
+  finally:os.close(fd)
+  os.replace(temp,runtime/'sunshine.Xauthority');break
+ except (FileNotFoundError,ProcessLookupError,PermissionError):continue
+else:raise SystemExit('local Xorg authorization not ready')

@@ -1,0 +1,28 @@
+[
+  {
+    "instance": "smoke-a",
+    "exit_code": 0,
+    "missing": [],
+    "expected_dimm_serials": [
+      "9D17D21F",
+      "9D17D220",
+      "9D17D221",
+      "9D17D222"
+    ],
+    "system_uuid": "97f93b1e-78d5-445a-816a-c0016fd2a77c",
+    "passed": true
+  },
+  {
+    "instance": "smoke-b",
+    "exit_code": 0,
+    "missing": [],
+    "expected_dimm_serials": [
+      "F70C2D3F",
+      "F70C2D40",
+      "F70C2D41",
+      "F70C2D42"
+    ],
+    "system_uuid": "16583b35-a2c1-4943-a9c4-44e58e3c3a5f",
+    "passed": true
+  }
+]

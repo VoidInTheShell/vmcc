@@ -1,0 +1,7 @@
+#!/bin/bash
+# SPDX-License-Identifier: GPL-2.0-or-later
+set -euo pipefail
+sudo -n /usr/local/libexec/sunshine-xauthority
+export DISPLAY=:0
+export XAUTHORITY="/run/user/$(id -u)/sunshine.Xauthority"
+exec /usr/bin/sunshine

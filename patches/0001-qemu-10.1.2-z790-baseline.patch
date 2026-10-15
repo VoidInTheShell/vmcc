@@ -1,0 +1,3985 @@
+--- a/roms/seabios-hppa/src/fw/ssdt-misc.dsl
++++ b/roms/seabios-hppa/src/fw/ssdt-misc.dsl
+@@ -61,7 +61,7 @@
+ 
+     Scope(\_SB.PCI0.ISA) {
+         Device(PEVT) {
+-            Name(_HID, "QEMU0001")
++            Name(_HID, "DELL0001")
+             /* PEST will be patched to be Zero if no such device */
+             ACPI_EXTRACT_NAME_WORD_CONST ssdt_isa_pest
+             Name(PEST, 0xFFFF)
+--- a/hw/ppc/prep.c
++++ b/hw/ppc/prep.c
+@@ -182,7 +182,7 @@
+     uint16_t crc;
+ 
+     /* Set parameters for Open Hack'Ware BIOS */
+-    NVRAM_set_string(nvram, 0x00, "QEMU_BIOS", 16);
++    NVRAM_set_string(nvram, 0x00, "DELL_BIOS", 16);
+     NVRAM_set_lword(nvram,  0x10, 0x00000002); /* structure v2 */
+     NVRAM_set_word(nvram,   0x14, NVRAM_size);
+     NVRAM_set_string(nvram, 0x20, arch, 16);
+--- a/hw/ppc/e500plat.c
++++ b/hw/ppc/e500plat.c
+@@ -22,8 +22,8 @@
+ 
+ static void e500plat_fixup_devtree(void *fdt)
+ {
+-    const char model[] = "QEMU ppce500";
+-    const char compatible[] = "fsl,qemu-e500";
++    const char model[] = "DELL ppce500";
++    const char compatible[] = "fsl,asus-e500";
+ 
+     qemu_fdt_setprop(fdt, "/", "model", model, sizeof(model));
+     qemu_fdt_setprop(fdt, "/", "compatible", compatible,
+--- a/hw/riscv/virt.c
++++ b/hw/riscv/virt.c
+@@ -1396,13 +1396,13 @@
+     uint8_t *smbios_tables, *smbios_anchor;
+     size_t smbios_tables_len, smbios_anchor_len;
+     struct smbios_phys_mem_area mem_array;
+-    const char *product = "QEMU Virtual Machine";
++    const char *product = "DELL Machine";
+ 
+     if (kvm_enabled()) {
+-        product = "KVM Virtual Machine";
+-    }
+-
+-    smbios_set_defaults("QEMU", product, mc->name);
++        product = "DELL Machine";
++    }
++
++    smbios_set_defaults("DELL", product, mc->name);
+ 
+     if (riscv_is_32bit(&s->soc[0])) {
+         smbios_set_default_processor_family(0x200);
+--- a/hw/sd/sd.c
++++ b/hw/sd/sd.c
+@@ -430,7 +430,7 @@
+ 
+ #define MID     0xaa
+ #define OID     "XY"
+-#define PNM     "QEMU!"
++#define PNM     "DELL!"
+ #define PRV     0x01
+ #define MDT_YR  2006
+ #define MDT_MON 2
+--- a/hw/scsi/scsi-disk.c
++++ b/hw/scsi/scsi-disk.c
+@@ -2541,10 +2541,10 @@
+     }
+ 
+     if (!s->version) {
+-        s->version = g_strdup(qemu_hw_version());
++        s->version = g_strdup("666");
+     }
+     if (!s->vendor) {
+-        s->vendor = g_strdup("QEMU");
++        s->vendor = g_strdup("DELL");
+     }
+     if (s->serial && strlen(s->serial) > MAX_SERIAL_LEN) {
+         error_setg(errp, "The serial number can't be longer than %d characters",
+@@ -2608,7 +2608,7 @@
+     s->qdev.blocksize = s->qdev.conf.logical_block_size;
+     s->qdev.type = TYPE_DISK;
+     if (!s->product) {
+-        s->product = g_strdup("QEMU HARDDISK");
++        s->product = g_strdup("DELL HARDDISK");
+     }
+     scsi_realize(&s->qdev, errp);
+ }
+@@ -2635,7 +2635,7 @@
+     s->qdev.type = TYPE_ROM;
+     s->features |= 1 << SCSI_DISK_F_REMOVABLE;
+     if (!s->product) {
+-        s->product = g_strdup("QEMU CD-ROM");
++        s->product = g_strdup("DELL CD-ROM");
+     }
+     scsi_realize(&s->qdev, errp);
+ }
+--- a/hw/scsi/spapr_vscsi.c
++++ b/hw/scsi/spapr_vscsi.c
+@@ -713,8 +713,8 @@
+     resp_data[3] = 0x02;   /* Resp data format */
+     resp_data[4] = 36 - 5; /* Additional length */
+     resp_data[7] = 0x10;   /* Sync transfers */
+-    memcpy(&resp_data[16], "QEMU EMPTY      ", 16);
+-    memcpy(&resp_data[8], "QEMU    ", 8);
++    memcpy(&resp_data[16], "DELL EMPTY      ", 16);
++    memcpy(&resp_data[8], "DELL    ", 8);
+ 
+     req->writing = 0;
+     vscsi_preprocess_desc(req);
+--- a/hw/scsi/megasas.c
++++ b/hw/scsi/megasas.c
+@@ -48,7 +48,7 @@
+ #define MEGASAS_MAX_SECTORS 0xFFFF      /* No real limit */
+ #define MEGASAS_MAX_ARRAYS 128
+ 
+-#define MEGASAS_HBA_SERIAL "QEMU123456"
++#define MEGASAS_HBA_SERIAL "DELL123456"
+ #define NAA_LOCALLY_ASSIGNED_ID 0x3ULL
+ #define IEEE_COMPANY_LOCALLY_ASSIGNED 0x525400
+ 
+--- a/hw/scsi/scsi-bus.c
++++ b/hw/scsi/scsi-bus.c
+@@ -698,9 +698,9 @@
+         r->buf[3] = 2 | 0x10; /* HiSup, response data format */
+         r->buf[4] = r->len - 5; /* Additional Length = (Len - 1) - 4 */
+         r->buf[7] = 0x10 | (r->req.bus->info->tcq ? 0x02 : 0); /* Sync, TCQ.  */
+-        memcpy(&r->buf[8], "QEMU    ", 8);
+-        memcpy(&r->buf[16], "QEMU TARGET     ", 16);
+-        pstrcpy((char *) &r->buf[32], 4, qemu_hw_version());
++        memcpy(&r->buf[8], "DELL    ", 8);
++        memcpy(&r->buf[16], "DELL TARGET     ", 16);
++        pstrcpy((char *) &r->buf[32], 4, "666");
+     }
+     return true;
+ }
+--- a/hw/scsi/mptconfig.c
++++ b/hw/scsi/mptconfig.c
+@@ -189,12 +189,12 @@
+ size_t mptsas_config_manufacturing_0(MPTSASState *s, uint8_t **data, int address)
+ {
+     return MPTSAS_CONFIG_PACK(0, MPI_CONFIG_PAGETYPE_MANUFACTURING, 0x00,
+-                              "s16s8s16s16s16",
+-                              "QEMU MPT Fusion",
++                              "s11s4s51s41s91",
++                              "DELL MPT Fusion",
+                               "2.5",
+-                              "QEMU MPT Fusion",
+-                              "QEMU",
+-                              "0000111122223333");
++                              "DELL MPT Fusion",
++                              "DELL",
++                              "1145141919810000");
+ }
+ 
+ static
+--- a/hw/ufs/lu.c
++++ b/hw/ufs/lu.c
+@@ -184,8 +184,8 @@
+     outbuf[5] = 0;
+     outbuf[6] = 0;
+     outbuf[7] = 0x2;
+-    strpadcpy((char *)&outbuf[8], 8, "QEMU", ' ');
+-    strpadcpy((char *)&outbuf[16], 16, "QEMU UFS", ' ');
++    strpadcpy((char *)&outbuf[8], 8, "DELL", ' ');
++    strpadcpy((char *)&outbuf[16], 16, "DELL UFS", ' ');
+     memset(&outbuf[32], 0, 4);
+ 
+     return SCSI_INQUIRY_LEN;
+--- a/hw/ide/ich.c
++++ b/hw/ide/ich.c
+@@ -128,6 +128,7 @@
+     int ret;
+ 
+     d->ahci.ports = 6;
++    d->ahci.z790 = pci_get_word(dev->config + PCI_DEVICE_ID) == 0x7a62;
+     ahci_realize(&d->ahci, DEVICE(dev), pci_get_address_space(dev));
+ 
+     pci_config_set_prog_interface(dev->config, AHCI_PROGMODE_MAJOR_REV_1);
+@@ -183,8 +184,8 @@
+     k->realize = pci_ich9_ahci_realize;
+     k->exit = pci_ich9_uninit;
+     k->vendor_id = PCI_VENDOR_ID_INTEL;
+-    k->device_id = PCI_DEVICE_ID_INTEL_82801IR;
+-    k->revision = 0x02;
++    k->device_id = 0x7a62;
++    k->revision = 0x11;
+     k->class_id = PCI_CLASS_STORAGE_SATA;
+     dc->vmsd = &vmstate_ich9_ahci;
+     device_class_set_legacy_reset(dc, pci_ich9_reset);
+--- a/hw/ide/core.c
++++ b/hw/ide/core.c
+@@ -43,6 +43,7 @@
+ #include "system/runstate.h"
+ #include "ide-internal.h"
+ #include "trace.h"
++#include <stdio.h>
+ 
+ /* These values were based on a Seagate ST3500418AS but have been modified
+    to make more sense in QEMU */
+@@ -57,9 +58,9 @@
+     /* remapped sectors */
+     { 0x05, 0x03, 0x00, 0x64, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x24},
+     /* power on hours */
+-    { 0x09, 0x03, 0x00, 0x64, 0x64, 0x01, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
++    { 0x09, 0x03, 0x00, 0x64, 0x64, 0x9a, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00},
+     /* power cycle count */
+-    { 0x0c, 0x03, 0x00, 0x64, 0x64, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00},
++    { 0x0c, 0x03, 0x00, 0x64, 0x64, 0x9a, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00},
+     /* airflow-temperature-celsius */
+     { 190,  0x03, 0x00, 0x45, 0x45, 0x1f, 0x00, 0x1f, 0x1f, 0x00, 0x00, 0x32},
+ };
+@@ -2635,24 +2636,25 @@
+         }
+         blk_set_dev_ops(s->blk, &ide_hd_block_ops, s);
+     }
+-    if (dev->serial) {
++    srand(time(NULL));
++	if (dev->serial) {
+         pstrcpy(s->drive_serial_str, sizeof(s->drive_serial_str), dev->serial);
+     } else {
+         snprintf(s->drive_serial_str, sizeof(s->drive_serial_str),
+-                 "QM%05d", s->drive_serial);
++                 "DELL-%04d-aiiaicodo", rand()%10000);
+     }
+     if (dev->model) {
+         pstrcpy(s->drive_model_str, sizeof(s->drive_model_str), dev->model);
+     } else {
+         switch (kind) {
+         case IDE_CD:
+-            strcpy(s->drive_model_str, "QEMU DVD-ROM");
++            strcpy(s->drive_model_str, "DELL DVD-ROM");
+             break;
+         case IDE_CFATA:
+-            strcpy(s->drive_model_str, "QEMU MICRODRIVE");
++            strcpy(s->drive_model_str, "DELL MICRODRIVE");
+             break;
+         default:
+-            strcpy(s->drive_model_str, "QEMU HARDDISK");
++            strcpy(s->drive_model_str, "DELL HARDDISK");
+             break;
+         }
+     }
+@@ -2660,7 +2662,7 @@
+     if (dev->version) {
+         pstrcpy(s->version, sizeof(s->version), dev->version);
+     } else {
+-        pstrcpy(s->version, sizeof(s->version), qemu_hw_version());
++        pstrcpy(s->version, sizeof(s->version), s->drive_serial_str);
+     }
+ 
+     ide_reset(s);
+--- a/hw/ide/ahci.c
++++ b/hw/ide/ahci.c
+@@ -145,7 +145,9 @@
+     case AHCI_PORT_REG_SCR_STAT:
+         if (s->dev[port].port.ifs[0].blk) {
+             val = SATA_SCR_SSTATUS_DET_DEV_PRESENT_PHY_UP |
+-                  SATA_SCR_SSTATUS_SPD_GEN1 | SATA_SCR_SSTATUS_IPM_ACTIVE;
++                  ((s->z790 ? ((pr->scr_ctl >> 4) & 15) : 1) == 1 ? 0x10 :
++                   (s->z790 && ((pr->scr_ctl >> 4) & 15) == 2) ? 0x20 : 0x30) |
++                  SATA_SCR_SSTATUS_IPM_ACTIVE;
+         } else {
+             val = SATA_SCR_SSTATUS_DET_NODEV;
+         }
+@@ -547,12 +549,12 @@
+ 
+     s->control_regs.cap = (s->ports - 1) |
+                           (AHCI_NUM_COMMAND_SLOTS << 8) |
+-                          (AHCI_SUPPORTED_SPEED_GEN1 << AHCI_SUPPORTED_SPEED) |
++                          ((s->z790 ? 3 : AHCI_SUPPORTED_SPEED_GEN1) << AHCI_SUPPORTED_SPEED) |
+                           HOST_CAP_NCQ | HOST_CAP_AHCI | HOST_CAP_64;
+ 
+     s->control_regs.impl = (1 << s->ports) - 1;
+ 
+-    s->control_regs.version = AHCI_VERSION_1_0;
++    s->control_regs.version = s->z790 ? 0x00010301 : AHCI_VERSION_1_0;
+ 
+     for (i = 0; i < s->ports; i++) {
+         s->dev[i].port_state = STATE_RUN;
+--- a/hw/ide/atapi.c
++++ b/hw/ide/atapi.c
+@@ -798,8 +798,8 @@
+         buf[5] = 0;    /* reserved */
+         buf[6] = 0;    /* reserved */
+         buf[7] = 0;    /* reserved */
+-        padstr8(buf + 8, 8, "QEMU");
+-        padstr8(buf + 16, 16, "QEMU DVD-ROM");
++        padstr8(buf + 8, 8, "DELL");
++        padstr8(buf + 16, 16, "DELL DVD-ROM");
+         padstr8(buf + 32, 4, s->version);
+         idx = 36;
+     }
+--- a/hw/nvram/fw_cfg.c
++++ b/hw/nvram/fw_cfg.c
+@@ -56,7 +56,7 @@
+ #define FW_CFG_DMA_CTL_SELECT  0x08
+ #define FW_CFG_DMA_CTL_WRITE   0x10
+ 
+-#define FW_CFG_DMA_SIGNATURE 0x51454d5520434647ULL /* "QEMU CFG" */
++#define FW_CFG_DMA_SIGNATURE 0x4155535520434647ULL /* "QEMU CFG" */
+ 
+ struct FWCfgEntry {
+     uint32_t len;
+--- a/hw/nvram/fw_cfg-acpi.c
++++ b/hw/nvram/fw_cfg-acpi.c
+@@ -11,7 +11,7 @@
+ void fw_cfg_acpi_dsdt_add(Aml *scope, const MemMapEntry *fw_cfg_memmap)
+ {
+     Aml *dev = aml_device("FWCF");
+-    aml_append(dev, aml_name_decl("_HID", aml_string("QEMU0002")));
++    aml_append(dev, aml_name_decl("_HID", aml_string("DELL0002")));
+     /* device present, functioning, decoding, not shown in UI */
+     aml_append(dev, aml_name_decl("_STA", aml_int(0xB)));
+     aml_append(dev, aml_name_decl("_CCA", aml_int(1)));
+--- a/hw/audio/hda-codec.c
++++ b/hw/audio/hda-codec.c
+@@ -118,7 +118,7 @@
+ 
+ /* some defines */
+ 
+-#define QEMU_HDA_ID_VENDOR  0x1af4
++#define QEMU_HDA_ID_VENDOR  0x8086
+ #define QEMU_HDA_PCM_FORMATS (AC_SUPPCM_BITS_16 |       \
+                               0x1fc /* 16 -> 96 kHz */)
+ #define QEMU_HDA_AMP_NONE    (0)
+--- a/hw/usb/dev-storage.c
++++ b/hw/usb/dev-storage.c
+@@ -47,8 +47,8 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER] = "QEMU",
+-    [STR_PRODUCT]      = "QEMU USB HARDDRIVE",
++    [STR_MANUFACTURER] = "DELL",
++    [STR_PRODUCT]      = "DELL USB HARDDRIVE",
+     [STR_SERIALNUMBER] = "1",
+     [STR_CONFIG_FULL]  = "Full speed config (usb 1.1)",
+     [STR_CONFIG_HIGH]  = "High speed config (usb 2.0)",
+@@ -164,7 +164,7 @@
+ 
+ static const USBDesc desc = {
+     .id = {
+-        .idVendor          = 0x46f4, /* CRC16() of "QEMU" */
++        .idVendor          = 0x46f4, /* CRC16() of "DELL" */
+         .idProduct         = 0x0001,
+         .bcdDevice         = 0,
+         .iManufacturer     = STR_MANUFACTURER,
+@@ -590,7 +590,7 @@
+     DeviceClass *dc = DEVICE_CLASS(klass);
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+-    uc->product_desc   = "QEMU USB MSD";
++    uc->product_desc   = "DELL USB MSD";
+     uc->usb_desc       = &desc;
+     uc->cancel_packet  = usb_msd_cancel_io;
+     uc->handle_attach  = usb_desc_attach;
+--- a/hw/usb/meson.build
++++ b/hw/usb/meson.build
+@@ -90,3 +90,5 @@
+ system_ss.add(when: ['CONFIG_USB', 'CONFIG_XEN_BUS', libusb], if_true: files('xen-usb.c'))
+ 
+ modules += { 'hw-usb': hw_usb_modules }
++
++system_ss.add(when: 'CONFIG_USB', if_true: files('dev-alc4080.c'))
+--- a/hw/usb/dev-network.c
++++ b/hw/usb/dev-network.c
+@@ -99,15 +99,15 @@
+ #define ETH_FRAME_LEN                   1514 /* Max. octets in frame sans FCS */
+ 
+ static const USBDescStrings usb_net_stringtable = {
+-    [STRING_MANUFACTURER]       = "QEMU",
+-    [STRING_PRODUCT]            = "RNDIS/QEMU USB Network Device",
+-    [STRING_ETHADDR]            = "400102030405",
+-    [STRING_DATA]               = "QEMU USB Net Data Interface",
+-    [STRING_CONTROL]            = "QEMU USB Net Control Interface",
+-    [STRING_RNDIS_CONTROL]      = "QEMU USB Net RNDIS Control Interface",
+-    [STRING_CDC]                = "QEMU USB Net CDC",
+-    [STRING_SUBSET]             = "QEMU USB Net Subset",
+-    [STRING_RNDIS]              = "QEMU USB Net RNDIS",
++    [STRING_MANUFACTURER]       = "DELL",
++    [STRING_PRODUCT]            = "RNDIS/DELL USB Network Device",
++    [STRING_ETHADDR]            = "400114514405",
++    [STRING_DATA]               = "DELL USB Net Data Interface",
++    [STRING_CONTROL]            = "DELL USB Net Control Interface",
++    [STRING_RNDIS_CONTROL]      = "DELL USB Net RNDIS Control Interface",
++    [STRING_CDC]                = "DELL USB Net CDC",
++    [STRING_SUBSET]             = "DELL USB Net Subset",
++    [STRING_RNDIS]              = "DELL USB Net RNDIS",
+     [STRING_SERIALNUMBER]       = "1",
+ };
+ 
+@@ -717,7 +717,7 @@
+ 
+     /* mandatory */
+     case OID_GEN_VENDOR_DESCRIPTION:
+-        pstrcpy((char *)outbuf, outlen, "QEMU USB RNDIS Net");
++        pstrcpy((char *)outbuf, outlen, "DELL USB RNDIS Net");
+         return strlen((char *)outbuf) + 1;
+ 
+     case OID_GEN_VENDOR_DRIVER_VERSION:
+@@ -1371,7 +1371,7 @@
+     s->speed = 1000000; /* 100MBps, in 100Bps units */
+     s->media_state = 0; /* NDIS_MEDIA_STATE_CONNECTED */;
+     s->filter = 0;
+-    s->vendorid = 0x1234;
++    s->vendorid = 0x8086;
+     s->connection = 1;  /* Connected */
+     s->intr = usb_ep_get(dev, USB_TOKEN_IN, 1);
+     s->bulk_in = usb_ep_get(dev, USB_TOKEN_IN, 2);
+@@ -1417,7 +1417,7 @@
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+     uc->realize        = usb_net_realize;
+-    uc->product_desc   = "QEMU USB Network Interface";
++    uc->product_desc   = "DELL USB Network Interface";
+     uc->usb_desc       = &desc_net;
+     uc->handle_reset   = usb_net_handle_reset;
+     uc->handle_control = usb_net_handle_control;
+--- a/hw/usb/dev-serial.c
++++ b/hw/usb/dev-serial.c
+@@ -119,9 +119,9 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER]    = "QEMU",
+-    [STR_PRODUCT_SERIAL]  = "QEMU USB SERIAL",
+-    [STR_PRODUCT_BRAILLE] = "QEMU USB BAUM BRAILLE",
++    [STR_MANUFACTURER]    = "DELL",
++    [STR_PRODUCT_SERIAL]  = "DELL USB SERIAL",
++    [STR_PRODUCT_BRAILLE] = "DELL USB BAUM BRAILLE",
+     [STR_SERIALNUMBER]    = "1",
+ };
+ 
+@@ -663,7 +663,7 @@
+     DeviceClass *dc = DEVICE_CLASS(klass);
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+-    uc->product_desc   = "QEMU USB Serial";
++    uc->product_desc   = "DELL USB Serial";
+     uc->usb_desc       = &desc_serial;
+     device_class_set_props(dc, serial_properties);
+ }
+@@ -683,7 +683,7 @@
+     DeviceClass *dc = DEVICE_CLASS(klass);
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+-    uc->product_desc   = "QEMU USB Braille";
++    uc->product_desc   = "DELL USB Braille";
+     uc->usb_desc       = &desc_braille;
+     device_class_set_props(dc, braille_properties);
+ }
+--- a/hw/usb/core.c
++++ b/hw/usb/core.c
+@@ -31,6 +31,8 @@
+ void usb_pick_speed(USBPort *port)
+ {
+     static const int speeds[] = {
++        USB_SPEED_SUPER_PLUS_2X2,
++        USB_SPEED_SUPER_PLUS,
+         USB_SPEED_SUPER,
+         USB_SPEED_HIGH,
+         USB_SPEED_FULL,
+--- a/hw/usb/dev-smartcard-reader.c
++++ b/hw/usb/dev-smartcard-reader.c
+@@ -80,8 +80,8 @@
+ #define CCID_CONTROL_GET_CLOCK_FREQUENCIES  0x2
+ #define CCID_CONTROL_GET_DATA_RATES         0x3
+ 
+-#define CCID_PRODUCT_DESCRIPTION        "QEMU USB CCID"
+-#define CCID_VENDOR_DESCRIPTION         "QEMU"
++#define CCID_PRODUCT_DESCRIPTION        "DELL USB CCID"
++#define CCID_VENDOR_DESCRIPTION         "DELL"
+ #define CCID_INTERFACE_NAME             "CCID Interface"
+ #define CCID_SERIAL_NUMBER_STRING       "1"
+ /*
+@@ -419,8 +419,8 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER]  = "QEMU",
+-    [STR_PRODUCT]       = "QEMU USB CCID",
++    [STR_MANUFACTURER]  = "DELL",
++    [STR_PRODUCT]       = "DELL USB CCID",
+     [STR_SERIALNUMBER]  = "1",
+     [STR_INTERFACE]     = "CCID Interface",
+ };
+@@ -1335,7 +1335,7 @@
+     s->bulk_out_pos = 0;
+     ccid_reset_parameters(s);
+     ccid_reset(s);
+-    s->debug = parse_debug_env("QEMU_CCID_DEBUG", D_VERBOSE, s->debug);
++    s->debug = parse_debug_env("DELL_CCID_DEBUG", D_VERBOSE, s->debug);
+ }
+ 
+ static int ccid_post_load(void *opaque, int version_id)
+@@ -1440,7 +1440,7 @@
+     HotplugHandlerClass *hc = HOTPLUG_HANDLER_CLASS(klass);
+ 
+     uc->realize        = ccid_realize;
+-    uc->product_desc   = "QEMU USB CCID";
++    uc->product_desc   = "DELL USB CCID";
+     uc->usb_desc       = &desc_ccid;
+     uc->handle_reset   = ccid_handle_reset;
+     uc->handle_control = ccid_handle_control;
+--- a/hw/usb/desc.c
++++ b/hw/usb/desc.c
+@@ -321,8 +321,9 @@
+     return bLength;
+ }
+ 
+-static int usb_desc_bos(const USBDesc *desc, uint8_t *dest, size_t len)
+-{
++static int usb_desc_bos(USBDevice *dev, uint8_t *dest, size_t len)
++{
++    const USBDesc *desc = usb_device_get_usb_desc(dev);
+     uint8_t  bLength = 0x05;
+     uint16_t wTotalLength = 0;
+     uint8_t  bNumDeviceCaps = 0;
+@@ -358,6 +359,22 @@
+         bNumDeviceCaps++;
+     }
+ 
++    if (desc->super && dev->super_speed_mbps >= 10000) {
++        /* USB 3.1/3.2 SSP BOS, symmetric Rx/Tx 5 and 10Gbps sublinks. */
++        unsigned nids = dev->super_speed_mbps >= 20000 ? 3 : 2;
++        unsigned n = 12 + 8 * nids;
++        if (len - wTotalLength < n) return -1;
++        uint8_t *p = dest + wTotalLength;
++        memset(p, 0, n); p[0]=n; p[1]=16; p[2]=10;
++        stl_le_p(p+4, (2*nids-1) | ((nids-1)<<5));
++        stw_le_p(p+8, 4 | (1<<8) | (1<<12));
++        for (unsigned i=0; i<nids; i++) {
++            unsigned id=i==2?7:4+i, gbps=i==0?5:10;
++            uint32_t attr=id | (3<<4) | (i?1<<14:0) | (gbps<<16);
++            stl_le_p(p+12+8*i,attr); stl_le_p(p+16+8*i,attr|(2<<6));
++        }
++        wTotalLength+=n; bNumDeviceCaps++;
++    }
+     d->u.bos.wTotalLength_lo = usb_lo(wTotalLength);
+     d->u.bos.wTotalLength_hi = usb_hi(wTotalLength);
+     d->u.bos.bNumDeviceCaps  = bNumDeviceCaps;
+@@ -486,6 +503,8 @@
+     case USB_SPEED_HIGH:
+         dev->device = desc->high;
+         break;
++    case USB_SPEED_SUPER_PLUS_2X2:
++    case USB_SPEED_SUPER_PLUS:
+     case USB_SPEED_SUPER:
+         dev->device = desc->super;
+         break;
+@@ -508,6 +527,10 @@
+     }
+     if (desc->super) {
+         dev->speedmask |= USB_SPEED_MASK_SUPER;
++        if (dev->super_speed_mbps >= 10000)
++            dev->speedmask |= USB_SPEED_MASK_SUPER_PLUS;
++        if (dev->super_speed_mbps >= 20000)
++            dev->speedmask |= USB_SPEED_MASK_SUPER_PLUS_2X2;
+     }
+     if (desc->msos && (dev->flags & (1 << USB_DEV_FLAG_MSOS_DESC_ENABLE))) {
+         dev->flags |= (1 << USB_DEV_FLAG_MSOS_DESC_IN_USE);
+@@ -652,6 +675,8 @@
+     switch(type) {
+     case USB_DT_DEVICE:
+         ret = usb_desc_device(&desc->id, dev->device, msos, buf, buflen);
++        if (ret > 0 && dev->speed >= USB_SPEED_SUPER && dev->super_speed_mbps >= 10000)
++            stw_le_p(buf+2, dev->super_speed_mbps >= 20000 ? 0x0320 : 0x0310);
+         trace_usb_desc_device(dev->addr, len, ret);
+         break;
+     case USB_DT_CONFIG:
+@@ -680,7 +705,7 @@
+         trace_usb_desc_other_speed_config(dev->addr, index, len, ret);
+         break;
+     case USB_DT_BOS:
+-        ret = usb_desc_bos(desc, buf, buflen);
++        ret = usb_desc_bos(dev, buf, buflen);
+         trace_usb_desc_bos(dev->addr, len, ret);
+         break;
+ 
+@@ -777,7 +802,7 @@
+ 
+     case DeviceOutRequest | USB_REQ_SET_SEL:
+     case DeviceOutRequest | USB_REQ_SET_ISOCH_DELAY:
+-        if (dev->speed == USB_SPEED_SUPER) {
++        if (dev->speed >= USB_SPEED_SUPER) {
+             ret = 0;
+         }
+         break;
+--- a/hw/usb/dev-hub.c
++++ b/hw/usb/dev-hub.c
+@@ -47,6 +47,7 @@
+     USBEndpoint *intr;
+     uint32_t num_ports;
+     bool port_power;
++    bool high_speed;
+     QEMUTimer *port_timer;
+     USBHubPort ports[MAX_PORTS];
+ };
+@@ -104,9 +105,9 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER] = "QEMU",
+-    [STR_PRODUCT]      = "QEMU USB Hub",
+-    [STR_SERIALNUMBER] = "314159",
++    [STR_MANUFACTURER] = "DELL",
++    [STR_PRODUCT]      = "DELL USB Hub",
++    [STR_SERIALNUMBER] = "114514",
+ };
+ 
+ static const USBDescIface desc_iface_hub = {
+@@ -207,6 +208,9 @@
+             usb_hub_port_clear(port, PORT_STAT_LOW_SPEED);
+         }
+     }
++    if (port->port.dev && port->port.dev->attached && port->port.dev->speed == USB_SPEED_HIGH)
++        usb_hub_port_set(port, PORT_STAT_HIGH_SPEED);
++    else usb_hub_port_clear(port, PORT_STAT_HIGH_SPEED);
+     return notify;
+ }
+ 
+@@ -605,7 +609,7 @@
+         return;
+     }
+ 
+-    usb_desc_create_serial(dev);
++    if (!s->high_speed) usb_desc_create_serial(dev);
+     usb_desc_init(dev);
+     s->port_timer = timer_new_ns(QEMU_CLOCK_VIRTUAL,
+                                  usb_hub_port_update_timer, s);
+@@ -614,7 +618,8 @@
+         port = &s->ports[i];
+         usb_register_port(usb_bus_from_device(dev),
+                           &port->port, s, i, &usb_hub_port_ops,
+-                          USB_SPEED_MASK_LOW | USB_SPEED_MASK_FULL);
++                          USB_SPEED_MASK_LOW | USB_SPEED_MASK_FULL |
++                          (s->high_speed ? USB_SPEED_MASK_HIGH : 0));
+         usb_port_location(&port->port, dev->port, i+1);
+     }
+     usb_hub_handle_reset(dev);
+@@ -676,7 +681,7 @@
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+     uc->realize        = usb_hub_realize;
+-    uc->product_desc   = "QEMU USB Hub";
++    uc->product_desc   = "DELL USB Hub";
+     uc->usb_desc       = &desc_hub;
+     uc->find_device    = usb_hub_find_device;
+     uc->handle_reset   = usb_hub_handle_reset;
+@@ -696,9 +701,39 @@
+     .class_init    = usb_hub_class_initfn,
+ };
+ 
++/* Four-port single-TT USB2 high-speed hub; native hub driver and child routing. */
++static const USBDescStrings hs_strings = {[1]="Genesys Logic",[2]="USB2.0 Hub"};
++static const USBDescIface hs_iface={.bInterfaceNumber=0,.bNumEndpoints=1,
++    .bInterfaceClass=9,.bInterfaceProtocol=1,
++    .eps=(USBDescEndpoint[]){{.bEndpointAddress=0x81,.bmAttributes=3,
++                             .wMaxPacketSize=1,.bInterval=12}}};
++static const USBDescConfig hs_config={.bNumInterfaces=1,.bConfigurationValue=1,
++    .bmAttributes=0xe0,.nif=1,.ifs=&hs_iface};
++static const USBDescDevice hs_device={.bcdUSB=0x0200,.bDeviceClass=9,
++    .bDeviceProtocol=1,.bMaxPacketSize0=64,.bNumConfigurations=1,.confs=&hs_config};
++static const USBDesc hs_desc={.id={.idVendor=0x05e3,.idProduct=0x0608,.bcdDevice=0x0901,
++    .iManufacturer=1,.iProduct=2},.high=&hs_device,.str=hs_strings};
++static void hs_hub_control(USBDevice *dev,USBPacket *p,int request,int value,
++                          int index,int length,uint8_t *data)
++{
++    /* The emulated bus completes child transfers directly; TT cannot remain busy. */
++    if(request==0x2308 || request==0x2309 || request==0x230b)return;
++    if(request==0xa30a){memset(data,0,MIN(length,4));p->actual_length=MIN(length,4);return;}
++    usb_hub_handle_control(dev,p,request,value,index,length,data);
++}
++static void hs_hub_init(Object *obj){USB_HUB(obj)->high_speed=true;USB_HUB(obj)->num_ports=4;}
++static void hs_hub_class(ObjectClass *oc,const void *data)
++{
++    USBDeviceClass *k=USB_DEVICE_CLASS(oc);k->usb_desc=&hs_desc;k->product_desc="USB2.0 Hub";
++    k->handle_attach=usb_desc_attach;k->handle_control=hs_hub_control;
++}
++static const TypeInfo hs_hub_info={.name="usb2-hub",.parent=TYPE_USB_HUB,
++    .class_init=hs_hub_class,.instance_init=hs_hub_init};
++
+ static void usb_hub_register_types(void)
+ {
+     type_register_static(&hub_info);
++    type_register_static(&hs_hub_info);
+ }
+ 
+ type_init(usb_hub_register_types)
+--- a/hw/usb/u2f.c
++++ b/hw/usb/u2f.c
+@@ -34,7 +34,7 @@
+ #include "u2f.h"
+ 
+ /* U2F key Vendor / Product */
+-#define U2F_KEY_VENDOR_NUM     0x46f4 /* CRC16() of "QEMU" */
++#define U2F_KEY_VENDOR_NUM     0x46f4 /* CRC16() of "DELL" */
+ #define U2F_KEY_PRODUCT_NUM    0x0005
+ 
+ enum {
+@@ -46,7 +46,7 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER]     = "QEMU",
++    [STR_MANUFACTURER]     = "DELL",
+     [STR_PRODUCT]          = "U2F USB key",
+     [STR_SERIALNUMBER]     = "0",
+     [STR_CONFIG]           = "U2F key config",
+@@ -322,7 +322,7 @@
+     DeviceClass *dc = DEVICE_CLASS(klass);
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+-    uc->product_desc   = "QEMU U2F USB key";
++    uc->product_desc   = "DELL U2F USB key";
+     uc->usb_desc       = &desc_u2f_key;
+     uc->handle_reset   = u2f_key_handle_reset;
+     uc->handle_control = u2f_key_handle_control;
+@@ -330,7 +330,7 @@
+     uc->handle_attach  = usb_desc_attach;
+     uc->realize        = u2f_key_realize;
+     uc->unrealize      = u2f_key_unrealize;
+-    dc->desc           = "QEMU U2F key";
++    dc->desc           = "DELL U2F key";
+     dc->vmsd           = &vmstate_u2f_key;
+ }
+ 
+--- a/hw/usb/u2f-emulated.c
++++ b/hw/usb/u2f-emulated.c
+@@ -385,7 +385,7 @@
+     kc->realize = u2f_emulated_realize;
+     kc->unrealize = u2f_emulated_unrealize;
+     kc->recv_from_guest = u2f_emulated_recv_from_guest;
+-    dc->desc = "QEMU U2F emulated key";
++    dc->desc = "DELL U2F emulated key";
+     device_class_set_props(dc, u2f_emulated_properties);
+ }
+ 
+--- a/hw/usb/dev-uas.c
++++ b/hw/usb/dev-uas.c
+@@ -171,9 +171,9 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER] = "QEMU",
++    [STR_MANUFACTURER] = "DELL",
+     [STR_PRODUCT]      = "USB Attached SCSI HBA",
+-    [STR_SERIALNUMBER] = "27842",
++    [STR_SERIALNUMBER] = "33121",
+     [STR_CONFIG_HIGH]  = "High speed config (usb 2.0)",
+     [STR_CONFIG_SUPER] = "Super speed config (usb 3.0)",
+ };
+@@ -321,7 +321,7 @@
+ 
+ static const USBDesc desc = {
+     .id = {
+-        .idVendor          = 0x46f4, /* CRC16() of "QEMU" */
++        .idVendor          = 0x46f4, /* CRC16() of "DELL" */
+         .idProduct         = 0x0003,
+         .bcdDevice         = 0,
+         .iManufacturer     = STR_MANUFACTURER,
+@@ -337,7 +337,7 @@
+ 
+ static bool uas_using_streams(UASDevice *uas)
+ {
+-    return uas->dev.speed == USB_SPEED_SUPER;
++    return uas->dev.speed >= USB_SPEED_SUPER;
+ }
+ 
+ /* --------------------------------------------------------------------- */
+--- a/hw/usb/hcd-xhci.c
++++ b/hw/usb/hcd-xhci.c
+@@ -46,7 +46,7 @@
+ #define COMMAND_LIMIT   256
+ #define TRANSFER_LIMIT  256
+ 
+-#define LEN_CAP         0x40
++#define LEN_CAP         0xa0
+ #define LEN_OPER        (0x400 + 0x10 * XHCI_MAXPORTS)
+ #define LEN_RUNTIME     ((XHCI_MAXINTRS + 1) * 0x20)
+ #define LEN_DOORBELL    ((XHCI_MAXSLOTS + 1) * 0x20)
+@@ -530,6 +530,15 @@
+     }
+ }
+ 
++/* One PCH xHCI: 16 HS and 9 SS root ports. HS02 RGB, HS05 audio,
++ * HS12/13 GL850 hubs, HS14 Bluetooth; HS15/16 internal USBr.
++ * USB2/USB3 companions share one qdev attachment point. */
++static int xhci_ss_index(XHCIState *xhci, int hs)
++{
++    if (!xhci->z790_ports) return hs < xhci->numports_3 ? hs : -1;
++    static const int companions[16] = {0,-1,1,2,-1,3,4,5,6,7,8,-1,-1,-1,-1,-1};
++    return hs >= 0 && hs < 16 ? companions[hs] : -1;
++}
+ static XHCIPort *xhci_lookup_port(XHCIState *xhci, struct USBPort *uport)
+ {
+     int index;
+@@ -541,10 +550,14 @@
+     case USB_SPEED_LOW:
+     case USB_SPEED_FULL:
+     case USB_SPEED_HIGH:
+-        index = uport->index + xhci->numports_3;
+-        break;
++        index = uport->index + (xhci->z790_ports ? 0 : xhci->numports_3);
++        break;
++    case USB_SPEED_SUPER_PLUS_2X2:
++    case USB_SPEED_SUPER_PLUS:
+     case USB_SPEED_SUPER:
+-        index = uport->index;
++        index = xhci_ss_index(xhci, uport->index);
++        if (index < 0) return NULL;
++        if (xhci->z790_ports) index += xhci->numports_2;
+         break;
+     default:
+         return NULL;
+@@ -1320,6 +1333,21 @@
+     if (!slot->eps[epid-1]) {
+         DPRINTF("xhci: slot %d ep %d not enabled\n", slotid, epid);
+         return CC_EP_NOT_ENABLED_ERROR;
++    }
++
++    epctx = slot->eps[epid-1];
++    /*
++     * A timed isoch TD has been fetched but has not reached the USB device.
++     * Fetch advanced the software ring already.  Preserve the interrupted TD
++     * and its cycle state before nuke frees it, so a doorbell resumes exactly
++     * where Stop Endpoint left off (xHCI 1.2, section 4.6.9).
++     * Isochronous endpoints cannot use streams.
++     */
++    if (epctx->retry && epctx->retry->iso_xfer &&
++        epctx->retry->timed_xfer && epctx->retry->running_retry &&
++        epctx->retry->trb_count > 0) {
++        epctx->ring.dequeue = epctx->retry->trbs[0].addr;
++        epctx->ring.ccs = epctx->retry->trbs[0].ccs;
+     }
+ 
+     if (xhci_ep_nuke_xfers(xhci, slotid, epid, CC_STOPPED) > 0) {
+@@ -2649,8 +2677,11 @@
+             port->portsc |= PORTSC_SPEED_HIGH;
+             pls = PLS_POLLING;
+             break;
++        case USB_SPEED_SUPER_PLUS_2X2:
++        case USB_SPEED_SUPER_PLUS:
+         case USB_SPEED_SUPER:
+-            port->portsc |= PORTSC_SPEED_SUPER;
++            port->portsc |= (port->uport->dev->speed == USB_SPEED_SUPER_PLUS_2X2 ? 7 :
++                             port->uport->dev->speed == USB_SPEED_SUPER_PLUS ? 5 : 4) << 10;
+             port->portsc |= PORTSC_PED;
+             pls = PLS_U0;
+             break;
+@@ -2672,6 +2703,8 @@
+     usb_device_reset(port->uport->dev);
+ 
+     switch (port->uport->dev->speed) {
++    case USB_SPEED_SUPER_PLUS_2X2:
++    case USB_SPEED_SUPER_PLUS:
+     case USB_SPEED_SUPER:
+         if (warm_reset) {
+             port->portsc |= PORTSC_WRC;
+@@ -2741,9 +2774,18 @@
+     XHCIState *xhci = ptr;
+     uint32_t ret;
+ 
++    if (xhci->z790_ports && reg >= 0x30) {
++        /* Three protocol groups expose real speed IDs to the standard HCD. */
++        const uint32_t ext[] = {
++            0x03000802,0x20425355,0x10000411,0,0x00050034,0,0,0,
++            0x03100802,0x20425355,0x20000415,0,0x00050034,0x000a4035,0,0,
++            0x03200002,0x20425355,0x30000119,0,0x00050034,0x000a4035,0x00144037
++        };
++        return reg < 0x30+sizeof(ext) ? ext[(reg-0x30)/4] : 0;
++    }
+     switch (reg) {
+     case 0x00: /* HCIVERSION, CAPLENGTH */
+-        ret = 0x01000000 | LEN_CAP;
++        ret = (xhci->z790_ports ? 0x01200000 : 0x01000000) | LEN_CAP;
+         break;
+     case 0x04: /* HCSPARAMS 1 */
+         ret = ((xhci->numports_2+xhci->numports_3)<<24)
+@@ -2777,7 +2819,7 @@
+         ret = 0x20425355; /* "USB " */
+         break;
+     case 0x28: /* Supported Protocol:08 */
+-        ret = (xhci->numports_2 << 8) | (xhci->numports_3 + 1);
++        ret = (xhci->numports_2 << 8) | (xhci->z790_ports ? 1 : xhci->numports_3 + 1);
+         break;
+     case 0x2c: /* Supported Protocol:0c */
+         ret = 0x00000000; /* reserved */
+@@ -2812,8 +2854,11 @@
+     case 0x00: /* PORTSC */
+         ret = port->portsc;
+         break;
++    case 0x08: /* PORTLI: zero-based Rx/Tx lane counts */
++        ret = xhci_port_have_device(port) &&
++              port->uport->dev->speed == USB_SPEED_SUPER_PLUS_2X2 ? 0x00110000 : 0;
++        break;
+     case 0x04: /* PORTPMSC */
+-    case 0x08: /* PORTLI */
+         ret = 0;
+         break;
+     case 0x0c: /* PORTHLPMC */
+@@ -3358,8 +3403,9 @@
+     for (i = 0; i < usbports; i++) {
+         speedmask = 0;
+         if (i < xhci->numports_2) {
+-            port = &xhci->ports[i + xhci->numports_3];
+-            port->portnr = i + 1 + xhci->numports_3;
++            int p = i + (xhci->z790_ports ? 0 : xhci->numports_3);
++            port = &xhci->ports[p];
++            port->portnr = p + 1;
+             port->uport = &xhci->uports[i];
+             port->speedmask =
+                 USB_SPEED_MASK_LOW  |
+@@ -3369,11 +3415,15 @@
+             snprintf(port->name, sizeof(port->name), "usb2 port #%d", i+1);
+             speedmask |= port->speedmask;
+         }
+-        if (i < xhci->numports_3) {
+-            port = &xhci->ports[i];
+-            port->portnr = i + 1;
++        int ss = xhci_ss_index(xhci, i);
++        if (ss >= 0) {
++            int p = ss + (xhci->z790_ports ? xhci->numports_2 : 0);
++            port = &xhci->ports[p];
++            port->portnr = p + 1;
+             port->uport = &xhci->uports[i];
+             port->speedmask = USB_SPEED_MASK_SUPER;
++            if (xhci->z790_ports && ss >= 4) port->speedmask |= USB_SPEED_MASK_SUPER_PLUS;
++            if (xhci->z790_ports && ss == 8) port->speedmask |= USB_SPEED_MASK_SUPER_PLUS_2X2;
+             assert(i < XHCI_MAXPORTS);
+             snprintf(port->name, sizeof(port->name), "usb3 port #%d", i+1);
+             speedmask |= port->speedmask;
+@@ -3388,6 +3438,11 @@
+     int i;
+ 
+     XHCIState *xhci = XHCI(dev);
++
++    if (xhci->z790_ports && (xhci->numports_2 != 16 || xhci->numports_3 != 9)) {
++        error_setg(errp, "Z790 profile requires p2=16,p3=9");
++        return;
++    }
+ 
+     if (xhci->numintrs > XHCI_MAXINTRS) {
+         xhci->numintrs = XHCI_MAXINTRS;
+@@ -3635,6 +3690,7 @@
+                     XHCI_FLAG_ENABLE_STREAMS, true),
+     DEFINE_PROP_UINT32("p2",    XHCIState, numports_2, 4),
+     DEFINE_PROP_UINT32("p3",    XHCIState, numports_3, 4),
++    DEFINE_PROP_BOOL("z790-ports", XHCIState, z790_ports, false),
+     DEFINE_PROP_LINK("host",    XHCIState, hostOpaque, TYPE_DEVICE,
+                      DeviceState *),
+ };
+--- a/hw/usb/dev-hid.c
++++ b/hw/usb/dev-hid.c
+@@ -63,10 +63,10 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER]     = "QEMU",
+-    [STR_PRODUCT_MOUSE]    = "QEMU USB Mouse",
+-    [STR_PRODUCT_TABLET]   = "QEMU USB Tablet",
+-    [STR_PRODUCT_KEYBOARD] = "QEMU USB Keyboard",
++    [STR_MANUFACTURER]     = "DELL",
++    [STR_PRODUCT_MOUSE]    = "DELL USB Mouse",
++    [STR_PRODUCT_TABLET]   = "DELL USB Tablet",
++    [STR_PRODUCT_KEYBOARD] = "DELL USB Keyboard",
+     [STR_SERIAL_COMPAT]    = "42",
+     [STR_CONFIG_MOUSE]     = "HID Mouse",
+     [STR_CONFIG_TABLET]    = "HID Tablet",
+@@ -805,7 +805,7 @@
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+     uc->realize        = usb_tablet_realize;
+-    uc->product_desc   = "QEMU USB Tablet";
++    uc->product_desc   = "DELL USB Tablet";
+     dc->vmsd = &vmstate_usb_ptr;
+     device_class_set_props(dc, usb_tablet_properties);
+     set_bit(DEVICE_CATEGORY_INPUT, dc->categories);
+@@ -827,7 +827,7 @@
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+     uc->realize        = usb_mouse_realize;
+-    uc->product_desc   = "QEMU USB Mouse";
++    uc->product_desc   = "DELL USB Mouse";
+     dc->vmsd = &vmstate_usb_ptr;
+     device_class_set_props(dc, usb_mouse_properties);
+     set_bit(DEVICE_CATEGORY_INPUT, dc->categories);
+@@ -850,7 +850,7 @@
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+     uc->realize        = usb_keyboard_realize;
+-    uc->product_desc   = "QEMU USB Keyboard";
++    uc->product_desc   = "DELL USB Keyboard";
+     dc->vmsd = &vmstate_usb_kbd;
+     device_class_set_props(dc, usb_keyboard_properties);
+     set_bit(DEVICE_CATEGORY_INPUT, dc->categories);
+--- a/hw/usb/hcd-xhci.h
++++ b/hw/usb/hcd-xhci.h
+@@ -187,6 +187,7 @@
+     /* properties */
+     uint32_t numports_2;
+     uint32_t numports_3;
++    bool z790_ports;
+     uint32_t numintrs;
+     uint32_t numslots;
+     uint32_t flags;
+--- a/hw/usb/bus.c
++++ b/hw/usb/bus.c
+@@ -19,6 +19,7 @@
+ static void usb_qdev_unrealize(DeviceState *qdev);
+ 
+ static const Property usb_props[] = {
++    DEFINE_PROP_UINT32("super-speed-mbps", USBDevice, super_speed_mbps, 5000),
+     DEFINE_PROP_STRING("port", USBDevice, port_path),
+     DEFINE_PROP_STRING("serial", USBDevice, serial),
+     DEFINE_PROP_BIT("msos-desc", USBDevice, flags,
+@@ -538,6 +539,8 @@
+         [ USB_SPEED_FULL ] = "12",
+         [ USB_SPEED_HIGH ] = "480",
+         [ USB_SPEED_SUPER ] = "5000",
++        [ USB_SPEED_SUPER_PLUS ] = "10000",
++        [ USB_SPEED_SUPER_PLUS_2X2 ] = "20000",
+     };
+     if (speed >= ARRAY_SIZE(txt))
+         return "?";
+--- a/hw/usb/dev-wacom.c
++++ b/hw/usb/dev-wacom.c
+@@ -64,7 +64,7 @@
+ };
+ 
+ static const USBDescStrings desc_strings = {
+-    [STR_MANUFACTURER]     = "QEMU",
++    [STR_MANUFACTURER]     = "DELL",
+     [STR_PRODUCT]          = "Wacom PenPartner",
+     [STR_SERIALNUMBER]     = "1",
+ };
+@@ -231,7 +231,7 @@
+ 
+     if (!s->mouse_grabbed) {
+         s->eh_entry = qemu_add_mouse_event_handler(usb_mouse_event, s, 0,
+-                        "QEMU PenPartner tablet");
++                        "DELL PenPartner tablet");
+         qemu_activate_mouse_event_handler(s->eh_entry);
+         s->mouse_grabbed = 1;
+     }
+@@ -269,7 +269,7 @@
+ 
+     if (!s->mouse_grabbed) {
+         s->eh_entry = qemu_add_mouse_event_handler(usb_wacom_event, s, 1,
+-                        "QEMU PenPartner tablet");
++                        "DELL PenPartner tablet");
+         qemu_activate_mouse_event_handler(s->eh_entry);
+         s->mouse_grabbed = 1;
+     }
+@@ -425,7 +425,7 @@
+     DeviceClass *dc = DEVICE_CLASS(klass);
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+-    uc->product_desc   = "QEMU PenPartner Tablet";
++    uc->product_desc   = "DELL PenPartner Tablet";
+     uc->usb_desc       = &desc_wacom;
+     uc->realize        = usb_wacom_realize;
+     uc->handle_reset   = usb_wacom_handle_reset;
+@@ -433,7 +433,7 @@
+     uc->handle_data    = usb_wacom_handle_data;
+     uc->unrealize      = usb_wacom_unrealize;
+     set_bit(DEVICE_CATEGORY_INPUT, dc->categories);
+-    dc->desc = "QEMU PenPartner Tablet";
++    dc->desc = "DELL PenPartner Tablet";
+     dc->vmsd = &vmstate_usb_wacom;
+ }
+ 
+--- a/hw/usb/dev-mtp.c
++++ b/hw/usb/dev-mtp.c
+@@ -247,8 +247,8 @@
+ 
+ /* ----------------------------------------------------------------------- */
+ 
+-#define MTP_MANUFACTURER  "QEMU"
+-#define MTP_PRODUCT       "QEMU filesharing"
++#define MTP_MANUFACTURER  "DELL"
++#define MTP_PRODUCT       "DELL filesharing"
+ #define MTP_WRITE_BUF_SZ  (512 * KiB)
+ 
+ enum {
+@@ -362,7 +362,7 @@
+ 
+ static const USBDesc desc = {
+     .id = {
+-        .idVendor          = 0x46f4, /* CRC16() of "QEMU" */
++        .idVendor          = 0x46f4, /* CRC16() of "DELL" */
+         .idProduct         = 0x0004,
+         .bcdDevice         = 0,
+         .iManufacturer     = STR_MANUFACTURER,
+@@ -2088,7 +2088,7 @@
+     USBDeviceClass *uc = USB_DEVICE_CLASS(klass);
+ 
+     uc->realize        = usb_mtp_realize;
+-    uc->product_desc   = "QEMU USB MTP";
++    uc->product_desc   = "DELL USB MTP";
+     uc->usb_desc       = &desc;
+     uc->cancel_packet  = usb_mtp_cancel_packet;
+     uc->handle_attach  = usb_desc_attach;
+--- a/hw/usb/hcd-xhci-pci.c
++++ b/hw/usb/hcd-xhci-pci.c
+@@ -259,9 +259,11 @@
+ {
+     PCIDeviceClass *k = PCI_DEVICE_CLASS(klass);
+ 
+-    k->vendor_id    = PCI_VENDOR_ID_REDHAT;
+-    k->device_id    = PCI_DEVICE_ID_REDHAT_XHCI;
+-    k->revision     = 0x01;
++    k->vendor_id    = PCI_VENDOR_ID_INTEL;
++    k->device_id    = 0x7a60;
++    k->subsystem_vendor_id = 0x1462;
++    k->subsystem_id = 0x7e07;
++    k->revision     = 0x11;
+ }
+ 
+ static void qemu_xhci_instance_init(Object *obj)
+--- a/hw/usb/u2f-passthru.c
++++ b/hw/usb/u2f-passthru.c
+@@ -528,7 +528,7 @@
+     kc->realize = u2f_passthru_realize;
+     kc->unrealize = u2f_passthru_unrealize;
+     kc->recv_from_guest = u2f_passthru_recv_from_guest;
+-    dc->desc = "QEMU U2F passthrough key";
++    dc->desc = "DELL U2F passthrough key";
+     dc->vmsd = &u2f_passthru_vmstate;
+     device_class_set_props(dc, u2f_passthru_properties);
+     set_bit(DEVICE_CATEGORY_MISC, dc->categories);
+--- a/hw/usb/dev-audio.c
++++ b/hw/usb/dev-audio.c
+@@ -40,7 +40,7 @@
+ 
+ static void usb_audio_reinit(USBDevice *dev, unsigned channels);
+ 
+-#define USBAUDIO_VENDOR_NUM     0x46f4 /* CRC16() of "QEMU" */
++#define USBAUDIO_VENDOR_NUM     0x46f4 /* CRC16() of "DELL" */
+ #define USBAUDIO_PRODUCT_NUM    0x0002
+ 
+ #define DEV_CONFIG_VALUE        1 /* The one and only */
+@@ -73,8 +73,8 @@
+ };
+ 
+ static const USBDescStrings usb_audio_stringtable = {
+-    [STRING_MANUFACTURER]       = "QEMU",
+-    [STRING_PRODUCT]            = "QEMU USB Audio",
++    [STRING_MANUFACTURER]       = "DELL",
++    [STRING_PRODUCT]            = "DELL USB Audio",
+     [STRING_SERIALNUMBER]       = "1",
+     [STRING_CONFIG]             = "Audio Configuration",
+     [STRING_USBAUDIO_CONTROL]   = "Audio Device",
+@@ -1005,7 +1005,7 @@
+     dc->vmsd          = &vmstate_usb_audio;
+     device_class_set_props(dc, usb_audio_properties);
+     set_bit(DEVICE_CATEGORY_SOUND, dc->categories);
+-    k->product_desc   = "QEMU USB Audio Interface";
++    k->product_desc   = "DELL USB Audio Interface";
+     k->realize        = usb_audio_realize;
+     k->handle_reset   = usb_audio_handle_reset;
+     k->handle_control = usb_audio_handle_control;
+--- a/hw/input/ps2.c
++++ b/hw/input/ps2.c
+@@ -1232,7 +1232,7 @@
+ };
+ 
+ static const QemuInputHandler ps2_keyboard_handler = {
+-    .name  = "QEMU PS/2 Keyboard",
++    .name  = "DELL PS/2 Keyboard",
+     .mask  = INPUT_EVENT_MASK_KEY,
+     .event = ps2_keyboard_event,
+ };
+@@ -1243,7 +1243,7 @@
+ }
+ 
+ static const QemuInputHandler ps2_mouse_handler = {
+-    .name  = "QEMU PS/2 Mouse",
++    .name  = "DELL PS/2 Mouse",
+     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_REL,
+     .event = ps2_mouse_event,
+     .sync  = ps2_mouse_sync,
+--- a/hw/input/hid.c
++++ b/hw/input/hid.c
+@@ -512,20 +512,20 @@
+ }
+ 
+ static const QemuInputHandler hid_keyboard_handler = {
+-    .name  = "QEMU HID Keyboard",
++    .name  = "DELL HID Keyboard",
+     .mask  = INPUT_EVENT_MASK_KEY,
+     .event = hid_keyboard_event,
+ };
+ 
+ static const QemuInputHandler hid_mouse_handler = {
+-    .name  = "QEMU HID Mouse",
++    .name  = "DELL HID Mouse",
+     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_REL,
+     .event = hid_pointer_event,
+     .sync  = hid_pointer_sync,
+ };
+ 
+ static const QemuInputHandler hid_tablet_handler = {
+-    .name  = "QEMU HID Tablet",
++    .name  = "DELL HID Tablet",
+     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_ABS,
+     .event = hid_pointer_event,
+     .sync  = hid_pointer_sync,
+--- a/hw/input/adb-mouse.c
++++ b/hw/input/adb-mouse.c
+@@ -94,7 +94,7 @@
+ }
+ 
+ static const QemuInputHandler adb_mouse_handler = {
+-    .name  = "QEMU ADB Mouse",
++    .name  = "DELL ADB Mouse",
+     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_REL,
+     .event = adb_mouse_handle_event,
+     /*
+--- a/hw/input/virtio-input-hid.c
++++ b/hw/input/virtio-input-hid.c
+@@ -16,10 +16,10 @@
+ 
+ #include "standard-headers/linux/input.h"
+ 
+-#define VIRTIO_ID_NAME_KEYBOARD     "QEMU Virtio Keyboard"
+-#define VIRTIO_ID_NAME_MOUSE        "QEMU Virtio Mouse"
+-#define VIRTIO_ID_NAME_TABLET       "QEMU Virtio Tablet"
+-#define VIRTIO_ID_NAME_MULTITOUCH   "QEMU Virtio MultiTouch"
++#define VIRTIO_ID_NAME_KEYBOARD     "DELL Keyboard"
++#define VIRTIO_ID_NAME_MOUSE        "DELL Mouse"
++#define VIRTIO_ID_NAME_TABLET       "DELL Tablet"
++#define VIRTIO_ID_NAME_MULTITOUCH   "DELL MultiTouch"
+ 
+ /* ----------------------------------------------------------------- */
+ 
+--- a/hw/input/adb-kbd.c
++++ b/hw/input/adb-kbd.c
+@@ -356,7 +356,7 @@
+ }
+ 
+ static const QemuInputHandler adb_keyboard_handler = {
+-    .name  = "QEMU ADB Keyboard",
++    .name  = "DELL ADB Keyboard",
+     .mask  = INPUT_EVENT_MASK_KEY,
+     .event = adb_keyboard_event,
+ };
+--- a/hw/pci/pci.c
++++ b/hw/pci/pci.c
+@@ -334,8 +334,8 @@
+ static void pci_add_option_rom(PCIDevice *pdev, bool is_default_rom, Error **);
+ static void pci_del_option_rom(PCIDevice *pdev);
+ 
+-static uint16_t pci_default_sub_vendor_id = PCI_SUBVENDOR_ID_REDHAT_QUMRANET;
+-static uint16_t pci_default_sub_device_id = PCI_SUBDEVICE_ID_QEMU;
++static uint16_t pci_default_sub_vendor_id = 0x1462; /* Micro-Star International */
++static uint16_t pci_default_sub_device_id = 0x7e07; /* MS-7E07 */
+ 
+ PCIHostStateList pci_host_bridges;
+ 
+--- a/hw/char/escc.c
++++ b/hw/char/escc.c
+@@ -1037,7 +1037,7 @@
+ }
+ 
+ static const QemuInputHandler sunmouse_handler = {
+-    .name  = "QEMU Sun Mouse",
++    .name  = "DELL Sun Mouse",
+     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_REL,
+     .event = sunmouse_handle_event,
+     .sync  = sunmouse_sync,
+--- a/hw/nvme/subsys.c
++++ b/hw/nvme/subsys.c
+@@ -191,7 +191,7 @@
+         subsys->params.nqn : subsys->parent_obj.id;
+ 
+     snprintf((char *)subsys->subnqn, sizeof(subsys->subnqn),
+-             "nqn.2019-08.org.qemu:%s", nqn);
++             "nqn.2019-10.com.kioxia:KIOXIA-EXCERIA SSD:%s", nqn);
+ 
+     if (subsys->params.fdp.enabled && !nvme_subsys_setup_fdp(subsys, errp)) {
+         return false;
+--- a/hw/nvme/ctrl.c
++++ b/hw/nvme/ctrl.c
+@@ -8662,17 +8662,16 @@
+     pci_conf[PCI_INTERRUPT_PIN] = pci_is_vf(pci_dev) ? 0 : 1;
+     pci_config_set_prog_interface(pci_conf, 0x2);
+ 
+-    if (n->params.use_intel_id) {
+-        pci_config_set_vendor_id(pci_conf, PCI_VENDOR_ID_INTEL);
+-        pci_config_set_device_id(pci_conf, PCI_DEVICE_ID_INTEL_NVME);
+-    } else {
+-        pci_config_set_vendor_id(pci_conf, PCI_VENDOR_ID_REDHAT);
+-        pci_config_set_device_id(pci_conf, PCI_DEVICE_ID_REDHAT_NVME);
+-    }
++    pci_config_set_vendor_id(pci_conf, 0x1e0f);
++    pci_config_set_device_id(pci_conf, 0x0009);
++    pci_set_word(pci_conf + PCI_SUBSYSTEM_VENDOR_ID, 0x1e0f);
++    pci_set_word(pci_conf + PCI_SUBSYSTEM_ID, 0x0032);
++    pci_conf[PCI_REVISION_ID] = 0x01;
+ 
+     pci_config_set_class(pci_conf, PCI_CLASS_STORAGE_EXPRESS);
+     nvme_add_pm_capability(pci_dev, 0x60);
+     pcie_endpoint_cap_init(pci_dev, 0x80);
++    pcie_cap_fill_link_ep_usp(pci_dev, QEMU_PCI_EXP_LNK_X4, QEMU_PCI_EXP_LNK_8GT);
+     pcie_cap_flr_init(pci_dev);
+     if (n->params.sriov_max_vfs) {
+         pcie_ari_init(pci_dev, 0x100);
+@@ -8769,7 +8768,7 @@
+ 
+     if (!subsys) {
+         snprintf((char *)id->subnqn, sizeof(id->subnqn),
+-                 "nqn.2019-08.org.qemu:%s", n->params.serial);
++                 "nqn.2019-10.com.kioxia:KIOXIA-EXCERIA SSD:%s", n->params.serial);
+     } else {
+         pstrcpy((char *)id->subnqn, sizeof(id->subnqn), (char*)subsys->subnqn);
+     }
+@@ -8791,8 +8790,8 @@
+ 
+     id->vid = cpu_to_le16(pci_get_word(pci_conf + PCI_VENDOR_ID));
+     id->ssvid = cpu_to_le16(pci_get_word(pci_conf + PCI_SUBSYSTEM_VENDOR_ID));
+-    strpadcpy((char *)id->mn, sizeof(id->mn), "QEMU NVMe Ctrl", ' ');
+-    strpadcpy((char *)id->fr, sizeof(id->fr), QEMU_VERSION, ' ');
++    strpadcpy((char *)id->mn, sizeof(id->mn), "KIOXIA-EXCERIA SSD", ' ');
++    strpadcpy((char *)id->fr, sizeof(id->fr), "ECFA15.3", ' ');
+     strpadcpy((char *)id->sn, sizeof(id->sn), n->params.serial, ' ');
+ 
+     id->cntlid = cpu_to_le16(n->cntlid);
+@@ -8807,15 +8806,9 @@
+ 
+     id->rab = 6;
+ 
+-    if (n->params.use_intel_id) {
+-        id->ieee[0] = 0xb3;
+-        id->ieee[1] = 0x02;
+-        id->ieee[2] = 0x00;
+-    } else {
+-        id->ieee[0] = 0x00;
+-        id->ieee[1] = 0x54;
+-        id->ieee[2] = 0x52;
+-    }
++    id->ieee[0] = 0x8e;
++    id->ieee[1] = 0xe3;
++    id->ieee[2] = 0x8c;
+ 
+     id->mdts = n->params.mdts;
+     id->ver = cpu_to_le32(NVME_SPEC_VER);
+--- a/hw/net/igb_core.c
++++ b/hw/net/igb_core.c
+@@ -678,11 +678,66 @@
+     }
+ }
+ 
++static bool igb_is_i226(IGBCore *core)
++{
++    return (pci_get_word(core->owner->config + PCI_DEVICE_ID) == 0x125c || pci_get_word(core->owner->config + PCI_DEVICE_ID) == 0x15f3);
++}
++
++static hwaddr i226_register_address(hwaddr addr)
++{
++    /* I226 interrupts are at 0x1500, unlike 82576 legacy registers. */
++    switch (addr) {
++    case 0x1500: return E1000_ICR;
++    case 0x1504: return E1000_ICS;
++    case 0x1508: return E1000_IMS;
++    case 0x150c: return E1000_IMC;
++    case 0x1510: return E1000_IAM;
++    case 0x12014: return E1000_EERD;
++    }
++    return addr;
++}
++
++static void igb_set_phy_ctrl(IGBCore *core, uint16_t val);
++static void i226_set_mdic(IGBCore *core, uint32_t value)
++{
++    unsigned reg = (value >> 16) & 31;
++    unsigned mmd = core->gpy_control & 31;
++    unsigned adr = core->gpy_address;
++    uint16_t data = value;
++    if (value & E1000_MDIC_OP_READ) {
++        if (reg == 13) {
++            data = core->gpy_control;
++        } else if (reg == 14 && (core->gpy_control & 0x4000)) {
++            data = adr < 256 ? core->gpy_mmd[mmd][adr] : 0;
++        } else if (reg == 14) {
++            data = core->gpy_address;
++        } else {
++            data = core->phy[reg];
++        }
++        value = (value & ~0xffffu) | data;
++    } else if (value & E1000_MDIC_OP_WRITE) {
++        if (reg == 13) {
++            core->gpy_control = data;
++        } else if (reg == 14 && (core->gpy_control & 0x4000)) {
++            if (adr < 256) {
++                core->gpy_mmd[mmd][adr] = data;
++            }
++        } else if (reg == 14) {
++            core->gpy_address = data;
++        } else if (reg == MII_BMCR) {
++            igb_set_phy_ctrl(core, data);
++        } else if (reg != MII_BMSR && reg != MII_PHYID1 && reg != MII_PHYID2) {
++            core->phy[reg] = data;
++        }
++    }
++    core->mac[MDIC] = (value & ~E1000_MDIC_ERROR) | E1000_MDIC_READY;
++}
++
+ static uint32_t igb_tx_wb_eic(IGBCore *core, int queue_idx)
+ {
+     uint32_t n, ent = 0;
+ 
+-    n = igb_ivar_entry_tx(queue_idx);
++    n = igb_is_i226(core) ? queue_idx * 2 + 1 : igb_ivar_entry_tx(queue_idx);
+     ent = (core->mac[IVAR0 + n / 4] >> (8 * (n % 4))) & 0xff;
+ 
+     return (ent & E1000_IVAR_VALID) ? BIT(ent & 0x1f) : 0;
+@@ -692,7 +747,7 @@
+ {
+     uint32_t n, ent = 0;
+ 
+-    n = igb_ivar_entry_rx(queue_idx);
++    n = igb_is_i226(core) ? queue_idx * 2 : igb_ivar_entry_rx(queue_idx);
+     ent = (core->mac[IVAR0 + n / 4] >> (8 * (n % 4))) & 0xff;
+ 
+     return (ent & E1000_IVAR_VALID) ? BIT(ent & 0x1f) : 0;
+@@ -2988,6 +3043,9 @@
+         res |= E1000_STATUS_GIO_MASTER_ENABLE;
+     }
+ 
++    if (igb_is_i226(core) && (res & E1000_STATUS_LU)) {
++        res |= 0x00400000; /* negotiated 2.5Gb/s */
++    }
+     return res;
+ }
+ 
+@@ -4236,6 +4294,26 @@
+ void
+ igb_core_write(IGBCore *core, hwaddr addr, uint64_t val, unsigned size)
+ {
++    bool i226 = igb_is_i226(core);
++    if (i226) {
++        if (addr == 0x20) {
++            i226_set_mdic(core, val);
++            return;
++        }
++        if (addr == 0x12018) {
++            unsigned word = (val >> 2) & 0x3fff;
++            if ((val & 1) && word < IGB_EEPROM_SIZE) {
++                core->eeprom[word] = val >> 16;
++            }
++            core->mac[addr >> 2] = val | 2;
++            return;
++        }
++        if (addr == 0xe14) {
++            core->mac[addr >> 2] = val | 0x100;
++            return;
++        }
++        addr = i226_register_address(addr);
++    }
+     uint16_t index = igb_get_reg_index_with_offset(mac_reg_access, addr);
+ 
+     if (index < IGB_NWRITEOPS && igb_macreg_writeops[index]) {
+@@ -4255,6 +4333,13 @@
+ igb_core_read(IGBCore *core, hwaddr addr, unsigned size)
+ {
+     uint64_t val;
++    bool i226 = igb_is_i226(core);
++    if (i226) {
++        if (addr == 0xe14 || addr == 0x12018) {
++            return core->mac[addr >> 2];
++        }
++        addr = i226_register_address(addr);
++    }
+     uint16_t index = igb_get_reg_index_with_offset(mac_reg_access, addr);
+ 
+     if (index < IGB_NREADOPS && igb_macreg_readops[index]) {
+@@ -4486,6 +4571,20 @@
+         igb_link_down(core);
+     }
+ 
++    if (igb_is_i226(core)) {
++        core->mac[EECD] = E1000_EECD_PRES | E1000_EECD_AUTO_RD |
++                         (4 << E1000_EECD_SIZE_EX_SHIFT) | 0x04080000;
++        core->mac[0xe14 >> 2] = 0x100;
++        core->phy[MII_PHYID1] = 0x67c9;
++        core->phy[MII_PHYID2] = 0xdc04;
++        core->phy[MII_BMSR] |= MII_BMSR_AN_COMP | MII_BMSR_LINK_ST;
++        core->gpy_control = core->gpy_address = 0;
++        memset(core->gpy_mmd, 0, sizeof(core->gpy_mmd));
++        core->gpy_mmd[7][32] = 0x80;
++        if (!qemu_get_queue(core->owner_nic)->link_down) {
++            core->mac[STATUS] |= E1000_STATUS_LU;
++        }
++    }
+     e1000x_reset_mac_addr(core->owner_nic, core->mac, core->permanent_mac);
+ 
+     for (int vfn = 0; vfn < IGB_MAX_VF_FUNCTIONS; vfn++) {
+--- a/hw/net/igb.c
++++ b/hw/net/igb.c
+@@ -79,6 +79,7 @@
+ 
+     IGBCore core;
+     bool has_flr;
++    bool i226;
+ };
+ 
+ #define IGB_CAP_SRIOV_OFFSET    (0x160)
+@@ -116,6 +117,9 @@
+ igb_mmio_read(void *opaque, hwaddr addr, unsigned size)
+ {
+     IGBState *s = opaque;
++    if (s->i226 && addr >= E1000E_MMIO_SIZE) {
++        return 0;
++    }
+     return igb_core_read(&s->core, addr, size);
+ }
+ 
+@@ -123,7 +127,9 @@
+ igb_mmio_write(void *opaque, hwaddr addr, uint64_t val, unsigned size)
+ {
+     IGBState *s = opaque;
+-    igb_core_write(&s->core, addr, val, size);
++    if (!s->i226 || addr < E1000E_MMIO_SIZE) {
++        igb_core_write(&s->core, addr, val, size);
++    }
+ }
+ 
+ void igb_vf_reset(void *opaque, uint16_t vfn)
+@@ -294,7 +300,7 @@
+ {
+     int i, res;
+ 
+-    res = msix_init(PCI_DEVICE(s), IGB_MSIX_VEC_NUM,
++    res = msix_init(PCI_DEVICE(s), s->i226 ? 5 : IGB_MSIX_VEC_NUM,
+                     &s->msix,
+                     E1000E_MSIX_IDX, 0,
+                     &s->msix,
+@@ -304,7 +310,7 @@
+     if (res < 0) {
+         trace_e1000e_msix_init_fail(res);
+     } else {
+-        for (i = 0; i < IGB_MSIX_VEC_NUM; i++) {
++        for (i = 0; i < (s->i226 ? 5 : IGB_MSIX_VEC_NUM); i++) {
+             msix_vector_use(PCI_DEVICE(s), i);
+         }
+     }
+@@ -386,14 +392,19 @@
+ 
+     trace_e1000e_cb_pci_realize();
+ 
++    s->i226 = (pci_get_word(pci_dev->config + PCI_DEVICE_ID) == 0x125c || pci_get_word(pci_dev->config + PCI_DEVICE_ID) == 0x15f3);
+     pci_dev->config_write = igb_write_config;
++    if (s->i226) {
++        pci_set_word(pci_dev->config + PCI_SUBSYSTEM_VENDOR_ID, 0x1462);
++        pci_set_word(pci_dev->config + PCI_SUBSYSTEM_ID, 0x7e07);
++    }
+ 
+     pci_dev->config[PCI_CACHE_LINE_SIZE] = 0x10;
+     pci_dev->config[PCI_INTERRUPT_PIN] = 1;
+ 
+     /* Define IO/MMIO regions */
+     memory_region_init_io(&s->mmio, OBJECT(s), &mmio_ops, s,
+-                          "igb-mmio", E1000E_MMIO_SIZE);
++                          "igb-mmio", s->i226 ? MiB : E1000E_MMIO_SIZE);
+     pci_register_bar(pci_dev, E1000E_MMIO_IDX,
+                      PCI_BASE_ADDRESS_SPACE_MEMORY, &s->mmio);
+ 
+@@ -401,6 +412,7 @@
+      * We provide a dummy implementation for the flash BAR
+      * for drivers that may theoretically probe for its presence.
+      */
++    if (!s->i226) {
+     memory_region_init(&s->flash, OBJECT(s),
+                        "igb-flash", E1000E_FLASH_SIZE);
+     pci_register_bar(pci_dev, E1000E_FLASH_IDX,
+@@ -410,6 +422,7 @@
+                           "igb-io", E1000E_IO_SIZE);
+     pci_register_bar(pci_dev, E1000E_IO_IDX,
+                      PCI_BASE_ADDRESS_SPACE_IO, &s->io);
++    }
+ 
+     memory_region_init(&s->msix, OBJECT(s), "igb-msix",
+                        E1000E_MSIX_SIZE);
+@@ -423,6 +436,7 @@
+     /* Add PCI capabilities in reverse order */
+     assert(pcie_endpoint_cap_init(pci_dev, 0xa0) > 0);
+ 
++    if (s->i226) pcie_cap_fill_link_ep_usp(pci_dev,QEMU_PCI_EXP_LNK_X1,QEMU_PCI_EXP_LNK_5GT);
+     igb_init_msix(s);
+ 
+     ret = msi_init(pci_dev, 0x50, 1, true, true, NULL);
+@@ -443,6 +457,7 @@
+         hw_error("Failed to initialize AER capability");
+     }
+ 
++    if (!s->i226) {
+     pcie_ari_init(pci_dev, 0x150);
+ 
+     if (!pcie_sriov_pf_init(pci_dev, IGB_CAP_SRIOV_OFFSET, TYPE_IGBVF,
+@@ -459,6 +474,7 @@
+     pcie_sriov_pf_init_vf_bar(pci_dev, IGBVF_MSIX_BAR_IDX,
+         PCI_BASE_ADDRESS_MEM_TYPE_64 | PCI_BASE_ADDRESS_MEM_PREFETCH,
+         IGBVF_MSIX_SIZE);
++    }
+ 
+     igb_init_net_peer(s, pci_dev, macaddr);
+ 
+@@ -479,7 +495,9 @@
+ 
+     igb_core_pci_uninit(&s->core);
+ 
+-    pcie_sriov_pf_exit(pci_dev);
++    if (!s->i226) {
++        pcie_sriov_pf_exit(pci_dev);
++    }
+     pcie_cap_exit(pci_dev);
+ 
+     qemu_del_nic(s->nic);
+@@ -641,9 +659,37 @@
+     },
+ };
+ 
++static const VMStateDescription i226_vmstate = {.name="i226-v",.unmigratable=1};
++static void i226_class_init(ObjectClass *oc, const void *data)
++{
++    PCIDeviceClass *pc = PCI_DEVICE_CLASS(oc);
++    pc->device_id = 0x125c;
++    pc->revision = 4;
++    DEVICE_CLASS(oc)->vmsd=&i226_vmstate;
++    DEVICE_CLASS(oc)->desc = "Intel I226-V 2.5GbE Controller";
++}
++
++static void i225_class_init(ObjectClass *oc, const void *data)
++{
++    PCIDeviceClass *pc = PCI_DEVICE_CLASS(oc);
++    pc->device_id = 0x15f3;
++    pc->revision = 3;
++    DEVICE_CLASS(oc)->desc = "Intel I225-V B3 2.5GbE Controller";
++}
++
+ static void igb_register_types(void)
+ {
+     type_register_static(&igb_info);
++    static const TypeInfo i226_info = {
++        .name = "i226-v",
++        .parent = TYPE_IGB,
++        .class_init = i226_class_init,
++    };
++    type_register_static(&i226_info);
++    static const TypeInfo i225_info = {
++        .name = "i225-v", .parent = "i226-v", .class_init = i225_class_init,
++    };
++    type_register_static(&i225_info);
+ }
+ 
+ type_init(igb_register_types)
+--- a/hw/net/igb_core.h
++++ b/hw/net/igb_core.h
+@@ -67,6 +67,8 @@
+     uint32_t mac[E1000E_MAC_SIZE];
+     uint16_t phy[MAX_PHY_REG_ADDRESS + 1];
+     uint16_t eeprom[IGB_EEPROM_SIZE];
++    uint16_t gpy_mmd[32][256];
++    uint16_t gpy_address, gpy_control;
+ 
+     uint8_t rx_desc_len;
+ 
+--- a/hw/pci-bridge/pcie_root_port.c
++++ b/hw/pci-bridge/pcie_root_port.c
+@@ -67,6 +67,20 @@
+     PCIERootPortClass *rpc = PCIE_ROOT_PORT_GET_CLASS(d);
+     int rc;
+ 
++    if (dc->vendor_id == 0x8086 && dc->device_id == 0x7a38) {
++        unsigned slot = PCI_SLOT(d->devfn), fn = PCI_FUNC(d->devfn);
++        unsigned id = slot == 0x1c ? 0x7a38 + fn :
++                      slot == 0x1d ? 0x7a30 + fn : 0x7a40 + fn;
++        bool gen4 = p->port == 2 || (p->port >= 5 && p->port <= 8);
++        pci_config_set_device_id(d->config, p->port == 1 ? 0xa70d :
++                                 p->port == 2 ? 0xa74d : id);
++        d->config[PCI_REVISION_ID] = p->port <= 2 ? 0x02 : 0xf1;
++        s->speed = p->port == 1 ? QEMU_PCI_EXP_LNK_32GT :
++                   gen4 ? QEMU_PCI_EXP_LNK_16GT : QEMU_PCI_EXP_LNK_8GT;
++        s->width = p->port == 1 ? QEMU_PCI_EXP_LNK_X16 :
++                   gen4 ? QEMU_PCI_EXP_LNK_X4 : QEMU_PCI_EXP_LNK_X1;
++
++    }
+     pci_config_set_interrupt_pin(d->config, 1);
+     if (d->cap_present & QEMU_PCIE_CAP_CXL) {
+         pci_bridge_initfn(d, TYPE_CXL_BUS);
+@@ -75,7 +89,8 @@
+     }
+     pcie_port_init_reg(d);
+ 
+-    rc = pci_bridge_ssvid_init(d, rpc->ssvid_offset, dc->vendor_id,
++    rc = pci_bridge_ssvid_init(d, rpc->ssvid_offset,
++                               dc->device_id == 0x7a38 ? 0x1462 : dc->vendor_id,
+                                rpc->ssid, errp);
+     if (rc < 0) {
+         error_append_hint(errp, "Can't init SSV ID, error %d\n", rc);
+@@ -167,8 +182,17 @@
+     }
+ }
+ 
++static uint32_t rp_profile_config_read(PCIDevice *d, uint32_t address, int length)
++{
++    if (PCI_DEVICE_GET_CLASS(d)->device_id == 0x7a38) {
++        pcie_sync_bridge_lnk(d);
++    }
++    return pci_default_read_config(d, address, length);
++}
++
+ static void rp_class_init(ObjectClass *klass, const void *data)
+ {
++    PCI_DEVICE_CLASS(klass)->config_read = rp_profile_config_read;
+     DeviceClass *dc = DEVICE_CLASS(klass);
+     PCIDeviceClass *k = PCI_DEVICE_CLASS(klass);
+     ResettableClass *rc = RESETTABLE_CLASS(klass);
+--- a/hw/pci-bridge/ioh3420.c
++++ b/hw/pci-bridge/ioh3420.c
+@@ -28,11 +28,11 @@
+ #include "migration/vmstate.h"
+ #include "qemu/module.h"
+ 
+-#define PCI_DEVICE_ID_IOH_EPORT         0x3420  /* D0:F0 express mode */
++#define PCI_DEVICE_ID_IOH_EPORT 0x7a38  /* D0:F0 express mode */
+ #define PCI_DEVICE_ID_IOH_REV           0x2
+ #define IOH_EP_SSVID_OFFSET             0x40
+-#define IOH_EP_SSVID_SVID               PCI_VENDOR_ID_INTEL
+-#define IOH_EP_SSVID_SSID               0
++#define IOH_EP_SSVID_SVID               0x1462
++#define IOH_EP_SSVID_SSID               0x7e07
+ #define IOH_EP_MSI_OFFSET               0x60
+ #define IOH_EP_MSI_SUPPORTED_FLAGS      PCI_MSI_FLAGS_MASKBIT
+ #define IOH_EP_MSI_NR_VECTOR            2
+@@ -103,9 +103,9 @@
+     PCIERootPortClass *rpc = PCIE_ROOT_PORT_CLASS(klass);
+ 
+     k->vendor_id = PCI_VENDOR_ID_INTEL;
+-    k->device_id = PCI_DEVICE_ID_IOH_EPORT;
++    k->device_id = 0x7a38;
+     k->revision = PCI_DEVICE_ID_IOH_REV;
+-    dc->desc = "Intel IOH device id 3420 PCIE Root Port";
++    dc->desc = "Intel 700 Series Chipset PCI Express Root Port";
+     dc->vmsd = &vmstate_ioh3420;
+     rpc->aer_vector = ioh3420_aer_vector;
+     rpc->interrupts_init = ioh3420_interrupts_init;
+--- a/hw/acpi/vmgenid.c
++++ b/hw/acpi/vmgenid.c
+@@ -25,6 +25,8 @@
+ void vmgenid_build_acpi(VmGenIdState *vms, GArray *table_data, GArray *guid,
+                         BIOSLinker *linker, const char *oem_id)
+ {
++       //FUCK YOU~~~
++       return;//do this once
+     Aml *ssdt, *dev, *scope, *method, *addr, *if_ctx;
+     uint32_t vgia_offset;
+     QemuUUID guid_le;
+--- a/hw/acpi/aml-build.c
++++ b/hw/acpi/aml-build.c
+@@ -1722,11 +1722,11 @@
+     build_append_int_noprefix(array, 0, 4); /* Length */
+     build_append_int_noprefix(array, desc->rev, 1); /* Revision */
+     build_append_int_noprefix(array, 0, 1); /* Checksum */
+-    build_append_padded_str(array, desc->oem_id, 6, '\0'); /* OEMID */
++    build_append_padded_str(array, "ALASKA", 6, ' '); /* OEMID */
+     /* OEM Table ID */
+-    build_append_padded_str(array, desc->oem_table_id, 8, '\0');
++    build_append_padded_str(array, "MS7E07", 8, ' ');
+     build_append_int_noprefix(array, 1, 4); /* OEM Revision */
+-    g_array_append_vals(array, ACPI_BUILD_APPNAME8, 4); /* Creator ID */
++    g_array_append_vals(array, "AMI ", 4); /* Creator ID */
+     build_append_int_noprefix(array, 1, 4); /* Creator Revision */
+ }
+ 
+@@ -2346,7 +2346,9 @@
+     build_append_gas_from_struct(tbl, &f->gpe0_blk); /* X_GPE0_BLK */
+     build_append_gas(tbl, AML_AS_SYSTEM_MEMORY, 0 , 0, 0, 0); /* X_GPE1_BLK */
+ 
+-    if (f->rev <= 4) {
++    if (f->rev <= 6) {
++		build_append_gas_from_struct(tbl, &f->sleep_ctl);
++		build_append_gas_from_struct(tbl, &f->sleep_sts);
+         goto done;
+     }
+ 
+@@ -2360,7 +2362,7 @@
+     }
+ 
+     /* Hypervisor Vendor Identity */
+-    build_append_padded_str(tbl, "QEMU", 8, '\0');
++    build_append_padded_str(tbl, "Intel", 8, '\0');
+ 
+     /* TODO: extra fields need to be added to support revisions above rev6 */
+     assert(f->rev == 6);
+--- a/hw/acpi/core.c
++++ b/hw/acpi/core.c
+@@ -56,9 +56,9 @@
+ #define ACPI_TABLE_PFX_SIZE sizeof(uint16_t)  /* size of the extra prefix */
+ 
+ static const char unsigned dfl_hdr[ACPI_TABLE_HDR_SIZE - ACPI_TABLE_PFX_SIZE] =
+-    "QEMU\0\0\0\0\1\0"       /* sig (4), len(4), revno (1), csum (1) */
+-    "QEMUQEQEMUQEMU\1\0\0\0" /* OEM id (6), table (8), revno (4) */
+-    "QEMU\1\0\0\0"           /* ASL compiler ID (4), version (4) */
++    "DELL\0\0\0\0\1\0"       /* sig (4), len(4), revno (1), csum (1) */
++    "ASUSASASUSASUS\1\0\0\0" /* OEM id (6), table (8), revno (4) */
++    "DELL\1\0\0\0"           /* ASL compiler ID (4), version (4) */
+     ;
+ 
+ char unsigned *acpi_tables;
+@@ -592,6 +592,7 @@
+         /* change suspend type */
+         uint16_t sus_typ = (val >> 10) & 7;
+         switch (sus_typ) {
++        case 7: /* PCH S5 encoding */
+         case 0: /* soft power off */
+             qemu_system_shutdown_request(SHUTDOWN_CAUSE_GUEST_SHUTDOWN);
+             break;
+--- a/hw/acpi/pci.c
++++ b/hw/acpi/pci.c
+@@ -310,6 +310,7 @@
+     Aml *method;
+     Aml *a_cwd1 = aml_name("CDW1");
+     Aml *a_ctrl = aml_local(0);
++    (void)enable_native_pcie_hotplug;
+ 
+     method = aml_method("_OSC", 4, AML_NOTSERIALIZED);
+     aml_append(method, aml_create_dword_field(aml_arg(3), aml_int(0), "CDW1"));
+@@ -323,11 +324,11 @@
+ 
+     /*
+      * Always allow native PME, AER (no dependencies)
+-     * Allow SHPC (PCI bridges can have SHPC controller)
+-     * Disable PCIe Native Hot-plug if ACPI PCI Hot-plug is enabled.
++     * This fixed desktop profile has no SHPC or PCIe hotplug.
++     * Preserve native PCIe capability control.
+      */
+     aml_append(if_ctx, aml_and(a_ctrl,
+-        aml_int(0x1E | (enable_native_pcie_hotplug ? 0x1 : 0x0)), a_ctrl));
++        aml_int(0x1C), a_ctrl));
+ 
+     if_ctx2 = aml_if(aml_lnot(aml_equal(aml_arg(1), aml_int(1))));
+     /* Unknown revision */
+--- a/hw/acpi/cpu.c
++++ b/hw/acpi/cpu.c
+@@ -355,6 +355,32 @@
+     MachineClass *mc = MACHINE_GET_CLASS(machine);
+     const CPUArchIdList *arch_ids = mc->possible_cpu_arch_ids(machine);
+     char *cphp_res_path = g_strdup_printf("%s." CPUHP_RES_DEVICE, res_root);
++
++    /* Fixed-socket workstation: all 24 processor cores are populated, with
++     * no CPU insertion/ejection hardware or unused hotplug slots. */
++    if (machine->smp.sockets == 1 && machine->smp.cores == 24 &&
++        machine->smp.threads == 1 && machine->smp.max_cpus == 24) {
++        cpus_dev = aml_device("CPUS");
++        aml_append(cpus_dev, aml_name_decl("_HID", aml_string("ACPI0010")));
++        aml_append(cpus_dev, aml_name_decl("_CID", aml_eisaid("PNP0A05")));
++        for (unsigned n = 0; n < arch_ids->len; n++) {
++            Aml *dev = aml_processor(n, 0, 0, CPU_NAME_FMT, n);
++            GArray *madt = g_array_new(0, 1, 1);
++            method = aml_method("_STA", 0, AML_NOTSERIALIZED);
++            aml_append(method, aml_return(aml_int(0x0f)));
++            aml_append(dev, method);
++            build_madt_cpu(n, arch_ids, madt, false);
++            aml_append(dev, aml_name_decl("_MAT", aml_buffer(madt->len,
++                                                           (uint8_t *)madt->data)));
++            g_array_free(madt, true);
++            aml_append(cpus_dev, dev);
++        }
++        aml_append(sb_scope, cpus_dev);
++        aml_append(table, sb_scope);
++        g_free(cphp_res_path);
++        return;
++    }
++
+ 
+     cpu_ctrl_dev = aml_device("%s", cphp_res_path);
+     {
+--- a/hw/i2c/smbus_eeprom.c
++++ b/hw/i2c/smbus_eeprom.c
+@@ -39,7 +39,8 @@
+ 
+ OBJECT_DECLARE_SIMPLE_TYPE(SMBusEEPROMDevice, SMBUS_EEPROM)
+ 
+-#define SMBUS_EEPROM_SIZE 256
++#define SMBUS_EEPROM_SIZE 512
++static uint8_t ddr4_spd_page;
+ 
+ struct SMBusEEPROMDevice {
+     SMBusDevice smbusdev;
+@@ -53,7 +54,7 @@
+ {
+     SMBusEEPROMDevice *eeprom = SMBUS_EEPROM(dev);
+     uint8_t *data = eeprom->data;
+-    uint8_t val = data[eeprom->offset++];
++    uint8_t val = data[ddr4_spd_page * 256 + eeprom->offset++];
+ 
+     eeprom->accessed = true;
+ #ifdef DEBUG
+@@ -79,7 +80,8 @@
+     len--;
+ 
+     for (; len > 0; len--) {
+-        data[eeprom->offset] = *buf++;
++        /* SPD contents are read-only; retain address-pointer writes. */
++        buf++;
+         eeprom->offset = (eeprom->offset + 1) % SMBUS_EEPROM_SIZE;
+     }
+ 
+@@ -125,6 +127,7 @@
+ 
+     memcpy(eeprom->data, eeprom->init_data, SMBUS_EEPROM_SIZE);
+     eeprom->offset = 0;
++    ddr4_spd_page = 0;
+ }
+ 
+ static void smbus_eeprom_realize(DeviceState *dev, Error **errp)
+@@ -173,6 +176,35 @@
+     qdev_realize_and_unref(dev, (BusState *)smbus, &error_fatal);
+ }
+ 
++static int ddr4_page_event(I2CSlave *dev, enum i2c_event event)
++{
++    uint8_t page = dev->address - 0x36;
++    if (event == I2C_START_RECV) {
++        return ddr4_spd_page == page ? 0 : -1;
++    }
++    if (event == I2C_START_SEND) {
++        ddr4_spd_page = page;
++    }
++    return 0;
++}
++static uint8_t ddr4_page_recv(I2CSlave *dev) { return 0; }
++static int ddr4_page_send(I2CSlave *dev, uint8_t data) { return 0; }
++static void ddr4_page_class_init(ObjectClass *klass, const void *data)
++{
++    I2CSlaveClass *sc = I2C_SLAVE_CLASS(klass);
++    sc->event = ddr4_page_event;
++    sc->recv = ddr4_page_recv;
++    sc->send = ddr4_page_send;
++}
++static const TypeInfo ddr4_page_type = {
++    .name = "ddr4-spd-page",
++    .parent = TYPE_I2C_SLAVE,
++    .instance_size = sizeof(I2CSlave),
++    .class_init = ddr4_page_class_init,
++};
++static void register_ddr4_page(void) { type_register_static(&ddr4_page_type); }
++type_init(register_ddr4_page)
++
+ void smbus_eeprom_init(I2CBus *smbus, int nb_eeprom,
+                        const uint8_t *eeprom_spd, int eeprom_spd_size)
+ {
+@@ -185,6 +217,16 @@
+         memcpy(eeprom_buf, eeprom_spd, eeprom_spd_size);
+     }
+ 
++    for (i = 0; i < 2; i++) {
++        i2c_slave_create_simple(smbus, "ddr4-spd-page", 0x36 + i);
++    }
++    static const uint8_t ddr4_spd[4][512] = {
++        {35,17,12,2,134,41,0,8,0,0,0,3,1,3,0,0,0,0,6,12,248,63,0,0,114,114,114,17,0,116,48,17,240,10,32,8,0,168,24,40,40,0,120,0,20,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,45,177,17,17,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,195,185,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,133,155,1,32,82,0,0,0,1,66,76,49,54,71,51,54,67,49,54,85,52,87,46,77,56,70,66,49,32,0,128,44,66,67,84,52,48,65,50,71,56,86,65,45,48,53,48,77,58,66,59,66,79,73,83,69,59,90,50,50,65,0,0,0,12,74,1,32,0,0,0,0,0,176,0,0,4,0,2,0,0,64,76,76,0,152,240,48,17,240,10,32,8,0,184,32,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++        {35,17,12,2,134,41,0,8,0,0,0,3,1,3,0,0,0,0,6,12,248,63,0,0,114,114,114,17,0,116,48,17,240,10,32,8,0,168,24,40,40,0,120,0,20,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,45,177,17,17,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,195,185,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,133,155,1,32,82,0,0,0,2,66,76,49,54,71,51,54,67,49,54,85,52,87,46,77,56,70,66,49,32,0,128,44,66,67,84,52,48,65,50,71,56,86,65,45,48,53,48,77,58,66,59,66,79,73,83,69,59,90,50,50,65,0,0,0,12,74,1,32,0,0,0,0,0,176,0,0,4,0,2,0,0,64,76,76,0,152,240,48,17,240,10,32,8,0,184,32,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++        {35,17,12,2,134,41,0,8,0,0,0,3,1,3,0,0,0,0,6,12,248,63,0,0,114,114,114,17,0,116,48,17,240,10,32,8,0,168,24,40,40,0,120,0,20,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,45,177,17,17,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,195,185,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,133,155,1,32,82,0,0,0,3,66,76,49,54,71,51,54,67,49,54,85,52,87,46,77,56,70,66,49,32,0,128,44,66,67,84,52,48,65,50,71,56,86,65,45,48,53,48,77,58,66,59,66,79,73,83,69,59,90,50,50,65,0,0,0,12,74,1,32,0,0,0,0,0,176,0,0,4,0,2,0,0,64,76,76,0,152,240,48,17,240,10,32,8,0,184,32,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++        {35,17,12,2,134,41,0,8,0,0,0,3,1,3,0,0,0,0,6,12,248,63,0,0,114,114,114,17,0,116,48,17,240,10,32,8,0,168,24,40,40,0,120,0,20,60,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,45,177,17,17,64,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,195,185,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,133,155,1,32,82,0,0,0,4,66,76,49,54,71,51,54,67,49,54,85,52,87,46,77,56,70,66,49,32,0,128,44,66,67,84,52,48,65,50,71,56,86,65,45,48,53,48,77,58,66,59,66,79,73,83,69,59,90,50,50,65,0,0,0,12,74,1,32,0,0,0,0,0,176,0,0,4,0,2,0,0,64,76,76,0,152,240,48,17,240,10,32,8,0,184,32,44,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
++    };
++    memcpy(eeprom_buf, ddr4_spd, sizeof(ddr4_spd));
+     for (i = 0; i < nb_eeprom; i++) {
+         smbus_eeprom_init_one(smbus, 0x50 + i,
+                               eeprom_buf + (i * SMBUS_EEPROM_SIZE));
+--- a/hw/i2c/pm_smbus.c
++++ b/hw/i2c/pm_smbus.c
+@@ -300,7 +300,7 @@
+                     s->smb_blkdata = s->smb_data[s->smb_index];
+                 }
+                 s->smb_index = 0;
+-                s->smb_stat |= STS_INTR;
++                s->smb_stat |= STS_INTR | STS_BYTE_DONE;
+                 s->smb_stat &= ~STS_HOST_BUSY;
+             } else {
+                 if (s->in_i2c_block_read) {
+@@ -398,7 +398,8 @@
+         val = s->smb_data1;
+         break;
+     case SMBBLKDAT:
+-        if (s->smb_auxctl & AUX_BLK && !s->in_i2c_block_read) {
++        if (s->smb_auxctl & AUX_BLK && !s->in_i2c_block_read &&
++            ((s->smb_ctl >> 2) & 7) != PROT_I2C_BLOCK_READ) {
+             if (s->smb_index >= PM_SMBUS_MAX_MSG_SIZE) {
+                 s->smb_index = 0;
+             }
+--- a/hw/m68k/virt.c
++++ b/hw/m68k/virt.c
+@@ -313,7 +313,7 @@
+ static void virt_machine_class_init(ObjectClass *oc, const void *data)
+ {
+     MachineClass *mc = MACHINE_CLASS(oc);
+-    mc->desc = "QEMU M68K Virtual Machine";
++    mc->desc = "DELL M68K Real Machine";
+     mc->init = virt_init;
+     mc->default_cpu_type = M68K_CPU_TYPE_NAME("m68040");
+     mc->max_cpus = 1;
+--- a/hw/misc/meson.build
++++ b/hw/misc/meson.build
+@@ -161,3 +161,7 @@
+ 
+ # HPPA devices
+ system_ss.add(when: 'CONFIG_LASI', if_true: files('lasi.c'))
++
++system_ss.add(when: 'CONFIG_PC', if_true: files('z790-spi.c'))
++
++system_ss.add(when: 'CONFIG_Z790_PCH', if_true: files('z790-me.c', 'z790-serialio.c', 'z790-sram.c'))
+--- a/hw/misc/Kconfig
++++ b/hw/misc/Kconfig
+@@ -236,3 +236,12 @@
+     bool
+ 
+ source macio/Kconfig
++
++config Z790_PCH
++    bool
++    default y if Q35
++    depends on PCI
++    select SSI
++    select I2C
++    select AT24C
++    select SERIAL
+--- a/hw/misc/pvpanic-isa.c
++++ b/hw/misc/pvpanic-isa.c
+@@ -69,7 +69,7 @@
+     PVPanicISAState *s = PVPANIC_ISA_DEVICE(adev);
+     Aml *dev = aml_device("PEVT");
+ 
+-    aml_append(dev, aml_name_decl("_HID", aml_string("QEMU0001")));
++    aml_append(dev, aml_name_decl("_HID", aml_string("DELL0001")));
+ 
+     crs = aml_resource_template();
+     aml_append(crs,
+--- a/hw/smbios/smbios.c
++++ b/hw/smbios/smbios.c
+@@ -574,7 +574,7 @@
+ 
+     t->bios_characteristics = cpu_to_le64(0x08); /* Not supported */
+     t->bios_characteristics_extension_bytes[0] = 0;
+-    t->bios_characteristics_extension_bytes[1] = 0x14; /* TCD/SVVP | VM */
++    t->bios_characteristics_extension_bytes[1] = 0x0F; /* TCD/SVVP | VM */
+     if (smbios_type0.uefi) {
+         t->bios_characteristics_extension_bytes[1] |= 0x08; /* |= UEFI */
+     }
+@@ -648,7 +648,7 @@
+     SMBIOS_BUILD_TABLE_PRE(3, T3_BASE, true); /* required */
+ 
+     SMBIOS_TABLE_SET_STR(3, manufacturer_str, type3.manufacturer);
+-    t->type = 0x01; /* Other */
++    t->type = 0x03; /* Desktop */
+     SMBIOS_TABLE_SET_STR(3, version_str, type3.version);
+     SMBIOS_TABLE_SET_STR(3, serial_number_str, type3.serial);
+     SMBIOS_TABLE_SET_STR(3, asset_tag_number_str, type3.asset);
+@@ -695,15 +695,15 @@
+         t->processor_id[1] = cpu_to_le32(type4.processor_id >> 32);
+     }
+     SMBIOS_TABLE_SET_STR(4, processor_version_str, type4.version);
+-    t->voltage = 0;
+-    t->external_clock = cpu_to_le16(0); /* Unknown */
++    t->voltage = 0x8B;
++    t->external_clock = cpu_to_le16(100); /* Unknown */
+     t->max_speed = cpu_to_le16(type4.max_speed);
+     t->current_speed = cpu_to_le16(type4.current_speed);
+     t->status = 0x41; /* Socket populated, CPU enabled */
+     t->processor_upgrade = 0x01; /* Other */
+-    t->l1_cache_handle = cpu_to_le16(0xFFFF); /* N/A */
+-    t->l2_cache_handle = cpu_to_le16(0xFFFF); /* N/A */
+-    t->l3_cache_handle = cpu_to_le16(0xFFFF); /* N/A */
++    t->l1_cache_handle = cpu_to_le16(0x0039); /* N/A */
++    t->l2_cache_handle = cpu_to_le16(0x003A); /* N/A */
++    t->l3_cache_handle = cpu_to_le16(0x003B); /* N/A */
+     SMBIOS_TABLE_SET_STR(4, serial_number_str, type4.serial);
+     SMBIOS_TABLE_SET_STR(4, asset_tag_number_str, type4.asset);
+     SMBIOS_TABLE_SET_STR(4, part_number_str, type4.part);
+@@ -716,7 +716,7 @@
+ 
+     t->thread_count = (threads_per_socket > 255) ? 0xFF : threads_per_socket;
+ 
+-    t->processor_characteristics = cpu_to_le16(0x02); /* Unknown */
++    t->processor_characteristics = cpu_to_le16(0x04); /* Unknown */
+     t->processor_family2 = cpu_to_le16(type4.processor_family);
+ 
+     if (tbl_len == SMBIOS_TYPE_4_LEN_V30) {
+@@ -844,9 +844,9 @@
+ 
+     SMBIOS_BUILD_TABLE_PRE(16, T16_BASE, true); /* required */
+ 
+-    t->location = 0x01; /* Other */
++    t->location = 0x03; /* Other */
+     t->use = 0x03; /* System memory */
+-    t->error_correction = 0x06; /* Multi-bit ECC (for Microsoft, per SeaBIOS) */
++    t->error_correction = 0x03; /* Multi-bit ECC (for Microsoft, per SeaBIOS) */
+     size_kb = QEMU_ALIGN_UP(current_machine->ram_size, KiB) / KiB;
+     if (size_kb < MAX_T16_STD_SZ) {
+         t->maximum_capacity = cpu_to_le32(size_kb);
+@@ -873,8 +873,8 @@
+ 
+     t->physical_memory_array_handle = cpu_to_le16(0x1000); /* Type 16 above */
+     t->memory_error_information_handle = cpu_to_le16(0xFFFE); /* Not provided */
+-    t->total_width = cpu_to_le16(0xFFFF); /* Unknown */
+-    t->data_width = cpu_to_le16(0xFFFF); /* Unknown */
++    t->total_width = cpu_to_le16(64); /* Unknown */
++    t->data_width = cpu_to_le16(64); /* Unknown */
+     size_mb = QEMU_ALIGN_UP(size, MiB) / MiB;
+     if (size_mb < MAX_T17_STD_SZ) {
+         t->size = cpu_to_le16(size_mb);
+@@ -889,7 +889,7 @@
+     snprintf(loc_str, sizeof(loc_str), "%s %d", type17.loc_pfx, instance);
+     SMBIOS_TABLE_SET_STR(17, device_locator_str, loc_str);
+     SMBIOS_TABLE_SET_STR(17, bank_locator_str, type17.bank);
+-    t->memory_type = 0x07; /* RAM */
++    t->memory_type = 0x18; /* RAM */
+     t->type_detail = cpu_to_le16(0x02); /* Other */
+     t->speed = cpu_to_le16(type17.speed);
+     SMBIOS_TABLE_SET_STR(17, manufacturer_str, type17.manufacturer);
+@@ -898,9 +898,9 @@
+     SMBIOS_TABLE_SET_STR(17, part_number_str, type17.part);
+     t->attributes = 0; /* Unknown */
+     t->configured_clock_speed = t->speed; /* reuse value for max speed */
+-    t->minimum_voltage = cpu_to_le16(0); /* Unknown */
+-    t->maximum_voltage = cpu_to_le16(0); /* Unknown */
+-    t->configured_voltage = cpu_to_le16(0); /* Unknown */
++    t->minimum_voltage = cpu_to_le16(1350); /* Unknown */
++    t->maximum_voltage = cpu_to_le16(1500); /* Unknown */
++    t->configured_voltage = cpu_to_le16(1350); /* Unknown */
+ 
+     SMBIOS_BUILD_TABLE_POST;
+ }
+@@ -1066,9 +1066,9 @@
+         ep.ep30.entry_point_revision = 1;
+         ep.ep30.reserved = 0;
+ 
+-        /* compliant with smbios spec 3.0 */
++        /* SMBIOS 3.5 profile includes extended ROM and PCIe slot geometry. */
+         ep.ep30.smbios_major_version = 3;
+-        ep.ep30.smbios_minor_version = 0;
++        ep.ep30.smbios_minor_version = 5;
+         ep.ep30.smbios_doc_rev = 0;
+ 
+         /* set during table construct, but BIOS might override */
+--- a/hw/pci-host/q35.c
++++ b/hw/pci-host/q35.c
+@@ -688,7 +688,9 @@
+      * implement integrated graphics, so uses the PCI ID for the 82P35
+      * chipset.
+      */
+-    k->device_id = PCI_DEVICE_ID_INTEL_P35_MCH;
++    k->device_id = 0xa700;
++    k->subsystem_vendor_id = 0x1462;
++    k->subsystem_id = 0x7e07;
+     k->revision = MCH_HOST_BRIDGE_REVISION_DEFAULT;
+     k->class_id = PCI_CLASS_BRIDGE_HOST;
+     /*
+--- a/hw/pci-host/gpex.c
++++ b/hw/pci-host/gpex.c
+@@ -243,7 +243,7 @@
+     DeviceClass *dc = DEVICE_CLASS(klass);
+ 
+     set_bit(DEVICE_CATEGORY_BRIDGE, dc->categories);
+-    dc->desc = "QEMU generic PCIe host bridge";
++    dc->desc = "DELL generic PCIe host bridge";
+     dc->vmsd = &vmstate_gpex_root;
+     k->vendor_id = PCI_VENDOR_ID_REDHAT;
+     k->device_id = PCI_DEVICE_ID_REDHAT_PCIE_HOST;
+--- a/hw/arm/sbsa-ref.c
++++ b/hw/arm/sbsa-ref.c
+@@ -896,7 +896,7 @@
+     };
+ 
+     mc->init = sbsa_ref_init;
+-    mc->desc = "QEMU 'SBSA Reference' ARM Virtual Machine";
++    mc->desc = "DELL 'SBSA Reference' ARM Real Machine";
+     mc->default_cpu_type = ARM_CPU_TYPE_NAME("neoverse-n2");
+     mc->valid_cpu_types = valid_cpu_types;
+     mc->max_cpus = 512;
+--- a/hw/i386/acpi-build.c
++++ b/hw/i386/acpi-build.c
+@@ -146,7 +146,7 @@
+     uint32_t io = object_property_get_uint(o, ACPI_PM_PROP_PM_IO_BASE, NULL);
+     AmlAddressSpace as = AML_AS_SYSTEM_IO;
+     AcpiFadtData fadt = {
+-        .rev = 3,
++        .rev = 4,
+         .flags =
+             (1 << ACPI_FADT_F_WBINVD) |
+             (1 << ACPI_FADT_F_PROC_C1) |
+@@ -161,8 +161,8 @@
+                         (1 << ACPI_FADT_F_FORCE_APIC_CLUSTER_MODEL) : 0),
+         .int_model = 1 /* Multiple APIC */,
+         .rtc_century = RTC_CENTURY,
+-        .plvl2_lat = 0xfff /* C2 state not supported */,
+-        .plvl3_lat = 0xfff /* C3 state not supported */,
++        .plvl2_lat = 0x1fff /* C2 state not supported */,
++        .plvl3_lat = 0x1fff /* C3 state not supported */,
+         .smi_cmd = smm_enabled ? ACPI_PORT_SMI_CMD : 0,
+         .sci_int = object_property_get_uint(o, ACPI_PM_PROP_SCI_INT, NULL),
+         .acpi_enable_cmd =
+@@ -208,7 +208,7 @@
+     init_common_fadt_data(machine, obj, &pm->fadt);
+     if (piix) {
+         /* w2k requires FADT(rev1) or it won't boot, keep PC compatible */
+-        pm->fadt.rev = 1;
++        pm->fadt.rev = 4;
+         pm->cpu_hp_io_base = PIIX4_CPU_HOTPLUG_IO_BASE;
+     }
+     if (lpc) {
+@@ -384,44 +384,15 @@
+ static void build_hpet_aml(Aml *table)
+ {
+     Aml *crs;
+-    Aml *field;
+     Aml *method;
+-    Aml *if_ctx;
+     Aml *scope = aml_scope("_SB");
+     Aml *dev = aml_device("HPET");
+     Aml *zero = aml_int(0);
+-    Aml *id = aml_local(0);
+-    Aml *period = aml_local(1);
+ 
+     aml_append(dev, aml_name_decl("_HID", aml_eisaid("PNP0103")));
+     aml_append(dev, aml_name_decl("_UID", zero));
+ 
+-    aml_append(dev,
+-        aml_operation_region("HPTM", AML_SYSTEM_MEMORY, aml_int(HPET_BASE),
+-                             HPET_LEN));
+-    field = aml_field("HPTM", AML_DWORD_ACC, AML_LOCK, AML_PRESERVE);
+-    aml_append(field, aml_named_field("VEND", 32));
+-    aml_append(field, aml_named_field("PRD", 32));
+-    aml_append(dev, field);
+-
+     method = aml_method("_STA", 0, AML_NOTSERIALIZED);
+-    aml_append(method, aml_store(aml_name("VEND"), id));
+-    aml_append(method, aml_store(aml_name("PRD"), period));
+-    aml_append(method, aml_shiftright(id, aml_int(16), id));
+-    if_ctx = aml_if(aml_lor(aml_equal(id, zero),
+-                            aml_equal(id, aml_int(0xffff))));
+-    {
+-        aml_append(if_ctx, aml_return(zero));
+-    }
+-    aml_append(method, if_ctx);
+-
+-    if_ctx = aml_if(aml_lor(aml_equal(period, zero),
+-                            aml_lgreater(period, aml_int(100000000))));
+-    {
+-        aml_append(if_ctx, aml_return(zero));
+-    }
+-    aml_append(method, if_ctx);
+-
+     aml_append(method, aml_return(aml_int(0x0F)));
+     aml_append(dev, method);
+ 
+@@ -470,6 +441,7 @@
+ 
+ static void build_dbg_aml(Aml *table)
+ {
++     return;//do this once
+     Aml *field;
+     Aml *method;
+     Aml *while_ctx;
+@@ -538,37 +510,6 @@
+ 
+     return dev;
+  }
+-
+-static Aml *build_gsi_link_dev(const char *name, uint8_t uid, uint8_t gsi)
+-{
+-    Aml *dev;
+-    Aml *crs;
+-    Aml *method;
+-    uint32_t irqs;
+-
+-    dev = aml_device("%s", name);
+-    aml_append(dev, aml_name_decl("_HID", aml_eisaid("PNP0C0F")));
+-    aml_append(dev, aml_name_decl("_UID", aml_int(uid)));
+-
+-    crs = aml_resource_template();
+-    irqs = gsi;
+-    aml_append(crs, aml_interrupt(AML_CONSUMER, AML_LEVEL, AML_ACTIVE_HIGH,
+-                                  AML_SHARED, &irqs, 1));
+-    aml_append(dev, aml_name_decl("_PRS", crs));
+-
+-    aml_append(dev, aml_name_decl("_CRS", crs));
+-
+-    /*
+-     * _DIS can be no-op because the interrupt cannot be disabled.
+-     */
+-    method = aml_method("_DIS", 0, AML_NOTSERIALIZED);
+-    aml_append(dev, method);
+-
+-    method = aml_method("_SRS", 1, AML_NOTSERIALIZED);
+-    aml_append(dev, method);
+-
+-    return dev;
+-}
+ 
+ /* _CRS method - get current settings */
+ static Aml *build_iqcr_method(bool is_piix4)
+@@ -668,123 +609,28 @@
+     aml_append(table, sb_scope);
+ }
+ 
+-static void append_q35_prt_entry(Aml *ctx, uint32_t nr, const char *name)
+-{
+-    int i;
+-    int head;
+-    Aml *pkg;
+-    char base = name[3] < 'E' ? 'A' : 'E';
+-    char *s = g_strdup(name);
+-    Aml *a_nr = aml_int((nr << 16) | 0xffff);
+-
+-    assert(strlen(s) == 4);
+-
+-    head = name[3] - base;
+-    for (i = 0; i < 4; i++) {
+-        if (head + i > 3) {
+-            head = i * -1;
+-        }
+-        s[3] = base + head + i;
+-        pkg = aml_package(4);
+-        aml_append(pkg, a_nr);
+-        aml_append(pkg, aml_int(i));
+-        aml_append(pkg, aml_name("%s", s));
+-        aml_append(pkg, aml_int(0));
+-        aml_append(ctx, pkg);
+-    }
+-    g_free(s);
+-}
+-
+-static Aml *build_q35_routing_table(const char *str)
+-{
+-    int i;
+-    Aml *pkg;
+-    char *name = g_strdup_printf("%s ", str);
+-
+-    pkg = aml_package(128);
+-    for (i = 0; i < 0x18; i++) {
+-            name[3] = 'E' + (i & 0x3);
+-            append_q35_prt_entry(pkg, i, name);
+-    }
+-
+-    name[3] = 'E';
+-    append_q35_prt_entry(pkg, 0x18, name);
+-
+-    /* INTA -> PIRQA for slot 25 - 31, see the default value of D<N>IR */
+-    for (i = 0x0019; i < 0x1e; i++) {
+-        name[3] = 'A';
+-        append_q35_prt_entry(pkg, i, name);
+-    }
+-
+-    /* PCIe->PCI bridge. use PIRQ[E-H] */
+-    name[3] = 'E';
+-    append_q35_prt_entry(pkg, 0x1e, name);
+-    name[3] = 'A';
+-    append_q35_prt_entry(pkg, 0x1f, name);
+-
+-    g_free(name);
+-    return pkg;
+-}
+-
+ static void build_q35_pci0_int(Aml *table)
+ {
+-    Aml *method;
+     Aml *sb_scope = aml_scope("_SB");
+     Aml *pci0_scope = aml_scope("PCI0");
+-
+-    /* Zero => PIC mode, One => APIC Mode */
+-    aml_append(table, aml_name_decl("PICF", aml_int(0)));
+-    method = aml_method("_PIC", 1, AML_NOTSERIALIZED);
+-    {
+-        aml_append(method, aml_store(aml_arg(0), aml_name("PICF")));
+-    }
+-    aml_append(table, method);
+-
+-    aml_append(pci0_scope,
+-        aml_name_decl("PRTP", build_q35_routing_table("LNK")));
+-    aml_append(pci0_scope,
+-        aml_name_decl("PRTA", build_q35_routing_table("GSI")));
+-
+-    method = aml_method("_PRT", 0, AML_NOTSERIALIZED);
+-    {
+-        Aml *if_ctx;
+-        Aml *else_ctx;
+-
+-        /* PCI IRQ routing table, example from ACPI 2.0a specification,
+-           section 6.2.8.1 */
+-        /* Note: we provide the same info as the PCI routing
+-           table of the Bochs BIOS */
+-        if_ctx = aml_if(aml_equal(aml_name("PICF"), aml_int(0)));
+-        aml_append(if_ctx, aml_return(aml_name("PRTP")));
+-        aml_append(method, if_ctx);
+-        else_ctx = aml_else();
+-        aml_append(else_ctx, aml_return(aml_name("PRTA")));
+-        aml_append(method, else_ctx);
+-    }
+-    aml_append(pci0_scope, method);
++    Aml *routing = aml_package(128);
++    unsigned slot, pin;
++
++    /* This desktop profile has no PIC-mode or interrupt-link hotplug. */
++    for (slot = 0; slot < 32; slot++) {
++        unsigned base = (slot < 25 || slot == 30) ? 20 : 16;
++        unsigned rotation = slot < 24 ? slot & 3 : 0;
++        for (pin = 0; pin < 4; pin++) {
++            Aml *entry = aml_package(4);
++            aml_append(entry, aml_int((slot << 16) | 0xffff));
++            aml_append(entry, aml_int(pin));
++            aml_append(entry, aml_int(0));
++            aml_append(entry, aml_int(base + ((rotation + pin) & 3)));
++            aml_append(routing, entry);
++        }
++    }
++    aml_append(pci0_scope, aml_name_decl("_PRT", routing));
+     aml_append(sb_scope, pci0_scope);
+-
+-    aml_append(sb_scope, build_irq_status_method());
+-    aml_append(sb_scope, build_iqcr_method(false));
+-
+-    aml_append(sb_scope, build_link_dev("LNKA", 0, aml_name("PRQA")));
+-    aml_append(sb_scope, build_link_dev("LNKB", 1, aml_name("PRQB")));
+-    aml_append(sb_scope, build_link_dev("LNKC", 2, aml_name("PRQC")));
+-    aml_append(sb_scope, build_link_dev("LNKD", 3, aml_name("PRQD")));
+-    aml_append(sb_scope, build_link_dev("LNKE", 4, aml_name("PRQE")));
+-    aml_append(sb_scope, build_link_dev("LNKF", 5, aml_name("PRQF")));
+-    aml_append(sb_scope, build_link_dev("LNKG", 6, aml_name("PRQG")));
+-    aml_append(sb_scope, build_link_dev("LNKH", 7, aml_name("PRQH")));
+-
+-    aml_append(sb_scope, build_gsi_link_dev("GSIA", 0x10, 0x10));
+-    aml_append(sb_scope, build_gsi_link_dev("GSIB", 0x11, 0x11));
+-    aml_append(sb_scope, build_gsi_link_dev("GSIC", 0x12, 0x12));
+-    aml_append(sb_scope, build_gsi_link_dev("GSID", 0x13, 0x13));
+-    aml_append(sb_scope, build_gsi_link_dev("GSIE", 0x14, 0x14));
+-    aml_append(sb_scope, build_gsi_link_dev("GSIF", 0x15, 0x15));
+-    aml_append(sb_scope, build_gsi_link_dev("GSIG", 0x16, 0x16));
+-    aml_append(sb_scope, build_gsi_link_dev("GSIH", 0x17, 0x17));
+-
+     aml_append(table, sb_scope);
+ }
+ 
+@@ -794,7 +640,7 @@
+     Aml *resource_template;
+ 
+     /* DRAM controller */
+-    dev = aml_device("DRAC");
++    dev = aml_device("MCHC");
+     aml_append(dev, aml_name_decl("_HID", aml_string("PNP0C01")));
+ 
+     resource_template = aml_resource_template();
+@@ -870,7 +716,7 @@
+     bool cxl_present = false;
+     int i;
+     VMBusBridge *vmbus_bridge = vmbus_bridge_find();
+-    AcpiTable table = { .sig = "DSDT", .rev = 1, .oem_id = x86ms->oem_id,
++    AcpiTable table = { .sig = "DSDT", .rev = 3, .oem_id = x86ms->oem_id,
+                         .oem_table_id = x86ms->oem_table_id };
+ 
+     assert(!!i440fx != !!q35);
+@@ -881,7 +727,16 @@
+     build_dbg_aml(dsdt);
+     if (i440fx) {
+         sb_scope = aml_scope("_SB");
+-        dev = aml_device("PCI0");
++        aml_append(sb_scope, aml_name_decl("OSYS", aml_int(0x03E8)));
++	Aml *osi = aml_if(aml_equal(aml_call1("_OSI", aml_string("Windows 2012")), aml_int(1)));
++	aml_append(osi, aml_store(aml_int(0x07DC), aml_name("OSYS")));
++	aml_append(sb_scope, osi);
++	osi = aml_if(aml_equal(aml_call1("_OSI",aml_string("Windows 2013")), aml_int(1)));
++	aml_append(osi, aml_store(aml_int(0x07DD), aml_name("OSYS")));
++	aml_append(sb_scope, osi);
++	aml_append(sb_scope, aml_name_decl("_TZ", aml_int(0x03E8)));
++	aml_append(sb_scope, aml_name_decl("_PTS", aml_int(0x03E8)));
++	dev = aml_device("PCI0");
+         aml_append(dev, aml_name_decl("_HID", aml_eisaid("PNP0A03")));
+         aml_append(dev, aml_name_decl("_UID", aml_int(pcmc->pci_root_uid)));
+         aml_append(dev, build_pci_bridge_edsm());
+@@ -894,12 +749,20 @@
+         build_piix4_pci0_int(dsdt);
+     } else if (q35) {
+         sb_scope = aml_scope("_SB");
+-        dev = aml_device("PCI0");
++        aml_append(sb_scope, aml_name_decl("OSYS", aml_int(0x03E8)));
++	Aml *osi = aml_if(aml_equal(aml_call1("_OSI", aml_string("Windows 2012")), aml_int(1)));
++	aml_append(osi, aml_store(aml_int(0x07DC), aml_name("OSYS")));
++	aml_append(sb_scope, osi);
++	osi = aml_if(aml_equal(aml_call1("_OSI",aml_string("Windows 2013")), aml_int(1)));
++	aml_append(osi, aml_store(aml_int(0x07DD), aml_name("OSYS")));
++	aml_append(sb_scope, osi);
++	aml_append(sb_scope, aml_name_decl("_TZ", aml_int(0x03E8)));
++	aml_append(sb_scope, aml_name_decl("_PTS", aml_int(0x03E8)));
++	dev = aml_device("PCI0");
+         aml_append(dev, aml_name_decl("_HID", aml_eisaid("PNP0A08")));
+         aml_append(dev, aml_name_decl("_CID", aml_eisaid("PNP0A03")));
+         aml_append(dev, aml_name_decl("_UID", aml_int(pcmc->pci_root_uid)));
+         aml_append(dev, build_pci_host_bridge_osc_method(!pm->pcihp_bridge_en));
+-        aml_append(dev, build_pci_bridge_edsm());
+         aml_append(sb_scope, dev);
+         if (mcfg_valid) {
+             aml_append(sb_scope, build_q35_dram_controller(&mcfg));
+@@ -909,7 +772,7 @@
+             /* reserve SMI block resources, IO ports 0xB2, 0xB3 */
+             dev = aml_device("PCI0.SMI0");
+             aml_append(dev, aml_name_decl("_HID", aml_eisaid("PNP0A06")));
+-            aml_append(dev, aml_name_decl("_UID", aml_string("SMI resources")));
++            aml_append(dev, aml_name_decl("_UID", aml_string("ICH9 PM control")));
+             crs = aml_resource_template();
+             aml_append(crs,
+                 aml_io(
+@@ -950,7 +813,6 @@
+ 
+     scope =  aml_scope("_GPE");
+     {
+-        aml_append(scope, aml_name_decl("_HID", aml_string("ACPI0006")));
+         if (machine->nvdimms_state->is_enabled) {
+             method = aml_method("_E04", 0, AML_NOTSERIALIZED);
+             aml_append(method, aml_notify(aml_name("\\_SB.NVDR"),
+@@ -1176,7 +1038,7 @@
+     }
+ 
+     pkg = aml_package(4);
+-    aml_append(pkg, aml_int(0)); /* PM1a_CNT.SLP_TYP */
++    aml_append(pkg, aml_int(q35 ? 7 : 0)); /* PM1a_CNT.SLP_TYP: PCH S5 */
+     aml_append(pkg, aml_int(0)); /* PM1b_CNT.SLP_TYP not impl. */
+     aml_append(pkg, aml_int(0)); /* reserved */
+     aml_append(pkg, aml_int(0)); /* reserved */
+@@ -1184,11 +1046,11 @@
+     aml_append(dsdt, scope);
+ 
+     /* create fw_cfg node, unconditionally */
+-    {
++    /*{
+         scope = aml_scope("\\_SB.PCI0");
+         fw_cfg_add_acpi_dsdt(scope, x86ms->fw_cfg);
+         aml_append(dsdt, scope);
+-    }
++    }*/
+ 
+     sb_scope = aml_scope("\\_SB");
+     {
+@@ -1290,7 +1152,7 @@
+ build_hpet(GArray *table_data, BIOSLinker *linker, const char *oem_id,
+            const char *oem_table_id)
+ {
+-    AcpiTable table = { .sig = "HPET", .rev = 1,
++    AcpiTable table = { .sig = "HPET", .rev = 3,
+                         .oem_id = oem_id, .oem_table_id = oem_table_id };
+ 
+     acpi_table_begin(&table, table_data);
+@@ -1365,7 +1227,7 @@
+     const CPUArchIdList *apic_ids = mc->possible_cpu_arch_ids(machine);
+     int nb_numa_nodes = machine->numa_state->num_nodes;
+     NodeInfo *numa_info = machine->numa_state->nodes;
+-    AcpiTable table = { .sig = "SRAT", .rev = 1, .oem_id = x86ms->oem_id,
++    AcpiTable table = { .sig = "SRAT", .rev = 3, .oem_id = x86ms->oem_id,
+                         .oem_table_id = x86ms->oem_table_id };
+ 
+     acpi_table_begin(&table, table_data);
+@@ -1559,7 +1421,7 @@
+     IntelIOMMUState *intel_iommu = INTEL_IOMMU_DEVICE(iommu);
+     GArray *scope_blob = g_array_new(false, true, 1);
+ 
+-    AcpiTable table = { .sig = "DMAR", .rev = 1, .oem_id = oem_id,
++    AcpiTable table = { .sig = "DMAR", .rev = 3, .oem_id = oem_id,
+                         .oem_table_id = oem_table_id };
+ 
+     /*
+@@ -1634,7 +1496,7 @@
+ build_waet(GArray *table_data, BIOSLinker *linker, const char *oem_id,
+            const char *oem_table_id)
+ {
+-    AcpiTable table = { .sig = "WAET", .rev = 1, .oem_id = oem_id,
++    AcpiTable table = { .sig = "WWWT", .rev = 3, .oem_id = oem_id,
+                         .oem_table_id = oem_table_id };
+ 
+     acpi_table_begin(&table, table_data);
+@@ -1753,7 +1615,7 @@
+ {
+     AMDVIState *s = AMD_IOMMU_DEVICE(x86_iommu_get_default());
+     GArray *ivhd_blob = g_array_new(false, true, 1);
+-    AcpiTable table = { .sig = "IVRS", .rev = 1, .oem_id = oem_id,
++    AcpiTable table = { .sig = "IVRS", .rev = 3, .oem_id = oem_id,
+                         .oem_table_id = oem_table_id };
+     uint64_t feature_report;
+ 
+--- a/hw/i386/pc_piix.c
++++ b/hw/i386/pc_piix.c
+@@ -484,7 +484,7 @@
+     pcmc->default_cpu_version = 1;
+ 
+     m->family = "pc_piix";
+-    m->desc = "Standard PC (i440FX + PIIX, 1996)";
++    m->desc = "DELL M4A88TD-Mi440fx";
+     m->default_machine_opts = "firmware=bios-256k.bin";
+     m->default_display = "std";
+     m->default_nic = "e1000";
+--- a/hw/i386/x86.c
++++ b/hw/i386/x86.c
+@@ -71,6 +71,10 @@
+ 
+     init_topo_info(&topo_info, x86ms);
+ 
++    MachineState *ms = MACHINE(x86ms);
++    if (ms->smp.sockets == 1 && ms->smp.cores == 24 && ms->smp.threads == 1 && ms->smp.max_cpus == 24) {
++        return cpu_index < 8 ? cpu_index : cpu_index + 24;
++    }
+     return x86_apicid_from_cpu_idx(&topo_info, cpu_index);
+ }
+ 
+@@ -127,8 +131,11 @@
+         ms->possible_cpus->cpus[i].vcpus_count = 1;
+         ms->possible_cpus->cpus[i].arch_id =
+             x86_cpu_apic_id_from_index(x86ms, i);
+-        x86_topo_ids_from_apicid(ms->possible_cpus->cpus[i].arch_id,
+-                                 &topo_info, &topo_ids);
++        uint32_t topology_id = ms->possible_cpus->cpus[i].arch_id;
++        if (ms->smp.sockets == 1 && ms->smp.cores == 24 && ms->smp.threads == 1 && ms->smp.max_cpus == 24) {
++            topology_id = i;
++        }
++        x86_topo_ids_from_apicid(topology_id, &topo_info, &topo_ids);
+         ms->possible_cpus->cpus[i].props.has_socket_id = true;
+         ms->possible_cpus->cpus[i].props.socket_id = topo_ids.pkg_id;
+         if (ms->smp.dies > 1) {
+@@ -365,7 +372,9 @@
+     x86ms->acpi = ON_OFF_AUTO_AUTO;
+     x86ms->pit = ON_OFF_AUTO_AUTO;
+     x86ms->pic = ON_OFF_AUTO_AUTO;
+-    x86ms->pci_irq_mask = ACPI_BUILD_PCI_IRQS;
++    /* Workstation PCI INTx uses GSIs 16..23; only SCI 9 needs an ISA
++     * level-trigger override. Do not advertise unused legacy IRQs 5/10/11. */
++    x86ms->pci_irq_mask = 1 << 9;
+     x86ms->oem_id = g_strndup(ACPI_BUILD_APPNAME6, 6);
+     x86ms->oem_table_id = g_strndup(ACPI_BUILD_APPNAME8, 8);
+     x86ms->bus_lock_ratelimit = 0;
+--- a/hw/i386/pc.c
++++ b/hw/i386/pc.c
+@@ -77,9 +77,9 @@
+  * depending on QEMU versions up to QEMU 2.4.
+  */
+ #define PC_CPU_MODEL_IDS(v) \
+-    { "qemu32-" TYPE_X86_CPU, "model-id", "QEMU Virtual CPU version " v, },\
+-    { "qemu64-" TYPE_X86_CPU, "model-id", "QEMU Virtual CPU version " v, },\
+-    { "athlon-" TYPE_X86_CPU, "model-id", "QEMU Virtual CPU version " v, },
++    { "qemu32-" TYPE_X86_CPU, "model-id", "CPU version " v, },\
++    { "qemu64-" TYPE_X86_CPU, "model-id", "CPU version " v, },\
++    { "athlon-" TYPE_X86_CPU, "model-id", "CPU version " v, },
+ 
+ GlobalProperty pc_compat_10_0[] = {
+     { TYPE_X86_CPU, "x-consistent-cache", "false" },
+--- a/hw/i386/fw_cfg.c
++++ b/hw/i386/fw_cfg.c
+@@ -75,7 +75,7 @@
+ 
+     if (pcmc->smbios_defaults) {
+         /* These values are guest ABI, do not change */
+-        smbios_set_defaults("QEMU", mc->desc, mc->name);
++        smbios_set_defaults("DELL", mc->desc, mc->name);
+     }
+ 
+     /* tell smbios about cpuid version and features */
+@@ -228,7 +228,7 @@
+     Aml *dev = aml_device("FWCF");
+     Aml *crs = aml_resource_template();
+ 
+-    aml_append(dev, aml_name_decl("_HID", aml_string("QEMU0002")));
++    aml_append(dev, aml_name_decl("_HID", aml_string("DELL0002")));
+ 
+     /* device present, functioning, decoding, not shown in UI */
+     aml_append(dev, aml_name_decl("_STA", aml_int(0xB)));
+--- a/hw/i386/x86-common.c
++++ b/hw/i386/x86-common.c
+@@ -346,11 +346,17 @@
+         topo_ids.core_id = cpu->core_id;
+         topo_ids.smt_id = cpu->thread_id;
+         cpu->apic_id = x86_apicid_from_topo_ids(topo_info, &topo_ids);
++        if (ms->smp.sockets == 1 && ms->smp.cores == 24 && ms->smp.threads == 1 && ms->smp.max_cpus == 24 && cpu->core_id >= 8) {
++            cpu->apic_id += 24;
++        }
+     }
+ 
+     cpu_slot = x86_find_cpu_slot(MACHINE(x86ms), cpu->apic_id, &idx);
+     if (!cpu_slot) {
+-        x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++        x86_topo_ids_from_apicid(
++            (ms->smp.sockets == 1 && ms->smp.cores == 24 && ms->smp.threads == 1 && ms->smp.max_cpus == 24 && cpu->apic_id >= 32 && cpu->apic_id < 48)
++                ? cpu->apic_id - 24 : cpu->apic_id,
++            topo_info, &topo_ids);
+ 
+         error_setg(errp,
+             "Invalid CPU [socket: %u, die: %u, module: %u, core: %u, thread: %u]"
+@@ -373,7 +379,10 @@
+     /* TODO: move socket_id/core_id/thread_id checks into x86_cpu_realizefn()
+      * once -smp refactoring is complete and there will be CPU private
+      * CPUState::nr_cores and CPUState::nr_threads fields instead of globals */
+-    x86_topo_ids_from_apicid(cpu->apic_id, topo_info, &topo_ids);
++    x86_topo_ids_from_apicid(
++            (ms->smp.sockets == 1 && ms->smp.cores == 24 && ms->smp.threads == 1 && ms->smp.max_cpus == 24 && cpu->apic_id >= 32 && cpu->apic_id < 48)
++                ? cpu->apic_id - 24 : cpu->apic_id,
++            topo_info, &topo_ids);
+     if (cpu->socket_id != -1 && cpu->socket_id != topo_ids.pkg_id) {
+         error_setg(errp, "property socket-id: %u doesn't match set apic-id:"
+             " 0x%x (socket-id: %u)", cpu->socket_id, cpu->apic_id,
+--- a/hw/i386/pc_q35.c
++++ b/hw/i386/pc_q35.c
+@@ -316,7 +316,7 @@
+                                               TYPE_ICH9_SMB_DEVICE);
+         pcms->smbus = I2C_BUS(qdev_get_child_bus(DEVICE(smb), "i2c"));
+ 
+-        smbus_eeprom_init(pcms->smbus, 8, NULL, 0);
++        smbus_eeprom_init(pcms->smbus, 4, NULL, 0);
+     }
+ 
+     /* the rest devices to which pci devfn is automatically assigned */
+@@ -356,7 +356,7 @@
+     pcmc->default_cpu_version = 1;
+ 
+     m->family = "pc_q35";
+-    m->desc = "Standard PC (Q35 + ICH9, 2009)";
++    m->desc = "DELL M4A88TD-Mq35";
+     m->units_per_default_bus = 1;
+     m->default_machine_opts = "firmware=bios-256k.bin";
+     m->default_display = "std";
+--- a/hw/display/edid-generate.c
++++ b/hw/display/edid-generate.c
+@@ -394,10 +394,10 @@
+     /* =============== set defaults  =============== */
+ 
+     if (!info->vendor || strlen(info->vendor) != 3) {
+-        info->vendor = "RHT";
++        info->vendor = "DEL";
+     }
+     if (!info->name) {
+-        info->name = "QEMU Monitor";
++        info->name = "DELL Monitor";
+     }
+     if (!info->prefx) {
+         info->prefx = 1280;
+@@ -449,7 +449,7 @@
+     uint16_t vendor_id = ((((info->vendor[0] - '@') & 0x1f) << 10) |
+                           (((info->vendor[1] - '@') & 0x1f) <<  5) |
+                           (((info->vendor[2] - '@') & 0x1f) <<  0));
+-    uint16_t model_nr = 0x1234;
++    uint16_t model_nr = 0xA05F;
+     uint32_t serial_nr = info->serial ? atoi(info->serial) : 0;
+     stw_be_p(edid +  8, vendor_id);
+     stw_le_p(edid + 10, model_nr);
+--- a/pc-bios/s390-ccw/virtio-scsi.h
++++ b/pc-bios/s390-ccw/virtio-scsi.h
+@@ -25,7 +25,7 @@
+ #define VIRTIO_SCSI_S_OK                     0x00
+ #define VIRTIO_SCSI_S_BAD_TARGET             0x03
+ 
+-#define QEMU_CDROM_SIGNATURE "QEMU CD-ROM     "
++#define QEMU_CDROM_SIGNATURE "DELL CD-ROM     "
+ 
+ enum virtio_scsi_vq_id {
+     VR_CONTROL  = 0,
+--- a/pc-bios/optionrom/optionrom.h
++++ b/pc-bios/optionrom/optionrom.h
+@@ -43,7 +43,7 @@
+ #define FW_CFG_DMA_CTL_SELECT  0x08
+ #define FW_CFG_DMA_CTL_WRITE   0x10
+ 
+-#define FW_CFG_DMA_SIGNATURE 0x51454d5520434647ULL /* "QEMU CFG" */
++#define FW_CFG_DMA_SIGNATURE 0x4155535520434647ULL /* "QEMU CFG" */
+ 
+ #define BIOS_CFG_DMA_ADDR_HIGH  0x514
+ #define BIOS_CFG_DMA_ADDR_LOW   0x518
+--- a/block/vvfat.c
++++ b/block/vvfat.c
+@@ -1176,7 +1176,7 @@
+         }
+         memcpy(s->volume_label, label, label_length);
+     } else {
+-        memcpy(s->volume_label, "QEMU VVFAT", 10);
++        memcpy(s->volume_label, "DELL VVFAT", 10);
+     }
+ 
+     if (floppy) {
+--- a/block/vhdx.c
++++ b/block/vhdx.c
+@@ -2020,7 +2020,7 @@
+ 
+     /* The creator field is optional, but may be useful for
+      * debugging / diagnostics */
+-    creator = g_utf8_to_utf16("QEMU v" QEMU_VERSION, -1, NULL,
++    creator = g_utf8_to_utf16("DELL v" QEMU_VERSION, -1, NULL,
+                               &creator_items, NULL);
+     signature = cpu_to_le64(VHDX_FILE_SIGNATURE);
+     ret = blk_co_pwrite(blk, VHDX_FILE_ID_OFFSET, sizeof(signature), &signature,
+--- a/include/hw/ide/ahci.h
++++ b/include/hw/ide/ahci.h
+@@ -44,6 +44,7 @@
+     unsigned idp_offset;    /* Offset of index in I/O port space */
+     uint32_t idp_index;     /* Current IDP index */
+     uint32_t ports;
++    bool z790;
+     qemu_irq irq;
+     AddressSpace *as;
+ } AHCIState;
+--- a/include/hw/usb/xhci.h
++++ b/include/hw/usb/xhci.h
+@@ -6,7 +6,7 @@
+ #define TYPE_QEMU_XHCI "qemu-xhci"
+ #define TYPE_XHCI_SYSBUS "sysbus-xhci"
+ 
+-#define XHCI_MAXPORTS_2 15
++#define XHCI_MAXPORTS_2 16
+ #define XHCI_MAXPORTS_3 15
+ 
+ #define XHCI_MAXPORTS (XHCI_MAXPORTS_2 + XHCI_MAXPORTS_3)
+--- a/include/hw/pci/pci_ids.h
++++ b/include/hw/pci/pci_ids.h
+@@ -259,9 +259,9 @@
+ #define PCI_DEVICE_ID_INTEL_ICH9_3       0x2913
+ #define PCI_DEVICE_ID_INTEL_ICH9_4       0x2914
+ #define PCI_DEVICE_ID_INTEL_ICH9_5       0x2919
+-#define PCI_DEVICE_ID_INTEL_ICH9_6       0x2930
++#define PCI_DEVICE_ID_INTEL_ICH9_6       0x7a23
+ #define PCI_DEVICE_ID_INTEL_ICH9_7       0x2916
+-#define PCI_DEVICE_ID_INTEL_ICH9_8       0x2918
++#define PCI_DEVICE_ID_INTEL_ICH9_8       0x7a04
+ 
+ #define PCI_DEVICE_ID_INTEL_82801I_UHCI1 0x2934
+ #define PCI_DEVICE_ID_INTEL_82801I_UHCI2 0x2935
+--- a/include/hw/acpi/aml-build.h
++++ b/include/hw/acpi/aml-build.h
+@@ -4,8 +4,8 @@
+ #include "hw/acpi/acpi-defs.h"
+ #include "hw/acpi/bios-linker-loader.h"
+ 
+-#define ACPI_BUILD_APPNAME6 "BOCHS "
+-#define ACPI_BUILD_APPNAME8 "BXPC    "
++#define ACPI_BUILD_APPNAME6 "ALASKA"
++#define ACPI_BUILD_APPNAME8 "MS7E07  "
+ 
+ #define ACPI_BUILD_TABLE_FILE "etc/acpi/tables"
+ #define ACPI_BUILD_RSDP_FILE "etc/acpi/rsdp"
+--- a/include/hw/southbridge/ich9.h
++++ b/include/hw/southbridge/ich9.h
+@@ -128,7 +128,7 @@
+ #define ICH9_LPC_DEV                            31
+ #define ICH9_LPC_FUNC                           0
+ 
+-#define ICH9_A2_LPC_REVISION                    0x2
++#define ICH9_A2_LPC_REVISION                    0x11
+ #define ICH9_LPC_NB_PIRQS                       8       /* PCI A-H */
+ 
+ #define ICH9_LPC_PMBASE                         0x40
+@@ -177,8 +177,8 @@
+ #define ICH9_GPIO_GSI "gsi"
+ 
+ /* D31:F2 SATA Controller #1 */
+-#define ICH9_SATA1_DEV                          31
+-#define ICH9_SATA1_FUNC                         2
++#define ICH9_SATA1_DEV                          23
++#define ICH9_SATA1_FUNC                         0
+ 
+ /* D31:F0 power management I/O registers
+    offset from the address ICH9_LPC_PMBASE */
+@@ -213,7 +213,7 @@
+ /* D31:F3 SMBus controller */
+ #define TYPE_ICH9_SMB_DEVICE "ICH9-SMB"
+ 
+-#define ICH9_A2_SMB_REVISION                    0x02
++#define ICH9_A2_SMB_REVISION                    0x11
+ #define ICH9_SMB_PI                             0x00
+ 
+ #define ICH9_SMB_SMBMBAR0                       0x10
+@@ -231,7 +231,7 @@
+ 
+ /* D31:F3 SMBus I/O and memory mapped I/O registers */
+ #define ICH9_SMB_DEV                            31
+-#define ICH9_SMB_FUNC                           3
++#define ICH9_SMB_FUNC                           4
+ 
+ #define ICH9_SMB_HST_STS                        0x00
+ #define ICH9_SMB_HST_CNT                        0x02
+--- a/include/hw/usb.h
++++ b/include/hw/usb.h
+@@ -56,11 +56,15 @@
+ #define USB_SPEED_FULL  1
+ #define USB_SPEED_HIGH  2
+ #define USB_SPEED_SUPER 3
++#define USB_SPEED_SUPER_PLUS 4
++#define USB_SPEED_SUPER_PLUS_2X2 5
+ 
+ #define USB_SPEED_MASK_LOW   (1 << USB_SPEED_LOW)
+ #define USB_SPEED_MASK_FULL  (1 << USB_SPEED_FULL)
+ #define USB_SPEED_MASK_HIGH  (1 << USB_SPEED_HIGH)
+ #define USB_SPEED_MASK_SUPER (1 << USB_SPEED_SUPER)
++#define USB_SPEED_MASK_SUPER_PLUS (1 << USB_SPEED_SUPER_PLUS)
++#define USB_SPEED_MASK_SUPER_PLUS_2X2 (1 << USB_SPEED_SUPER_PLUS_2X2)
+ 
+ #define USB_STATE_NOTATTACHED 0
+ #define USB_STATE_ATTACHED    1
+@@ -239,6 +243,7 @@
+     int speed;
+     /* Supported speeds, not in info because it may be variable (hostdevs) */
+     int speedmask;
++    uint32_t super_speed_mbps; /* device capability; negotiated with port */
+     uint8_t addr;
+     char product_desc[32];
+     int auto_attach;
+@@ -367,6 +372,7 @@
+ struct USBPort {
+     USBDevice *dev;
+     int speedmask;
++    uint32_t super_speed_mbps; /* device capability; negotiated with port */
+     int hubcount;
+     char path[16];
+     USBPortOps *ops;
+--- a/include/standard-headers/linux/qemu_fw_cfg.h
++++ b/include/standard-headers/linux/qemu_fw_cfg.h
+@@ -4,7 +4,7 @@
+ 
+ #include "standard-headers/linux/types.h"
+ 
+-#define FW_CFG_ACPI_DEVICE_ID	"QEMU0002"
++#define FW_CFG_ACPI_DEVICE_ID	"DELL0002"
+ 
+ /* selector key values for "well-known" fw_cfg entries */
+ #define FW_CFG_SIGNATURE	0x00
+@@ -71,7 +71,7 @@
+ #define FW_CFG_DMA_CTL_SELECT	0x08
+ #define FW_CFG_DMA_CTL_WRITE	0x10
+ 
+-#define FW_CFG_DMA_SIGNATURE    0x51454d5520434647ULL /* "QEMU CFG" */
++#define FW_CFG_DMA_SIGNATURE    0x4155535520434647ULL /* "QEMU CFG" */
+ 
+ /* Control as first field allows for different structures selected by this
+  * field, which might be useful in the future
+--- a/contrib/vhost-user-gpu/vhost-user-gpu.c
++++ b/contrib/vhost-user-gpu/vhost-user-gpu.c
+@@ -1254,7 +1254,7 @@
+     QTAILQ_INIT(&g.reslist);
+     QTAILQ_INIT(&g.fenceq);
+ 
+-    context = g_option_context_new("QEMU vhost-user-gpu");
++    context = g_option_context_new("DELL vhost-user-gpu");
+     g_option_context_add_main_entries(context, entries, NULL);
+     if (!g_option_context_parse(context, &argc, &argv, &error)) {
+         g_printerr("Option parsing failed: %s\n", error->message);
+--- a/migration/rdma.c
++++ b/migration/rdma.c
+@@ -220,7 +220,7 @@
+         [RDMA_CONTROL_NONE] = "NONE",
+         [RDMA_CONTROL_ERROR] = "ERROR",
+         [RDMA_CONTROL_READY] = "READY",
+-        [RDMA_CONTROL_QEMU_FILE] = "QEMU FILE",
++        [RDMA_CONTROL_QEMU_FILE] = "DELL FILE",
+         [RDMA_CONTROL_RAM_BLOCKS_REQUEST] = "RAM BLOCKS REQUEST",
+         [RDMA_CONTROL_RAM_BLOCKS_RESULT] = "RAM BLOCKS RESULT",
+         [RDMA_CONTROL_COMPRESS] = "COMPRESS",
+--- a/chardev/msmouse.c
++++ b/chardev/msmouse.c
+@@ -172,7 +172,7 @@
+ }
+ 
+ static const QemuInputHandler msmouse_handler = {
+-    .name  = "QEMU Microsoft Mouse",
++    .name  = "DELL Microsoft Mouse",
+     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_REL,
+     .event = msmouse_input_event,
+     .sync  = msmouse_input_sync,
+--- a/chardev/wctablet.c
++++ b/chardev/wctablet.c
+@@ -179,7 +179,7 @@
+ }
+ 
+ static const QemuInputHandler wctablet_handler = {
+-    .name  = "QEMU Wacom Pen Tablet",
++    .name  = "DELL Wacom Pen Tablet",
+     .mask  = INPUT_EVENT_MASK_BTN | INPUT_EVENT_MASK_ABS,
+     .event = wctablet_input_event,
+     .sync  = wctablet_input_sync,
+--- a/target/s390x/tcg/misc_helper.c
++++ b/target/s390x/tcg/misc_helper.c
+@@ -331,18 +331,18 @@
+             /* Basic Machine Configuration */
+             char type[5] = {};
+ 
+-            ebcdic_put(sysib.sysib_111.manuf, "QEMU            ", 16);
++            ebcdic_put(sysib.sysib_111.manuf, "DELL            ", 16);
+             /* same as machine type number in STORE CPU ID, but in EBCDIC */
+             snprintf(type, ARRAY_SIZE(type), "%X", cpu->model->def->type);
+             ebcdic_put(sysib.sysib_111.type, type, 4);
+             /* model number (not stored in STORE CPU ID for z/Architecture) */
+-            ebcdic_put(sysib.sysib_111.model, "QEMU            ", 16);
+-            ebcdic_put(sysib.sysib_111.sequence, "QEMU            ", 16);
+-            ebcdic_put(sysib.sysib_111.plant, "QEMU", 4);
++            ebcdic_put(sysib.sysib_111.model, "DELL            ", 16);
++            ebcdic_put(sysib.sysib_111.sequence, "DELL            ", 16);
++            ebcdic_put(sysib.sysib_111.plant, "DELL", 4);
+         } else if ((sel1 == 2) && (sel2 == 1)) {
+             /* Basic Machine CPU */
+-            ebcdic_put(sysib.sysib_121.sequence, "QEMUQEMUQEMUQEMU", 16);
+-            ebcdic_put(sysib.sysib_121.plant, "QEMU", 4);
++            ebcdic_put(sysib.sysib_121.sequence, "ASUSASUSASUSASUS", 16);
++            ebcdic_put(sysib.sysib_121.plant, "DELL", 4);
+             sysib.sysib_121.cpu_addr = cpu_to_be16(env->core_id);
+         } else if ((sel1 == 2) && (sel2 == 2)) {
+             /* Basic Machine CPUs */
+@@ -357,8 +357,8 @@
+     case STSI_R0_FC_LEVEL_2:
+         if ((sel1 == 2) && (sel2 == 1)) {
+             /* LPAR CPU */
+-            ebcdic_put(sysib.sysib_221.sequence, "QEMUQEMUQEMUQEMU", 16);
+-            ebcdic_put(sysib.sysib_221.plant, "QEMU", 4);
++            ebcdic_put(sysib.sysib_221.sequence, "ASUSASUSASUSASUS", 16);
++            ebcdic_put(sysib.sysib_221.plant, "DELL", 4);
+             sysib.sysib_221.cpu_addr = cpu_to_be16(env->core_id);
+         } else if ((sel1 == 2) && (sel2 == 2)) {
+             /* LPAR CPUs */
+@@ -366,7 +366,7 @@
+             sysib.sysib_222.total_cpus = cpu_to_be16(total_cpus);
+             sysib.sysib_222.conf_cpus = cpu_to_be16(conf_cpus);
+             sysib.sysib_222.reserved_cpus = cpu_to_be16(reserved_cpus);
+-            ebcdic_put(sysib.sysib_222.name, "QEMU    ", 8);
++            ebcdic_put(sysib.sysib_222.name, "DELL    ", 8);
+             sysib.sysib_222.caf = cpu_to_be32(1000);
+             sysib.sysib_222.dedicated_cpus = cpu_to_be16(conf_cpus);
+         } else {
+@@ -382,7 +382,7 @@
+             sysib.sysib_322.vm[0].reserved_cpus = cpu_to_be16(reserved_cpus);
+             sysib.sysib_322.vm[0].caf = cpu_to_be32(1000);
+             /* Linux kernel uses this to distinguish us from z/VM */
+-            ebcdic_put(sysib.sysib_322.vm[0].cpi, "KVM/Linux       ", 16);
++            ebcdic_put(sysib.sysib_322.vm[0].cpi, "ATX/Linux       ", 16);
+             sysib.sysib_322.vm[0].ext_name_encoding = 2; /* UTF-8 */
+ 
+             /* If our VM has a name, use the real name */
+--- a/target/i386/kvm/kvm.c
++++ b/target/i386/kvm/kvm.c
+@@ -2249,7 +2249,7 @@
+         abort();
+ #endif
+     } else if (cpu->expose_kvm) {
+-        memcpy(signature, "KVMKVMKVM\0\0\0", 12);
++        memcpy(signature, "\1\0\0\0\0\0\0\0\0\0\0\0", 12);
+         c = &cpuid_data.entries[cpuid_i++];
+         c->function = KVM_CPUID_SIGNATURE | kvm_base;
+         c->eax = KVM_CPUID_FEATURES | kvm_base;
+--- a/target/i386/cpu.c
++++ b/target/i386/cpu.c
+@@ -6745,7 +6745,7 @@
+     }
+     if (!env->cpuid_model[0]) {
+         object_property_set_str(OBJECT(cpu), "model-id",
+-                                "QEMU TCG CPU version " QEMU_HW_VERSION,
++                                "TCG CPU version " QEMU_HW_VERSION,
+                                 &error_abort);
+     }
+ }
+@@ -7856,6 +7856,67 @@
+ 
+     threads_per_pkg = x86_threads_per_pkg(topo_info);
+ 
++    /* EMU workstation profile: only the explicitly selected Raptor Lake ID.
++     * The execution features remain constrained to the physical KVM host.
++     * Cache enumeration and core-type leaves describe the populated 8P+16E
++     * device topology with HT disabled, independent of the host Xeon caches.
++     */
++    if (env->cpuid_version == 0x000b0671) {
++        bool pcore = cpu->core_id < 8;
++        if (index == 2) {
++            *eax = 0x00feff01; *ebx = *ecx = *edx = 0;
++            return;
++        }
++        if (index == 4) {
++            uint32_t ways, sets, sharing, type, level;
++            switch (count) {
++            case 0: type = 1; level = 1; ways = pcore ? 12 : 8;
++                    sets = 64; sharing = 1; break;
++            case 1: type = 2; level = 1; ways = 8;
++                    sets = pcore ? 64 : 128; sharing = 1; break;
++            case 2: type = 3; level = 2; ways = 16;
++                    sets = pcore ? 2048 : 4096;
++                    sharing = pcore ? 1 : 4; break;
++            case 3: type = 3; level = 3; ways = 12;
++                    sets = 49152; sharing = 64; break;
++            default: *eax = *ebx = *ecx = *edx = 0; return;
++            }
++            *eax = type | (level << 5) | (1 << 8) |
++                   ((sharing - 1) << 14) | (23U << 26);
++            *ebx = 63 | ((ways - 1) << 22);
++            *ecx = sets - 1;
++            *edx = level == 3 ? 4 : 0;
++            return;
++        }
++        if (index == 0xB || index == 0x1F) {
++            *ecx = count & 0xff; *edx = cpu->apic_id;
++            if (count == 0) {
++                *eax = 0; *ebx = 1; *ecx |= 1 << 8;
++            } else if (count == 1) {
++                *eax = 6; *ebx = 24; *ecx |= 2 << 8;
++            } else {
++                *eax = *ebx = 0;
++            }
++            return;
++        }
++        if (index == 0x1A) {
++            *eax = (pcore ? 0x40U : 0x20U) << 24;
++            *ebx = *ecx = *edx = 0;
++            return;
++        }
++        if (index == 0x16) {
++            *eax = pcore ? 3000 : 2200;
++            *ebx = pcore ? 5800 : 4300;
++            *ecx = 100; *edx = 0;
++            return;
++        }
++        if (index == 0x80000006) {
++            *eax = *ebx = *edx = 0;
++            *ecx = ((pcore ? 2048U : 4096U) << 16) | (8 << 12) | 64;
++            return;
++        }
++    }
++
+     /* Calculate & apply limits for different index ranges */
+     if (index >= 0xC0000000) {
+         limit = env->cpuid_xlevel2;
+@@ -7900,7 +7961,8 @@
+              * logical processors per package.
+              */
+             if ((IS_INTEL_CPU(env) || IS_ZHAOXIN_CPU(env))) {
+-                num = 1 << apicid_pkg_offset(topo_info);
++                num = env->cpuid_version == 0x000b0671 ? 64 :
++                      1 << apicid_pkg_offset(topo_info);
+             } else {
+                 num = threads_per_pkg;
+             }
+@@ -8026,7 +8088,8 @@
+             if ((*ecx & CPUID_7_0_ECX_PKU) && env->cr[4] & CR4_PKE_MASK) {
+                 *ecx |= CPUID_7_0_ECX_OSPKE;
+             }
+-            *edx = env->features[FEAT_7_0_EDX]; /* Feature flags */
++            *edx = env->features[FEAT_7_0_EDX];
++        if (env->cpuid_version == 0x000b0671) { *edx |= 1U << 15; } /* Feature flags */
+         } else if (count == 1) {
+             *eax = env->features[FEAT_7_1_EAX];
+             *ecx = env->features[FEAT_7_1_ECX];
+@@ -9171,7 +9234,7 @@
+ 
+     /* Hyper-V vendor id */
+     if (!cpu->hyperv_vendor) {
+-        object_property_set_str(OBJECT(cpu), "hv-vendor-id", "Microsoft Hv",
++        object_property_set_str(OBJECT(cpu), "hv-vendor-id", "GenuineIntel",
+                                 &error_abort);
+     }
+     len = strlen(cpu->hyperv_vendor);
+--- /dev/null
++++ b/hw/misc/z790-me.c
+@@ -0,0 +1,193 @@
++/* HECI transport and a bounded MKHI service model, SPDX-License-Identifier: GPL-2.0-or-later.
++ * This executes a protocol model, not proprietary CSME firmware. PTT, AMT,
++ * Boot Guard attestation, provisioning, updates and cryptographic services
++ * are deliberately not advertised. The version comes from the BIOS manifest.
++ */
++#include "qemu/osdep.h"
++#include "qemu/module.h"
++#include "qemu/bswap.h"
++#include "hw/pci/pci.h"
++#include "hw/pci/pci_device.h"
++#include "hw/pci/msi.h"
++#include "hw/qdev-properties.h"
++#include "migration/vmstate.h"
++#include "qapi/error.h"
++#include "qemu/timer.h"
++#include "qom/object.h"
++#define TYPE_Z790_ME "z790-me"
++OBJECT_DECLARE_SIMPLE_TYPE(Z790MEState,Z790_ME)
++struct Z790MEState {
++    PCIDevice parent_obj;
++    MemoryRegion mmio;
++    QEMUTimer *reset_timer;
++    char *image;
++    uint32_t hcsr,host[256],me[256];
++    uint8_t hwp,hrp,mwp,mrp;
++    uint8_t pending[256][512];
++    uint16_t pending_len[256],version[4];
++    uint8_t host_id;
++    bool connected,ready;
++};
++static const uint8_t mkhi_uuid[16]={0x84,0x35,0x21,0x55,0x29,0x9a,0x16,0x49,0xba,0xdf,0x0f,0xb7,0xed,0x68,0x2a,0xeb};
++static void irq_update(Z790MEState *s)
++{
++    PCIDevice *d=PCI_DEVICE(s);
++    bool level=(s->hcsr&3)==3;
++    if(msi_enabled(d)){
++        pci_set_irq(d,0);
++        if(level)msi_notify(d,0);
++    }else pci_set_irq(d,level);
++}
++static void signal_irq(Z790MEState *s){s->hcsr|=2;irq_update(s);}
++static void reply(Z790MEState *s,uint8_t me,uint8_t host,const uint8_t *data,size_t n)
++{
++    unsigned words=(n+3)/4;
++    if(words+1>128-(uint8_t)(s->mwp-s->mrp))return;
++    s->me[s->mwp++%128]=me|((uint32_t)host<<8)|((uint32_t)n<<16)|0x80000000u;
++    for(unsigned i=0;i<words;i++){
++        uint32_t v=0;
++        for(unsigned b=0;b<4&&4*i+b<n;b++)v|=(uint32_t)data[4*i+b]<<(8*b);
++        s->me[s->mwp++%128]=v;
++    }
++    signal_irq(s);
++}
++static void flow(Z790MEState *s,uint8_t host)
++{
++    uint8_t f[8]={8,7,host,0};reply(s,0,0,f,8);
++}
++static void mkhi(Z790MEState *s,uint8_t host,const uint8_t *data,size_t n)
++{
++    if(n<4)return;
++    uint8_t *r=s->pending[host];memset(r,0,512);
++    r[0]=data[0];r[1]=data[1]|0x80;
++    size_t len=4;
++    if(data[0]==0xff && (data[1]&0x7f)==2){
++        for(int i=0;i<1;i++){
++            stw_le_p(r+4+8*i,s->version[1]);r[6+8*i]=s->version[0];
++            stw_le_p(r+8+8*i,s->version[3]);stw_le_p(r+10+8*i,s->version[2]);
++        }
++        len=12;
++    }else if(data[0]==3 && (data[1]&0x7f)==6){
++        /* OS version notification is consumed, no secure service implied. */
++    }else r[3]=0x8d; /* Not supported; never synthesize a security success. */
++    s->pending_len[host]=len;flow(s,host);
++}
++static void dispatch(Z790MEState *s,uint8_t me,uint8_t host,uint8_t *d,size_t n)
++{
++    if(me==7){if(s->connected&&host==s->host_id)mkhi(s,host,d,n);return;}
++    if(me||host||!n)return;
++    uint8_t r[64]={0};r[0]=d[0]|0x80;
++    switch(d[0]){
++    case 1:r[1]=0;r[2]=0;r[3]=2;reply(s,0,0,r,4);break; /* HBM 2.0 subset */
++    case 2:reply(s,0,0,r,4);break;
++    case 4:r[4]=0x80;reply(s,0,0,r,36);break;
++    case 5:
++        if(n<2)return;
++        r[1]=d[1];r[2]=d[1]==7?0:1;
++        memcpy(r+4,mkhi_uuid,16);r[20]=1;r[21]=1;
++        stl_le_p(r+24,256);reply(s,0,0,r,28);break;
++    case 6:
++        if(n<3)return;
++        r[1]=d[1];r[2]=d[2];r[3]=d[1]==7?0:1;
++        s->connected=d[1]==7;s->host_id=d[2];
++        reply(s,0,0,r,4);if(s->connected)flow(s,d[2]);break;
++    case 7:
++        if(n<3)return;
++        r[1]=d[1];r[2]=d[2];s->connected=false;
++        s->pending_len[d[2]]=0;reply(s,0,0,r,4);break;
++    case 8:
++        if(n<3)return;
++        if(s->pending_len[d[2]]){
++            reply(s,7,d[2],s->pending[d[2]],s->pending_len[d[2]]);
++            s->pending_len[d[2]]=0;
++        }break;
++    default:r[3]=5;reply(s,0,0,r,4);break;
++    }
++}
++static void consume(Z790MEState *s)
++{
++    while(s->hrp!=s->hwp){
++        uint32_t h=s->host[s->hrp%128];unsigned n=(h>>16)&511,words=(n+3)/4;
++        if((uint8_t)(s->hwp-s->hrp)<words+1)break;
++        s->hrp++;uint8_t d[512]={0};
++        for(unsigned i=0;i<words;i++)stl_le_p(d+4*i,s->host[s->hrp++%128]);
++        dispatch(s,h&255,(h>>8)&255,d,n);
++    }
++    signal_irq(s);
++}
++static void ready_timer(void *opaque)
++{
++    Z790MEState *s=opaque;s->ready=true;signal_irq(s);
++}
++static uint64_t read_reg(void *opaque,hwaddr addr,unsigned size)
++{
++    Z790MEState *s=opaque;
++    switch(addr){
++    case 4:return 0x80000000u|((uint32_t)s->hwp<<16)|((uint32_t)s->hrp<<8)|s->hcsr;
++    case 8:if(s->mrp!=s->mwp)return s->me[s->mrp++%128];return 0;
++    case 12:return 0x80000000u|((uint32_t)s->mwp<<16)|((uint32_t)s->mrp<<8)|(s->ready?8:0);
++    case 0x30:return 0; /* D0i3 unavailable */
++    default:return 0;
++    }
++}
++static void write_reg(void *opaque,hwaddr addr,uint64_t value,unsigned size)
++{
++    Z790MEState *s=opaque;uint32_t v=value;
++    if(addr==0){if((uint8_t)(s->hwp-s->hrp)<128)s->host[s->hwp++%128]=v;return;}
++    if(addr!=4)return;
++    bool reset=(v&16)&&!(s->hcsr&16);
++    uint32_t status=(s->hcsr&0x42)&~(v&0x42);
++    s->hcsr=(v&0x39)|status;
++    if(reset){
++        s->hcsr&=~8;s->hwp=s->hrp=s->mwp=s->mrp=0;s->ready=false;s->connected=false;
++        memset(s->pending_len,0,sizeof(s->pending_len));
++        timer_mod(s->reset_timer,qemu_clock_get_ns(QEMU_CLOCK_VIRTUAL)+1000000);
++    }else if((v&4)&&s->ready&&(v&8))consume(s);
++    irq_update(s);
++}
++static const MemoryRegionOps ops={.read=read_reg,.write=write_reg,
++    .endianness=DEVICE_LITTLE_ENDIAN,.valid={.min_access_size=4,.max_access_size=4}};
++static void realize(PCIDevice *dev,Error **errp)
++{
++    Z790MEState *s=Z790_ME(dev);gchar *b=NULL;gsize n=0;GError *e=NULL;
++    if(!s->image||!g_file_get_contents(s->image,&b,&n,&e)){
++        error_setg(errp,"ME manifest BIOS unavailable");g_clear_error(&e);return;
++    }
++    bool found=false;
++    for(size_t i=28;i+16<n;i++)if(!memcmp(b+i,"$MN2",4)&&lduw_le_p(b+i+8)==16&&lduw_le_p(b+i+10)==1){
++        for(int j=0;j<4;j++)s->version[j]=lduw_le_p(b+i+8+2*j);
++        found=true;break;
++    }
++    g_free(b);if(!found){error_setg(errp,"No CSME 16.1 manifest in BIOS");return;}
++    pci_set_word(dev->config+PCI_SUBSYSTEM_VENDOR_ID,0x1462);
++    pci_set_word(dev->config+PCI_SUBSYSTEM_ID,0x7e07);
++    pci_set_long(dev->config+0x60,0x00000020); /* consumer H SKU, not IGN/SPS */
++    pci_set_long(dev->config+0x40,0x00000245); /* normal, initialized, HECI service */
++    dev->config[PCI_INTERRUPT_PIN]=1;
++    if(msi_init(dev,0x80,1,true,false,errp)<0)return;
++    memory_region_init_io(&s->mmio,OBJECT(s),&ops,s,"z790-heci",4096);
++    pci_register_bar(dev,0,PCI_BASE_ADDRESS_MEM_TYPE_64,&s->mmio);
++    s->reset_timer=timer_new_ns(QEMU_CLOCK_VIRTUAL,ready_timer,s);s->ready=true;
++}
++static void reset(DeviceState *dev)
++{
++    Z790MEState *s=Z790_ME(dev);
++    timer_del(s->reset_timer);s->hcsr=0;s->hwp=s->hrp=s->mwp=s->mrp=0;
++    s->connected=false;s->ready=true;memset(s->pending_len,0,sizeof(s->pending_len));
++    irq_update(s);
++}
++static void exit_dev(PCIDevice *d){timer_free(Z790_ME(d)->reset_timer);msi_uninit(d);}
++static const Property properties[]={DEFINE_PROP_STRING("image",Z790MEState,image)};
++static const VMStateDescription vmstate={.name=TYPE_Z790_ME,.unmigratable=1};
++static void class_init(ObjectClass *oc,const void *data)
++{
++    PCIDeviceClass *k=PCI_DEVICE_CLASS(oc);DeviceClass *dc=DEVICE_CLASS(oc);
++    k->vendor_id=0x8086;k->device_id=0x7a68;k->revision=0x11;k->class_id=0x0780;
++    k->realize=realize;k->exit=exit_dev;dc->desc="Intel Z790 HECI transport";
++    device_class_set_legacy_reset(dc,reset);
++    dc->vmsd=&vmstate;device_class_set_props(dc,properties);
++}
++static const TypeInfo info={.name=TYPE_Z790_ME,.parent=TYPE_PCI_DEVICE,
++    .instance_size=sizeof(Z790MEState),.class_init=class_init,
++    .interfaces=(InterfaceInfo[]){{INTERFACE_CONVENTIONAL_PCI_DEVICE},{}}};
++static void register_types(void){type_register_static(&info);}type_init(register_types)
+--- /dev/null
++++ b/hw/misc/z790-serialio.c
+@@ -0,0 +1,178 @@
++/* Intel LPSS PIO functional subset, SPDX-License-Identifier: GPL-2.0-or-later.
++ * Native DesignWare I2C, 16550-compatible UART and LPSS SSP registers.
++ * iDMA is explicitly absent; UART uses the existing QEMU serial engine.
++ */
++#include "qemu/osdep.h"
++#include "qemu/module.h"
++#include "hw/pci/pci.h"
++#include "hw/irq.h"
++#include "hw/pci/pci_device.h"
++#include "hw/char/serial.h"
++#include "hw/i2c/i2c.h"
++#include "hw/ssi/ssi.h"
++#include "hw/qdev-properties.h"
++#include "migration/vmstate.h"
++#include "qom/object.h"
++#define TYPE_Z790_LPSS "z790-lpss"
++OBJECT_DECLARE_SIMPLE_TYPE(Z790LPSSState,Z790_LPSS)
++struct Z790LPSSState {
++    PCIDevice parent_obj;
++    MemoryRegion mmio;
++    SerialState serial;
++    I2CBus *i2c;
++    SSIBus *spi;
++    uint32_t regs[1024],fifo[64];
++    unsigned kind,rp,wp,count;
++    bool active,receive;
++};
++static uint32_t i2c_raw(Z790LPSSState *s)
++{
++    if(!(s->regs[0x6c/4]&1))return 0;
++    return s->regs[0x34/4]|16|(s->count>s->regs[0x38/4]?4:0);
++}
++static uint32_t spi_status(Z790LPSSState *s)
++{
++    return 4|32|(s->count?8|64|((MIN(s->count,16)-1)<<12):0);
++}
++static void irq_update(Z790LPSSState *s)
++{
++    bool level=false;
++    if(s->kind==0)level=(i2c_raw(s)&s->regs[0x30/4])!=0;
++    if(s->kind==2 && (s->regs[0]&128))
++        level=((s->regs[1]&1)&&s->count)||((s->regs[1]&2)&&s->count<64);
++    if(s->kind!=1)pci_set_irq(PCI_DEVICE(s),level);
++}
++static uint64_t read_reg(void *opaque,hwaddr a,unsigned size)
++{
++    Z790LPSSState *s=opaque;uint32_t v=0;
++    if(s->kind==1&&a<32)return serial_io_ops.read(&s->serial,a>>2,1);
++    if(a==0x2fc)return 0x100|(s->kind<<4)|(s->kind==2?0x600:0);
++    if(s->kind==1&&a==0x7c)return 6;
++    if(s->kind==1&&a==0xc0)return 0; /* fractional divisor not implemented */
++    if(s->kind==0){
++        switch(a){
++        case 0x10:
++            if(s->count){v=s->fifo[s->rp++%64];s->count--;}
++            irq_update(s);return v;
++        case 0x2c:return i2c_raw(s)&s->regs[0x30/4];
++        case 0x34:return i2c_raw(s);
++        case 0x40:v=i2c_raw(s);s->regs[0x34/4]=0;s->regs[0x80/4]=0;irq_update(s);return v;
++        case 0x54:v=s->regs[0x80/4];s->regs[0x34/4]&=~64;s->regs[0x80/4]=0;irq_update(s);return v;
++        case 0x60:v=s->regs[0x34/4]&512;s->regs[0x34/4]&=~512;irq_update(s);return v;
++        case 0x70:return 6|(s->count?8:0)|(s->active?0x21:0);
++        case 0x74:return 0;
++        case 0x78:return s->count;
++        case 0x9c:return s->regs[0x6c/4]&1;
++        case 0xf4:return 0x003f3f2e; /* 64-entry FIFOs, fast speed, 32-bit APB */
++        case 0xf8:return 0x3131312a;
++        case 0xfc:return 0x44570140;
++        }
++    }else if(s->kind==2){
++        if(a==8)return spi_status(s);
++        if(a==0x10){if(s->count){v=s->fifo[s->rp++%64];s->count--;}irq_update(s);return v;}
++    }
++    return s->regs[a>>2];
++}
++static void i2c_command(Z790LPSSState *s,uint32_t v)
++{
++    if(!(s->regs[0x6c/4]&1))return;
++    bool rx=v&256;
++    if(!s->active||rx!=s->receive||(v&1024)){
++        if(s->active)i2c_end_transfer(s->i2c);
++        int result=i2c_start_transfer(s->i2c,s->regs[1]&1023,rx);
++        s->active=result==0;s->receive=rx;
++        if(result){s->regs[0x80/4]=1;s->regs[0x34/4]|=64|512;irq_update(s);return;}
++    }
++    if(rx){
++        if(s->count<64){s->fifo[s->wp++%64]=i2c_recv(s->i2c);s->count++;}
++        else s->regs[0x34/4]|=2;
++    }else if(i2c_send(s->i2c,v&255)){
++        s->regs[0x80/4]=8;s->regs[0x34/4]|=64;
++    }
++    if(v&512){i2c_end_transfer(s->i2c);s->active=false;s->regs[0x34/4]|=512;}
++    irq_update(s);
++}
++static void write_reg(void *opaque,hwaddr a,uint64_t value,unsigned size)
++{
++    Z790LPSSState *s=opaque;uint32_t v=value;
++    if(s->kind==1&&a<32){serial_io_ops.write(&s->serial,a>>2,v,1);return;}
++    if(a==0x2fc)return;
++    if(s->kind==1&&a==0xc0)return;
++    if(s->kind==0){
++        if(a==0x10){i2c_command(s,v);return;}
++        if(a==0x6c&&!(v&1)){
++            if(s->active)i2c_end_transfer(s->i2c);
++            s->active=false;s->rp=s->wp=s->count=0;s->regs[0x34/4]=0;
++        }
++        if(a==0x6c&&(v&2)){s->regs[0x34/4]|=64;s->regs[0x80/4]=1<<16;v&=~2;}
++    }else if(s->kind==2){
++        if(a==8)return;
++        if(a==0x10){
++            if(s->count<64){
++                unsigned bits=(s->regs[0]&15)+1+((s->regs[0]&(1<<20))?16:0);
++                uint32_t mask=bits==32?UINT32_MAX:((1u<<bits)-1);
++                s->fifo[s->wp++%64]=((s->regs[1]&4)?v:ssi_transfer(s->spi,v))&mask;s->count++;
++            }
++            irq_update(s);return;
++        }
++        if(a==0&&!(v&128))s->rp=s->wp=s->count=0;
++    }
++    s->regs[a>>2]=v;irq_update(s);
++}
++static const MemoryRegionOps ops={.read=read_reg,.write=write_reg,
++    .endianness=DEVICE_LITTLE_ENDIAN,.valid={.min_access_size=1,.max_access_size=4}};
++static void realize(PCIDevice *d,Error **errp)
++{
++    Z790LPSSState *s=Z790_LPSS(d);
++    uint16_t id=pci_get_word(d->config+PCI_DEVICE_ID);
++    s->kind=id==0x7a4c?0:id==0x7a28?1:2;
++    pci_set_word(d->config+PCI_SUBSYSTEM_VENDOR_ID,0x1462);
++    pci_set_word(d->config+PCI_SUBSYSTEM_ID,0x7e07);d->config[PCI_INTERRUPT_PIN]=1;
++    s->regs[0x204/4]=7;
++    if(s->kind==0)s->i2c=i2c_init_bus(DEVICE(d),"i2c");
++    if(s->kind==2)s->spi=ssi_create_bus(DEVICE(d),"spi");
++    if(s->kind==1){
++        s->serial.irq=pci_allocate_irq(d);
++        if(!qdev_realize(DEVICE(&s->serial),NULL,errp))return;
++    }
++    memory_region_init_io(&s->mmio,OBJECT(s),&ops,s,"z790-lpss",4096);
++    pci_register_bar(d,0,PCI_BASE_ADDRESS_MEM_TYPE_64,&s->mmio);
++}
++static void exit_dev(PCIDevice *d)
++{
++    Z790LPSSState *s=Z790_LPSS(d);
++    if(s->kind==1){qdev_unrealize(DEVICE(&s->serial));qemu_free_irq(s->serial.irq);}
++}
++static void reset(DeviceState *dev)
++{
++    Z790LPSSState *s=Z790_LPSS(dev);
++    if(s->kind==0&&s->active)i2c_end_transfer(s->i2c);
++    memset(s->regs,0,sizeof(s->regs));s->regs[0x204/4]=7;
++    s->rp=s->wp=s->count=0;s->active=false;s->receive=false;
++    if(s->kind!=1)pci_set_irq(PCI_DEVICE(s),0);
++}
++static void init(Object *o)
++{
++    Z790LPSSState *s=Z790_LPSS(o);
++    if(!object_dynamic_cast(o,"z790-uart"))return;
++    object_initialize_child(o,"serial",&s->serial,TYPE_SERIAL);
++    qdev_alias_all_properties(DEVICE(&s->serial),o);
++}
++static const VMStateDescription vmstate={.name=TYPE_Z790_LPSS,.unmigratable=1};
++static void class_init(ObjectClass *oc,const void *data)
++{
++    PCIDeviceClass *k=PCI_DEVICE_CLASS(oc);DeviceClass *dc=DEVICE_CLASS(oc);
++    k->vendor_id=0x8086;k->revision=0x11;k->realize=realize;k->exit=exit_dev;
++    dc->vmsd=&vmstate;device_class_set_legacy_reset(dc,reset);
++}
++static void i2c_class(ObjectClass *o,const void *d){PCI_DEVICE_CLASS(o)->device_id=0x7a4c;PCI_DEVICE_CLASS(o)->class_id=0x0c80;DEVICE_CLASS(o)->desc="Intel Z790 Serial IO I2C 0";}
++static void uart_class(ObjectClass *o,const void *d){PCI_DEVICE_CLASS(o)->device_id=0x7a28;PCI_DEVICE_CLASS(o)->class_id=0x0780;DEVICE_CLASS(o)->desc="Intel Z790 Serial IO UART 0";}
++static void spi_class(ObjectClass *o,const void *d){PCI_DEVICE_CLASS(o)->device_id=0x7a2a;PCI_DEVICE_CLASS(o)->class_id=0x0c80;DEVICE_CLASS(o)->desc="Intel Z790 Serial IO GSPI 0";}
++static const TypeInfo info[]={
++    {.name=TYPE_Z790_LPSS,.parent=TYPE_PCI_DEVICE,.instance_size=sizeof(Z790LPSSState),.instance_init=init,.class_init=class_init,.abstract=true,
++     .interfaces=(InterfaceInfo[]){{INTERFACE_CONVENTIONAL_PCI_DEVICE},{}}},
++    {.name="z790-i2c",.parent=TYPE_Z790_LPSS,.class_init=i2c_class},
++    {.name="z790-uart",.parent=TYPE_Z790_LPSS,.class_init=uart_class},
++    {.name="z790-gspi",.parent=TYPE_Z790_LPSS,.class_init=spi_class}
++};
++static void register_types(void){type_register_static_array(info,ARRAY_SIZE(info));}type_init(register_types)
+--- /dev/null
++++ b/hw/misc/z790-spi.c
+@@ -0,0 +1,104 @@
++/* Intel 700-series hardware-sequenced SPI flash, read-only firmware backend.
++ * SPDX-License-Identifier: GPL-2.0-or-later */
++#include "qemu/osdep.h"
++#include "qemu/module.h"
++#include "qemu/bswap.h"
++#include "hw/pci/pci.h"
++#include "hw/pci/pci_device.h"
++#include "hw/qdev-properties.h"
++#include "qapi/error.h"
++#include "qom/object.h"
++#include "migration/vmstate.h"
++#define TYPE_Z790_SPI "z790-spi"
++OBJECT_DECLARE_SIMPLE_TYPE(Z790SPIState,Z790_SPI)
++struct Z790SPIState {
++    PCIDevice parent_obj;
++    MemoryRegion mmio;
++    char *image;
++    uint8_t *flash;
++    size_t size;
++    uint32_t regs[1024];
++};
++static uint64_t read_reg(void *opaque,hwaddr addr,unsigned size)
++{
++    Z790SPIState *s=opaque;
++    uint32_t val=s->regs[addr>>2];
++    return (val>>((addr&3)*8)) & (size==4?0xffffffffu:((1u<<(size*8))-1));
++}
++static void cycle(Z790SPIState *s,uint32_t ctl)
++{
++    unsigned op=(ctl>>17)&15,count=((ctl>>24)&63)+1;
++    uint32_t address=s->regs[2]&0x07ffffff;
++    uint8_t *data=(uint8_t *)(s->regs+4);
++    bool error=false;
++    memset(data,0,64);
++    switch(op){
++    case 0: /* READ */
++        if(address>s->size || count>s->size-address)error=true;
++        else memcpy(data,s->flash+address,count);
++        break;
++    case 5: /* SFDP: unsupported table triggers known-JEDEC-ID fallback. */
++        memset(data,0xff,count);break;
++    case 6: /* A functional 32MiB W25Q256-compatible flash backend. */
++        data[0]=0xef;data[1]=0x40;data[2]=0x19;break;
++    case 8: /* RDSR; all blocks protected, no operation in progress. */
++        data[0]=0x1c;break;
++    default: /* Writes, status updates and erases are hardware-protected. */
++        error=true;break;
++    }
++    s->regs[1]=(ctl&0xff1ec000)|0xc000|(error?2:1);
++}
++static void write_reg(void *opaque,hwaddr addr,uint64_t value,unsigned size)
++{
++    Z790SPIState *s=opaque;
++    unsigned index=addr>>2,shift=(addr&3)*8;
++    uint32_t mask=size==4?0xffffffffu:((1u<<(size*8))-1)<<shift;
++    uint32_t merged=(s->regs[index]&~mask)|((value<<shift)&mask);
++    if(index==1){
++        if(merged&(1<<16))cycle(s,merged);
++        else s->regs[1]=(merged&0xff1e0000)|0xc000|
++                        ((s->regs[1]&7)&~((value<<shift)&mask));
++    }else if(index==2 || (index>=4&&index<20))s->regs[index]=merged;
++    /* Descriptor, access and protection registers remain locked. */
++}
++static const MemoryRegionOps ops={.read=read_reg,.write=write_reg,
++    .endianness=DEVICE_LITTLE_ENDIAN,.valid={.min_access_size=1,.max_access_size=4}};
++static void realize(PCIDevice *dev,Error **errp)
++{
++    Z790SPIState *s=Z790_SPI(dev);gchar *bytes=NULL;gsize length=0;GError *error=NULL;
++    if(!s->image || !g_file_get_contents(s->image,&bytes,&length,&error)){
++        error_setg(errp,"SPI image unavailable: %s",error?error->message:"missing image");
++        g_clear_error(&error);return;
++    }
++    if(length!=32*1024*1024 || ldl_le_p(bytes+0x10)!=0x0ff0a55a){
++        error_setg(errp,"SPI image must be a 32MiB Intel descriptor image");g_free(bytes);return;
++    }
++    s->flash=(uint8_t *)bytes;s->size=length;
++    unsigned regions=((ldl_le_p(bytes+0x14)>>16)&255)*16;
++    s->regs[0]=ldl_le_p(bytes+regions+4); /* BIOS region BFPREG */
++    s->regs[1]=0xc000; /* descriptor valid and configuration locked */
++    s->regs[0x50/4]=0x0000003f; /* host read access; writes disabled */
++    for(int i=0;i<6;i++)s->regs[(0x54/4)+i]=ldl_le_p(bytes+regions+4*i);
++    s->regs[0x84/4]=0x80000000|((length/4096-1)<<16);
++    s->regs[0xc4/4]=s->regs[0xc8/4]=0x00d82003;
++    pci_set_word(dev->config+PCI_SUBSYSTEM_VENDOR_ID,0x1462);
++    pci_set_word(dev->config+PCI_SUBSYSTEM_ID,0x7e07);
++    dev->config[0xdc]=0x22;dev->wmask[0xdc]=0; /* BIOS Lock and SMM protection */
++    memory_region_init_io(&s->mmio,OBJECT(s),&ops,s,"z790-spi",4096);
++    pci_register_bar(dev,0,PCI_BASE_ADDRESS_SPACE_MEMORY,&s->mmio);
++}
++static void exit_device(PCIDevice *dev){g_free(Z790_SPI(dev)->flash);}
++static const Property properties[]={DEFINE_PROP_STRING("image",Z790SPIState,image)};
++static const VMStateDescription vmstate={.name=TYPE_Z790_SPI,.unmigratable=1};
++static void class_init(ObjectClass *oc,const void *data)
++{
++    PCIDeviceClass *k=PCI_DEVICE_CLASS(oc);DeviceClass *dc=DEVICE_CLASS(oc);
++    k->vendor_id=0x8086;k->device_id=0x7a24;k->revision=0x11;
++    k->class_id=0x0c80;k->realize=realize;k->exit=exit_device;
++    dc->desc="Intel Z790 SPI Flash Controller";dc->vmsd=&vmstate;device_class_set_props(dc,properties);
++}
++static const TypeInfo info={.name=TYPE_Z790_SPI,.parent=TYPE_PCI_DEVICE,
++    .instance_size=sizeof(Z790SPIState),.class_init=class_init,
++    .interfaces=(InterfaceInfo[]){{INTERFACE_CONVENTIONAL_PCI_DEVICE},{}}};
++static void register_types(void){type_register_static(&info);}
++type_init(register_types)
+--- /dev/null
++++ b/hw/misc/z790-sram.c
+@@ -0,0 +1,33 @@
++/* PCI-visible PCH SRAM windows, not a CSME firmware execution engine.
++ * SPDX-License-Identifier: GPL-2.0-or-later
++ */
++#include "qemu/osdep.h"
++#include "qemu/module.h"
++#include "hw/pci/pci.h"
++#include "hw/pci/pci_device.h"
++#include "migration/vmstate.h"
++#include "qom/object.h"
++#define TYPE_Z790_SRAM "z790-sram"
++OBJECT_DECLARE_SIMPLE_TYPE(Z790SRAMState,Z790_SRAM)
++struct Z790SRAMState { PCIDevice parent_obj; MemoryRegion ram[2]; };
++static void realize(PCIDevice *d,Error **errp)
++{
++ Z790SRAMState *s=Z790_SRAM(d);
++ pci_set_word(d->config+PCI_SUBSYSTEM_VENDOR_ID,0x1462);
++ pci_set_word(d->config+PCI_SUBSYSTEM_ID,0x7e07);
++ if(!memory_region_init_ram(&s->ram[0],OBJECT(s),"pch-sram-16k",16384,errp))return;
++ if(!memory_region_init_ram(&s->ram[1],OBJECT(s),"pch-sram-4k",4096,errp))return;
++ pci_register_bar(d,0,PCI_BASE_ADDRESS_MEM_TYPE_64,&s->ram[0]);
++ pci_register_bar(d,2,PCI_BASE_ADDRESS_MEM_TYPE_64,&s->ram[1]);
++}
++static const VMStateDescription vmstate={.name=TYPE_Z790_SRAM,.unmigratable=1};
++static void class_init(ObjectClass *o,const void *unused)
++{
++ PCIDeviceClass *p=PCI_DEVICE_CLASS(o);DeviceClass *d=DEVICE_CLASS(o);
++ p->vendor_id=0x8086;p->device_id=0x7a27;p->revision=0x11;p->class_id=0x0500;p->realize=realize;
++ d->desc="Intel Z790 PCH SRAM windows";d->vmsd=&vmstate;
++}
++static const TypeInfo info={.name=TYPE_Z790_SRAM,.parent=TYPE_PCI_DEVICE,
++ .instance_size=sizeof(Z790SRAMState),.class_init=class_init,
++ .interfaces=(InterfaceInfo[]){{INTERFACE_CONVENTIONAL_PCI_DEVICE},{}}};
++static void types(void){type_register_static(&info);}type_init(types)
+--- /dev/null
++++ b/hw/usb/dev-alc4080.c
+@@ -0,0 +1,304 @@
++/* USB Audio Class 2.0 model for the MSI 7E07 ALC4080.
++ * Implements PCM streaming and class controls with standard guest drivers.
++ * Analog electrical behavior, vendor DSP extensions and IEC61937 passthrough
++ * are not implemented and are not advertised as validated capabilities.
++ * SPDX-License-Identifier: GPL-2.0-or-later */
++#include "qemu/osdep.h"
++#include "qemu/module.h"
++#include "qemu/bswap.h"
++#include "hw/qdev-properties.h"
++#include "hw/usb.h"
++#include "migration/vmstate.h"
++#include "audio/audio.h"
++#include "qom/object.h"
++#include "desc.h"
++#include <math.h>
++
++#define TYPE_ALC4080 "usb-alc4080"
++#define RING_SIZE 245760 /* multiple of every PCM frame size */
++OBJECT_DECLARE_SIMPLE_TYPE(ALC4080State, ALC4080)
++typedef struct ALCStream {
++    QEMUSoundCard *card;
++    SWVoiceOut *out;
++    SWVoiceIn *in;
++    uint8_t data[RING_SIZE];
++    uint64_t put, get, phase;
++    uint32_t rate;
++    unsigned channels, bytes, alt;
++    bool capture, mute;
++    int16_t db[9];
++} ALCStream;
++struct ALC4080State {
++    USBDevice parent_obj;
++    QEMUSoundCard card;
++    ALCStream streams[6];
++    USBDesc desc;
++    USBDescDevice high;
++    USBDescConfig config;
++    USBDescIfaceAssoc group;
++    USBDescIface interfaces[90];
++    USBDescOther ac[32], as[90][2];
++    USBDescEndpoint eps[90];
++    uint8_t as_data[90][22];
++    unsigned nac, nif, total_ac;
++    bool jack_connected;
++};
++static const uint8_t clocks[6] = {1,3,4,5,6,8};
++static const uint8_t endpoints[6] = {0x81,0x83,0x84,5,6,8};
++static const USBDescStrings strings = {
++    [1]="USB Audio", [3]="Generic", [4]="USB Audio",
++    [5]="Realtek USB2.0 Audio", [10]="Analog In", [11]="Line",
++    [12]="Mic", [13]="Speaker", [14]="Front Headphone", [15]="IEC958",
++};
++static const uint32_t rates[] = {44100,48000,88200,96000,176400,192000,384000};
++static const uint32_t capture_rates[] = {44100,48000,96000,192000};
++static const uint32_t spdif_rates[] = {44100,48000,88200,96000,192000};
++static const uint32_t *stream_rates(int si,unsigned *nr)
++{
++    if(si<3){*nr=ARRAY_SIZE(capture_rates);return capture_rates;}
++    if(si==5){*nr=ARRAY_SIZE(spdif_rates);return spdif_rates;}
++    *nr=si==4?7:6;return rates;
++}
++static void volume(ALCStream *st)
++{
++    Volume v = {.channels=st->channels,.mute=st->mute};
++    for (int c=0;c<v.channels;c++) {
++        double amp = pow(10.0, (st->db[0]+st->db[c+1])/5120.0);
++        v.vol[c] = MIN(255, (int)(amp*255));
++    }
++    if(st->out) audio_set_volume_out(st->out,&v);
++    if(st->in) audio_set_volume_in(st->in,&v);
++}
++static void audio_callback(void *opaque,int avail)
++{
++    ALCStream *st=opaque;
++    unsigned frame=st->channels*(st->bytes==2?2:4);
++    if (!st->alt || !frame) return;
++    while (avail>0) {
++        size_t pos=(st->capture?st->put:st->get)%RING_SIZE;
++        size_t count=st->capture?RING_SIZE-(st->put-st->get):st->put-st->get;
++        count=MIN(count,MIN(avail,RING_SIZE-pos));
++        count-=count%frame;
++        if (!count) break;
++        size_t n=st->capture?AUD_read(st->in,st->data+pos,count):
++                            AUD_write(st->out,st->data+pos,count);
++        if (!n) break;
++        if(st->capture)st->put+=n;else st->get+=n;
++        avail-=n;
++    }
++}
++static void open_stream(ALCStream *st)
++{
++    if(!st->alt){
++        if(st->out)AUD_set_active_out(st->out,0);
++        if(st->in)AUD_set_active_in(st->in,0);
++        return;
++    }
++    struct audsettings settings={.freq=st->rate,.nchannels=st->channels,
++        .fmt=st->bytes==2?AUDIO_FORMAT_S16:AUDIO_FORMAT_S32,.endianness=0};
++    st->get=st->put=st->phase=0;
++    if(st->capture){
++        st->in=AUD_open_in(st->card,st->in,"ALC4080 capture",st,audio_callback,&settings);
++        AUD_set_active_in(st->in,1);
++    }else{
++        st->out=AUD_open_out(st->card,st->out,"ALC4080 playback",st,audio_callback,&settings);
++        AUD_set_active_out(st->out,1);
++    }
++    volume(st);
++}
++static void set_interface(USBDevice *dev,int iface,int old,int alt)
++{
++    if(iface<1||iface>6)return;
++    ALCStream *st=&ALC4080(dev)->streams[iface-1];
++    st->alt=alt;
++    st->bytes=2+(alt?((alt-1)%(iface<4||iface==6?2:3)):0);
++    if(iface==6&&alt==11)st->bytes=2;
++    st->channels=(iface==4 && alt)?2+2*((alt-1)/3):2;
++    open_stream(st);
++}
++static void reset(USBDevice *dev)
++{
++    for(int i=1;i<=6;i++)set_interface(dev,i,0,0);
++}
++static void control(USBDevice *dev,USBPacket *p,int request,int value,
++                    int index,int length,uint8_t *data)
++{
++    ALC4080State *s=ALC4080(dev);
++    if(usb_desc_handle_control(dev,p,request,value,index,length,data)>=0)return;
++    unsigned entity=index>>8, selector=value>>8,channel=value&255;
++    int si=-1;
++    for(int i=0;i<6;i++)if(entity==clocks[i] || entity==clocks[i]+8 ||
++         entity==clocks[i]+16 || entity==clocks[i]+24)si=i;
++    if(si<0 || channel>8)goto stall;
++    ALCStream *st=&s->streams[si];
++    int n=0;
++    bool in=(request&0x8000)!=0;
++    unsigned req=request&255;
++    if(entity==clocks[si]){
++        if(in&&selector==1&&req==1){stl_le_p(data,st->rate);n=4;}
++        else if(in&&selector==2&&req==1){data[0]=1;n=1;}
++        else if(in&&selector==1&&req==2){
++            unsigned nr; const uint32_t *sr=stream_rates(si,&nr);
++            stw_le_p(data,nr);
++            for(unsigned r=0;r<nr;r++){
++                stl_le_p(data+2+12*r,sr[r]);stl_le_p(data+6+12*r,sr[r]);
++                stl_le_p(data+10+12*r,0);
++            }n=2+12*nr;
++        }else if(!in&&selector==1&&req==1&&length==4){
++            uint32_t rate=ldl_le_p(data);bool valid=false;
++            unsigned nr; const uint32_t *sr=stream_rates(si,&nr);
++            for(unsigned r=0;r<nr;r++)valid|=sr[r]==rate;
++            if(!valid)goto stall;
++            st->rate=rate;open_stream(st);return;
++        }else goto stall;
++    }else if(entity==clocks[si]+24){
++        if(selector==1){
++            if(in&&req==1){data[0]=st->mute;n=1;}
++            else if(!in&&req==1&&length==1){st->mute=data[0];volume(st);return;}
++            else goto stall;
++        }else if(selector==2){
++            if(in&&req==1){stw_le_p(data,st->db[channel]);n=2;}
++            else if(in&&req==2){stw_le_p(data,1);stw_le_p(data+2,-0x6000);
++                stw_le_p(data+4,0);stw_le_p(data+6,0x100);n=8;}
++            else if(!in&&req==1&&length==2){
++                st->db[channel]=(int16_t)lduw_le_p(data);volume(st);return;
++            }else goto stall;
++        }else goto stall;
++    }else if(in&&req==1&&selector==2){
++        data[0]=s->jack_connected?st->channels:0;
++        stl_le_p(data+1,3);data[5]=0;n=6;
++    }else goto stall;
++    p->actual_length=MIN(length,n);return;
++stall:p->status=USB_RET_STALL;
++}
++static void transfer(USBDevice *dev,USBPacket *p)
++{
++    ALC4080State *s=ALC4080(dev);
++    unsigned addr=p->ep->nr|(p->pid==USB_TOKEN_IN?0x80:0);
++    ALCStream *st=NULL;
++    for(int i=0;i<6;i++)if(addr==endpoints[i])st=&s->streams[i];
++    if(!st){p->status=USB_RET_NAK;return;}
++    if(!st->alt){p->status=USB_RET_STALL;return;}
++    uint8_t raw[4096];
++    size_t size=MIN(sizeof(raw),p->iov.size);
++    unsigned packed=st->bytes, unpacked=packed==2?2:4;
++    if(st->capture){
++        st->phase+=st->rate;
++        size=MIN(size,(st->phase/8000)*st->channels*packed);
++        st->phase%=8000;
++        for(size_t b=0;b+packed<=size;b+=packed){
++            uint8_t sample[4]={0};
++            if(st->put-st->get>=unpacked){
++                for(unsigned j=0;j<unpacked;j++)sample[j]=st->data[(st->get+j)%RING_SIZE];
++                st->get+=unpacked;
++            }
++            memcpy(raw+b,sample+(packed==3?1:0),packed);
++        }
++        usb_packet_copy(p,raw,size);
++    }else{
++        usb_packet_copy(p,raw,size);
++        for(size_t b=0;b+packed<=size;b+=packed){
++            uint8_t sample[4]={0};
++            memcpy(sample+(packed==3?1:0),raw+b,packed);
++            if(st->put-st->get+unpacked>RING_SIZE)continue;
++            for(unsigned j=0;j<unpacked;j++)st->data[(st->put+j)%RING_SIZE]=sample[j];
++            st->put+=unpacked;
++        }
++    }
++}
++static void add_ac(ALC4080State *s,uint8_t *data,unsigned n)
++{
++    s->ac[s->nac++]=(USBDescOther){.length=n,.data=g_memdup2(data,n)};
++    s->total_ac+=n;
++}
++static void descriptors(ALC4080State *s)
++{
++    uint8_t h[]={9,36,1,0,2,4,0,0,0};add_ac(s,h,sizeof(h));
++    for(int i=0;i<6;i++){
++        unsigned c=clocks[i],channels=i==3?8:2;
++        uint16_t physical=i==0?0x0601:i==1?0x0603:i==2?0x0201:
++                          i==3?0x0301:i==4?0x0302:0x0605;
++        uint8_t clock[]={8,36,10,c,7,7,0,0};add_ac(s,clock,8);
++        uint8_t input[]={17,36,2,c+8,0,0,0,c,channels,0,0,0,0,0,0,0,0};
++        stw_le_p(input+4,i<3?physical:0x0101);
++        stl_le_p(input+9,i==3?0x63f:3);stw_le_p(input+14,i<3?4:0);
++        add_ac(s,input,17);
++        uint8_t feature[42]={0};unsigned len=6+4*(channels+1);
++        feature[0]=len;feature[1]=36;feature[2]=6;feature[3]=c+24;feature[4]=c+8;
++        stl_le_p(feature+5,3);
++        for(unsigned ch=1;ch<=channels;ch++)stl_le_p(feature+5+4*ch,i==5?0:12);
++        feature[len-1]=10+i;add_ac(s,feature,len);
++        uint8_t output[]={12,36,3,c+16,0,0,c+8,c+24,c,0,0,0};
++        stw_le_p(output+4,i<3?0x0101:physical);stw_le_p(output+9,i>=3&&i!=5?4:0);
++        add_ac(s,output,12);
++    }
++    stw_le_p((void *)(s->ac[0].data+6),s->total_ac);
++    s->interfaces[0]=(USBDescIface){.bInterfaceNumber=0,.bInterfaceClass=1,
++        .bInterfaceSubClass=1,.bInterfaceProtocol=32,.iInterface=5,
++        .ndesc=s->nac,.descs=s->ac};s->nif=1;
++    for(int i=0;i<6;i++){
++        s->interfaces[s->nif++]=(USBDescIface){.bInterfaceNumber=i+1,
++            .bInterfaceClass=1,.bInterfaceSubClass=2,.bInterfaceProtocol=32,.iInterface=5};
++        unsigned count=i<3?8:i==3?12:i==4?24:11;
++        for(unsigned a=1;a<=count;a++){
++            unsigned n=s->nif++,channels=i==3?2+2*((a-1)/3):2;
++            unsigned bytes=2+(a-1)%(i<3||i==5?2:3);
++            bool type3=i==5&&a==11; if(type3)bytes=2;
++            uint8_t *d=s->as_data[n];
++            d[0]=16;d[1]=36;d[2]=1;d[3]=clocks[i]+(i<3?16:8);
++            d[5]=type3?3:1;stl_le_p(d+6,1);d[10]=channels;
++            stl_le_p(d+11,channels==8?0x63f:channels==6?0x3f:channels==4?0x33:3);
++            d[16]=6;d[17]=36;d[18]=2;d[19]=type3?3:1;d[20]=bytes;d[21]=type3?0:bytes*8;
++            s->as[n][0]=(USBDescOther){.length=16,.data=d};
++            s->as[n][1]=(USBDescOther){.length=6,.data=d+16};
++            static uint8_t extra[]={8,37,1,0,0,0,0,0};
++            s->eps[n]=(USBDescEndpoint){.bEndpointAddress=endpoints[i],
++                .bmAttributes=i<3?5:9,.wMaxPacketSize=1024,.bInterval=1,.extra=extra};
++            s->interfaces[n]=(USBDescIface){.bInterfaceNumber=i+1,.bAlternateSetting=a,
++                .bNumEndpoints=1,.bInterfaceClass=1,.bInterfaceSubClass=2,
++                .bInterfaceProtocol=32,.iInterface=5,.ndesc=2,.descs=s->as[n],.eps=&s->eps[n]};
++        }
++    }
++    s->group=(USBDescIfaceAssoc){.bFirstInterface=0,.bInterfaceCount=7,
++        .bFunctionClass=1,.bFunctionProtocol=32,.iFunction=5,.nif=s->nif,.ifs=s->interfaces};
++    s->config=(USBDescConfig){.bNumInterfaces=7,.bConfigurationValue=1,.iConfiguration=4,
++        .bmAttributes=0x80,.bMaxPower=50,.nif_groups=1,.if_groups=&s->group};
++    s->high=(USBDescDevice){.bcdUSB=0x0200,.bDeviceClass=239,.bDeviceSubClass=2,
++        .bDeviceProtocol=1,.bMaxPacketSize0=64,.bNumConfigurations=1,.confs=&s->config};
++    s->desc=(USBDesc){.id={.idVendor=0x0db0,.idProduct=0xd1d7,.bcdDevice=1,
++        .iManufacturer=3,.iProduct=1},.high=&s->high,.str=strings};
++}
++static void realize(USBDevice *dev,Error **errp)
++{
++    ALC4080State *s=ALC4080(dev);
++    if(!AUD_register_card("ALC4080",&s->card,errp))return;
++    descriptors(s);dev->usb_desc=&s->desc;usb_desc_init(dev);
++    for(int i=0;i<6;i++){
++        s->streams[i].card=&s->card;s->streams[i].rate=48000;
++        s->streams[i].channels=2;s->streams[i].bytes=2;s->streams[i].capture=i<3;
++    }
++}
++static void unrealize(USBDevice *dev)
++{
++    ALC4080State *s=ALC4080(dev);reset(dev);
++    for(int i=0;i<6;i++){
++        if(s->streams[i].out)AUD_close_out(&s->card,s->streams[i].out);
++        if(s->streams[i].in)AUD_close_in(&s->card,s->streams[i].in);
++    }
++    AUD_remove_card(&s->card);
++    for(unsigned i=0;i<s->nac;i++)g_free((void *)s->ac[i].data);
++}
++static const VMStateDescription vmstate={.name=TYPE_ALC4080,.unmigratable=1};
++static const Property properties[]={DEFINE_AUDIO_PROPERTIES(ALC4080State,card),
++    DEFINE_PROP_BOOL("jack-connected",ALC4080State,jack_connected,true)};
++static void class_init(ObjectClass *oc,const void *data)
++{
++    USBDeviceClass *k=USB_DEVICE_CLASS(oc);DeviceClass *dc=DEVICE_CLASS(oc);
++    k->product_desc="ALC4080 USB Audio";k->realize=realize;k->unrealize=unrealize;
++    k->handle_attach=usb_desc_attach;k->handle_reset=reset;k->handle_control=control;k->handle_data=transfer;k->set_interface=set_interface;
++    dc->vmsd=&vmstate;device_class_set_props(dc,properties);set_bit(DEVICE_CATEGORY_SOUND,dc->categories);
++}
++static const TypeInfo info={.name=TYPE_ALC4080,.parent=TYPE_USB_DEVICE,
++    .instance_size=sizeof(ALC4080State),.class_init=class_init};
++static void register_types(void){type_register_static(&info);}
++type_init(register_types)

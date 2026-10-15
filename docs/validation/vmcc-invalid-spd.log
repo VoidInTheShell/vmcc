@@ -1,0 +1,1 @@
+qemu-system-x86_64: VMCC SPD must be an accessible 2048-byte file: /tmp/vmcc-isolated-smoke/bad-spd.bin
