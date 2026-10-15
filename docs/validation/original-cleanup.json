@@ -1,0 +1,28 @@
+{
+  "passed": 22,
+  "total": 22,
+  "checks": {
+    "cpu": true,
+    "pci": true,
+    "smbios": true,
+    "dimm_serials": true,
+    "acpi": true,
+    "dmi": true,
+    "kernel": true,
+    "kernel_sha256": true,
+    "nvme": true,
+    "machine_id": true,
+    "ssh_public_hashes": true,
+    "timezone": true,
+    "disks": true,
+    "cpufreq_present": true,
+    "hostname": true,
+    "user_only": true,
+    "no_engineering_residues": true,
+    "desktop_services": true,
+    "sunshine_active": true,
+    "sunshine_name": true,
+    "ip_preserved": true,
+    "gateway_preserved": true
+  }
+}

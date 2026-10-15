@@ -15,7 +15,7 @@
 | USB / SATA | 四档 USB 枚举与盘写读；6 空 SATA 端口可见、接盘6Gb/s写读 | 不代表20G实体吞吐/PD/DP |
 | 音频 | xHCI 修复前3/3跳过，修复后39/39恢复正确；26次录音+3组双工无TRB错误 | 完整DSP/HID与长期压力未验收 |
 | SPI / Serial IO / MEI / SRAM | 完整32MiB读hash；原版驱动写读/回环/版本查询通过 | 不执行实体BIOS/完整CSME，不虚报iDMA |
-| Guest kernel | 原机generic#5真实启动；额外内核源码差异0 | 构建配置和模块不同于 Ubuntu 发行内核 |
+| Guest kernel | 原机generic#6真实启动，builder@build；额外内核源码差异0 | 构建配置和模块不同于 Ubuntu 发行内核 |
 | RTX3080 / KDE | NVIDIA OpenGL/Vulkan 实际渲染，SDDM active | 无 UHD770 身份伪装；实体显卡直通 |
 | Sunshine | 未登录KDE重启自动active/running、NRestarts0；H.264/HEVC NVENC探测通过 | Moonlight真实端到端串流/音频/手柄未验收 |
 | SPD | 四条 EEPROM 散列保留 | decode-dimms 对齐按用户要求暂停 |
@@ -42,3 +42,11 @@
 完整重新构建 QEMU/OVMF 属于此前 v0.1.0 验收；本轮复用相同运行包。#6 内核为既有锁定源树的增量构建，完整内核从零构建没有重复执行。新主机、新 GPU、另一种 PVE 版本、真实 Moonlight、长期外围压力与 cpufreq 后端仍未验证。
 
 35/35 表示与当前硬件基线及干净实例规则对齐，不表示虚拟化不可检测。CPUID 时序、宿主缺少的指令及外围模型功能边界继续保留。新实例另行运行相同未修改的 VMAware 固定提交，二进制 SHA256 `734a78a947f393b6e72638f437053898ec914df93bc452d36e504fdd6aa54a7a`；本次 0/85、0%、confirmation=false，原始输出见 `validation/factory-201-vmaware-all.txt`。临时程序退出自动删除，输出只在管理端。
+
+## 原 VM100 授权清理（2026-10-15）
+
+用户针对清单明确授权后，停止原 VM100 并离线清理。已移除列明的历史工程目录、检测程序、临时包、旧 `6.8.12-emu-native` 内核及模块、无用 OCI runner 文件；仅删除无进程且家目录为默认配置的 ubuntu/orca 账号。主机名及 Sunshine 显示名为 `desktop-main`，SSH/模块配置使用中性文件名。保留 user(uid1002) 的数据和访问配置、现有网络、当前 #6 与发行版备用内核。
+
+第一次执行因工程目录仍有空子目录触发保护检查而停止；确认只有空目录后继续。清理后实际冷启动的比较为 **22/22**：逐核 CPU、PCI/驱动、SMBIOS、DIMM、ACPI、NVMe、磁盘标识、内核 hash、machine-id 和 SSH 公钥未变；账号、名称、已知残留及服务状态符合预期。原始比较见 `validation/original-cleanup.json`，这是本次清理核验，与新实例的35项工厂验收分开记录。
+
+原密码登录和免密 sudo 成功；SDDM、SSH、ROM 服务及 Sunshine active，Sunshine NRestarts=0，四个 TCP 端口监听 IPv4 any；实际 OpenGL 4.6 direct rendering 使用 RTX3080。真实 HTTPS 访问成功，地址和网关保持原值。离线阶段仅原地比对保留文件，确认 user 密码、SSH keys 和 Sunshine 配对/证书未变；额外敏感配置/摘要导出被自动审批拒绝，未执行。GPU/HID、hypervisor bit 和既有硬件配置没有回退。本次没有重跑 VMAware 或 Moonlight；不扩大既有检测结论。

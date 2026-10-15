@@ -130,7 +130,7 @@ Sunshine增量更新：2026-10-14 20:33 EDT。已安装官方稳定版并实际�
 | 类别 | 参数 | 当前值 |
 |---|---|---|
 | Sunshine | 版本 / 来源 | 官方稳定版2026.914.233613-1+ubuntu24.04；提交63d35f702ee9e362e43263742981836ec0710384；Ubuntu24.04 amd64 deb，官方digest校验一致 |
-| Sunshine | 管理 / 客户端 | https://10.20.1.2:47990；user / [凭据省略]；Moonlight手动添加10.20.1.2并通过PIN首次配对；名称Ubuntu-EMU-RTX3080 |
+| Sunshine | 管理 / 客户端 | `https://<guest-ip>:47990`；user / [凭据省略]；Moonlight手动添加Guest地址并通过PIN首次配对；名称desktop-main |
 | Sunshine | 开机自启 | user服务app-dev.lizardbyte.app.Sunshine.service，别名sunshine；default.target+graphical-session.target；Linger=yes；实际重启未登录KDE时active/running、NRestarts=0 |
 | Sunshine | 画面 / 编码 | NVIDIA Xorg无显示器1920×1080/60Hz、X11捕获；RTX3080 h264_nvenc/hevc_nvenc通过自身编码探测；AV1不广播；SDDM保持密码登录 |
 | Sunshine | 输入 / 内核 | user新增input组；官方udev规则访问uinput/uhid；原版uhid.ko在同ABI的#6内核自动加载；按用户要求保留官方虚拟HID |
@@ -186,9 +186,9 @@ VM detections: 0/85
 
 主板接口数量参考[MSI官方规格](https://www.msi.com/Motherboard/PRO-Z790-A-WIFI-DDR4/Specification)；GL850G与音频接口参考[MSI官方手册](https://download.msi.com/archive/mnu_exe/mb/PROZ790-AWIFIDDR4.pdf)。PCI ID和寄存器/协议对照本轮归档的原版Linux驱动源码及[Intel 700系列PCH资料](https://cdrdv2-public.intel.com/743835/743835-004.pdf)。原版驱动通过和模型边界以上述原始日志为准。
 
-- 实际QEMU源码〔原始工作区：audio-iso-v6-20261014/source/〕、正式SMBIOS/ACPI配置〔原始工作区：serialio-me-v5-20261014/source/host-config/〕、构建与实施脚本〔原始工作区：serialio-me-v5-20261014/implementation/〕、宿主实际进程及配置〔原始工作区：audio-iso-v6-20261014/host/host-runtime.txt〕、清理后宿主状态〔原始工作区：audio-iso-v6-20261014/host/host-final-state.txt〕。脚本含阶段性增量，不能不检查前置条件盲目重复运行。
-- PVE备份：`/root/pve-emu-provision-20261013/backup/nic-audio-io-v4/`与`backup/serialio-me-v5/`及`backup/audio-iso-v6/`；虚机#4内核及生成头文件备份：`/root/emu-backup/serialio-me-v5/`。回退设备模型时需同步恢复QEMU/VM配置/SMBIOS/ACPI，避免启用记录指向不存在的设备。
-- Guest当前日志：`/var/log/emu-validation/peripherals-v6/`。没有新增持久root SSH公钥；本任务临时HTTP服务和snd-aloop已清理，ALC4080正式后端继续使用PVE物理ALC897。
+- 可复用实现：`patches/` 最终QEMU差异、`templates/platform/` SMBIOS/ACPI、`tools/` 构建与部署工具；原始历史脚本与完整证据保存在管理端私有归档。
+- 历史备份和旧内核资料已迁至管理端私有归档，公开版省略宿主路径；Guest 中的工程备份已按授权清理。
+- Guest 中的旧工程验证日志已移除；公开选摘见 `docs/validation/`，完整原始日志只在管理端私有归档。测试HTTP服务和snd-aloop已清理。
 
 最终完整性清单：FINAL_PERIPHERALS_SHA256SUMS〔原始工作区：FINAL_PERIPHERALS_SHA256SUMS〕。旧有阶段性SHA256清单保持不变。
 
@@ -210,4 +210,4 @@ Sunshine新增配置、原始日志与散列见安装记录〔原始工作区：
 | 磁盘导入 | 只分配新 lvmthin 卷；零目标优化要求无origin且data_percent=0 |
 | 临时产物 | 成功导入后自动删除本批rootfs和raw；身份/回执/验收留管理端 |
 | 验收 | 两台首次/重启35/35；新实例原始VMAware0/85；不等于时序缺口已解决 |
-| 原机清理 | 新#6、串口移除、ROM修复已生效；广泛删除旧工程文件/账号与改hostname被自动审批拒绝，未执行 |
+| 原机清理 | 用户明确授权后已完成：删除清单内旧工程、旧内核、OCI runner 残留和 ubuntu/orca 默认账号；保留 user(uid1002)，hostname/Sunshine 名称 desktop-main；重启后22/22检查通过 |

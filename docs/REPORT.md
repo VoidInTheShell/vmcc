@@ -70,6 +70,6 @@ MEI是协议和有限服务模型，没有执行完整CSME，PTT/AMT/Boot Guard�
 
 专用QEMU SHA256 `4369c050ced5d113a54610a8b8c74c4dc5ae58a13e37e8efd8c9fe7b1514d967`；当前#6内核SHA256 `6b64e38cb94c14233d20436d8385217ad05d4b4b40815bd3310c75855602d7cf`。OVMF此前已为a700 Host Bridge重编译，本轮外围修复未再次改动，SHA256 `76d00c08e31571c98ffaaa3a4356e9414adf20b8fb825b287529a9bc26ee15b0`。
 
-最终源码〔原始工作区：audio-iso-v6-20261014/source/〕、本轮修复与采集脚本〔原始工作区：audio-iso-v6-20261014/implementation/〕、外围实施脚本〔原始工作区：serialio-me-v5-20261014/implementation/〕、当前日志〔原始工作区：audio-iso-v6-20261014/raw/〕、当前宿主证据〔原始工作区：audio-iso-v6-20261014/host/〕、前轮证据〔原始工作区：serialio-me-v5-20261014/host/〕。PVE备份在`/root/pve-emu-provision-20261013/backup/{nic-audio-io-v4,serialio-me-v5,audio-iso-v6}/`，Guest旧#4内核和生成头文件在`/root/emu-backup/serialio-me-v5/`。没有新增持久root SSH公钥；测试HTTP与snd-aloop已清理。
+最终可复用源码和配置见 `patches/`、`templates/` 与 `tools/`；完整原始证据、PVE历史备份和旧内核资料保存在管理端私有归档，公开版省略内部路径。Guest中的工程备份与验证日志已按授权清理；未新增持久root SSH公钥，测试HTTP与snd-aloop已清理。
 
 最终完整性清单：FINAL_PERIPHERALS_SHA256SUMS〔原始工作区：FINAL_PERIPHERALS_SHA256SUMS〕。旧有阶段性SHA256清单保持不变。
