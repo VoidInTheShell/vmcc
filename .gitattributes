@@ -1,0 +1,9 @@
+# Preserve collected console output, EEPROM bytes and ACPI bytecode exactly.
+docs/validation/* -text -whitespace
+templates/**/*.bin -text -diff
+templates/**/*.aml -text -diff
+templates/spd-template.bin -text -diff
+# Unified diffs retain upstream context-line whitespace.
+patches/*.patch -whitespace
+vendor/licenses/** -whitespace
+LICENSE -whitespace
