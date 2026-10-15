@@ -27,11 +27,13 @@
 | MEI / HECI | 新增 hw/misc/z790-me.c | HECI 队列与 MSI/INTx、HBM2.0 子集、有限 MKHI 查询；版本从用户 BIOS manifest 读取为 16.1.42.2872。 | 原版 mei_me ENABLED 和标准查询通过；不执行完整 CSME，PTT/AMT/Boot Guard 等未实现。 |
 | PCH SRAM / 模型注册 | 新增 hw/misc/z790-sram.c；hw/misc/{Kconfig,meson.build} | 16 KiB + 4 KiB RAM BAR、模型构建和注册；新外围标记 unmigratable。 | 写读并恢复原值通过；不能据此声明实时迁移或含内存快照支持。 |
 | OVMF / EDK2 | OvmfPkg/Include/IndustryStandard/Q35MchIch9.h | EDK2 stable202505 将 Host Bridge 识别从 0x29c0 改为 0xa700；X64 RELEASE、4 MiB、Secure Boot 关闭，重编译执行固件。 | 此前已重编译；最近外围轮次未再次修改。MSI E7E07IMS.MB0 仅供标识与 SPI 只读内容。 |
-| Ubuntu Guest 内核 | Ubuntu linux=6.8.0-147.147；.config、生成头文件、Module.symvers；真实 release 6.8.12-generic #5 | 配置关闭 PARAVIRT/XEN/HYPERV 等未使用功能和不适用 uncore 访问，保留容器能力；启用 NVMe、igc、USB Audio、SPI/MTD、LPSS、MEI 等原版驱动；Sunshine 补编原版 UHID 模块。 | 已对实际内核树和同版本 Ubuntu 源码逐文件核对：C/H/S/Rust/DTS/Kconfig/Makefile 额外差异为 0；当前变化在配置和构建产物，不是给检测应用伪返回。 |
-| GPU / KDE / 用户态驱动 | PVE hostpci0、VFIO 按 BDF 绑定；原版 NVIDIA 580.178.04 Open DKMS、Xorg/SDDM/UCM | RTX3080 GPU 与 HDMI 音频实体直通；匹配实际 #5 内核头文件重建 DKMS，保持 KDE 可用。 | 真实 OpenGL/Vulkan 渲染通过；不再将 GPU 声称为 UHD770，NVIDIA 驱动源码未做身份伪装修改。 |
+| Ubuntu Guest 内核 | Ubuntu linux=6.8.0-147.147；.config、生成头文件、Module.symvers；真实 release 6.8.12-generic #6；builder@build | 配置关闭 PARAVIRT/XEN/HYPERV 等未使用功能和不适用 uncore 访问，保留容器能力；启用 NVMe、igc、USB Audio、SPI/MTD、LPSS、MEI 等原版驱动；Sunshine 补编原版 UHID 模块。 | 已对实际内核树和同版本 Ubuntu 源码逐文件核对：C/H/S/Rust/DTS/Kconfig/Makefile 额外差异为 0；当前变化在配置和构建产物，不是给检测应用伪返回。 |
+| GPU / KDE / 用户态驱动 | PVE hostpci0、VFIO 按 BDF 绑定；原版 NVIDIA 580.178.04 Open DKMS、Xorg/SDDM/UCM | RTX3080 GPU 与 HDMI 音频实体直通；ABI 与 #5 相同的 #6 内核及原有 DKMS，保持 KDE 可用。 | 真实 OpenGL/Vulkan 渲染通过；不再将 GPU 声称为 UHD770，NVIDIA 驱动源码未做身份伪装修改。 |
 | PVE 启动与亲和性 | /usr/bin/kvm Python 启动器；100.conf；ubuntu-q35.cfg；pve-emu-pin-vcpus / systemd | 仅 VM100 选专用 QEMU/OVMF，管理 SATA 后端转换 NVMe、e1000 转 I225-V；24 vCPU 与主/I/O 线程分配；其他 VM 沿用原启动器。 | 这里名为 kvm 的文件是用户态启动器；宿主实际 Linux 6.17.2-1-pve 内核未修改。 |
 | 网络 / PortalWrt / 账号 | PVE 桥与路由；Guest 网络/账号配置；PortalWrt UCI、dnsmasq、firewall | WAN .232 → .233，LAN10.20.1.0/24、Ubuntu .2、WAN 禁 DHCP、上游静态路由；America/New_York；user 免密 sudo。 | 网络已做实际包验证；此层为系统配置，并不属于 QEMU 源码补丁。 |
 | Sunshine / 开机自启 | 官方 Sunshine deb；Xorg headless 配置；user systemd drop-in；sunshine-launch / sunshine-xauthority；udev/input/UHID | 未登录 KDE 时自动启动，1080p60 X11 捕获与 NVENC 探测；实际重启 enabled/active/running，NRestarts=0。 | 未修改 Sunshine 源码；真实 Moonlight 端到端串流、音频/手柄尚未验收。 |
 | vmcc 复用增量 | patches/0002-qemu-per-instance-spd.patch；tools/vmcc.py、kvm-wrapper.py 等 | 按实例外部加载 2048-byte SPD，生成独立系统/主板/机箱/磁盘/MAC 身份，保持四条 DIMM 连号；公开版移除原机身份与凭据。 | 这是新复用包的增量，不回写当前 VM100；复制实例的整机验收必须单独执行。 |
 
 公开复用项目：[VoidInTheShell/vmcc](https://github.com/VoidInTheShell/vmcc)。当前实例完整身份仅保留在本地/本报告；公开仓库使用每实例生成机制。
+
+2026-10-15 增量：`tools/batch.py` 串联离线准备、独立制盘、PVE 分配与注册；`collect-guest.py` / `verify-instance.py` 直接读取并比较实际数据。`pci-rom-resource` 只恢复已分配的禁用 ROM BAR；`build-kernel.sh` 使用官方 Kbuild 构建元数据参数。用户要求保留 Sunshine HID 与 hypervisor bit=0；不改检测应用。资料保留与清理映射见 [工程资料清单](ENGINEERING_MATERIALS.md)。

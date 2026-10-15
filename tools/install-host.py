@@ -11,6 +11,8 @@ def checked(cmd):return subprocess.check_output(cmd,text=True).strip()
 def main():
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--bundle',required=True);p.add_argument('--runtime',required=True);p.add_argument('--apply',action='store_true')
+    p.add_argument('--allow-stopped-gpu-sharing',action='store_true',
+                   help='explicit sequential-use mode; all existing owners must be stopped and new onboot must be 0')
     a=p.parse_args();bundle=Path(a.bundle).resolve();runtime=Path(a.runtime).resolve()
     c=json.loads((bundle/'runtime.json').read_text());vmid=c['vmid']
     if os.geteuid()!=0:raise RuntimeError('run on the target PVE host as root')
@@ -39,7 +41,11 @@ def main():
         text=file.read_text()
         if c['disk_volume'] in text:raise RuntimeError('disk already referenced by another VM')
         for line in text.splitlines():
-            if line.startswith('hostpci') and slot.removeprefix('0000:') in line:raise RuntimeError('GPU slot referenced by another VM')
+            if line.startswith('hostpci') and slot.removeprefix('0000:') in line:
+                if not a.allow_stopped_gpu_sharing or c.get('onboot',True):
+                    raise RuntimeError('GPU referenced elsewhere; sequential sharing requires explicit flag and onboot=0')
+                if checked(['qm','status',file.stem])!='status: stopped':
+                    raise RuntimeError('GPU is in use by running VM '+file.stem)
     checked(['pvesm','path',c['disk_volume']])
     for name in ('qemu-system-x86_64','OVMF_CODE_RPL_4M.fd'):
         if not (runtime/name).is_file():raise RuntimeError('missing runtime artifact: '+name)
@@ -69,7 +75,7 @@ def main():
     temporary=Path('/usr/bin/kvm.vmcc-new');temporary.write_bytes(wrapper);temporary.chmod(0o755);temporary.replace(kvm)
     subprocess.run(['systemctl','daemon-reload'],check=True)
     subprocess.run(['systemctl','enable','--now',f'vmcc-affinity@{vmid}.service'],check=True)
-    print('Registered only. Review and run '+str(Path(c['instance_dir'])/'create-vm.sh')+' separately, then finalize the cloned guest before its first network boot.')
+    print('Registered only. Review and run '+str(Path(c['instance_dir'])/'create-vm.sh')+' separately after offline guest preparation.')
 
 if __name__=='__main__':
     try:main()

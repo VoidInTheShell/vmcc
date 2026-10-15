@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "source_rootfs": "/var/lib/vmcc/seed",
+  "runtime": "/var/lib/vmcc/runtime",
+  "bios": "/opt/firmware/E7E07IMS.MB0",
+  "storage": "emu-lvm",
+  "efi_storage": "emu-lvm",
+  "bridge": "vmbr2",
+  "instances": [
+    {
+      "vmid": 200,
+      "name": "workstation-001",
+      "username": "user",
+      "uid": 1000,
+      "address": "10.20.1.2/24",
+      "gateway": "10.20.1.1",
+      "timezone": "America/New_York",
+      "gpu": "0000:82:00",
+      "vcpu_cpus": "0-23",
+      "io_cpus": "28-31",
+      "audio_backend": "none",
+      "onboot": 0
+    },
+    {
+      "vmid": 201,
+      "name": "workstation-002",
+      "username": "user",
+      "uid": 1000,
+      "address": "10.20.1.3/24",
+      "gateway": "10.20.1.1",
+      "timezone": "America/New_York",
+      "gpu": "0000:83:00",
+      "vcpu_cpus": "0-23",
+      "io_cpus": "28-31",
+      "audio_backend": "none",
+      "onboot": 0
+    }
+  ]
+}

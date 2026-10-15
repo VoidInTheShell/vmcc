@@ -83,7 +83,7 @@ Sunshine增量更新：2026-10-14 20:33 EDT。已安装官方稳定版并实际�
 | GPU | 直通 / 持久绑定 | hostpci0=0000:82:00,pcie=1,x-vga=1；宿主82:00.0/.1 → Guest01:00.0/.1；按 BDF 的 VFIO 服务开机生效 |
 | GPU | 驱动 / VBIOS / UUID | NVIDIA580.178.04 Open DKMS；94.02.42.00.FB；GPU-[INSTANCE_UUID] |
 | GPU | 图形实测 | NVIDIA OpenGL4.6、direct rendering=Yes；Vulkan1.4.312；KMS=Y、fbdev=Y；SDDM :0实际渲染通过 |
-| 内核 | 当前实际 release | 6.8.12-generic #5 SMP PREEMPT_DYNAMIC；真实重新编译并冷启动，uname 未覆盖；#4 文件另存回退 |
+| 内核 | 当前实际 release | 6.8.12-generic #6 SMP PREEMPT_DYNAMIC；builder@build；quiet splash，无串口启动参数；已重启核验 |
 | 内核 | 配置 | 保留 PARAVIRT=n、HYPERV=n、INTEL_UNCORE_FREQ_CONTROL=n、PERF_EVENTS_INTEL_UNCORE=n；新增原版 IGC、SND_USB_AUDIO、MTD/SPI、LPSS、MEI、8250_DW、SPI_PXA2XX 模块；SERIAL_8250_DWLIB=y；HYPERVISOR_GUEST=y |
 | 设备 | 关闭项 | balloon=0,tablet=0,hotplug=0,vmgenid=0,vga=none,numa=0；旧244e桥、29c0身份、Cirrus已移除 |
 | 环境 | 实测 | systemd-detect-virt=none；Docker/SDDM active，failed units=0；/lib→usr/lib；kernel+userspace 8.432s（不含固件）；NTP synchronized=yes |
@@ -123,7 +123,7 @@ Sunshine增量更新：2026-10-14 20:33 EDT。已安装官方稳定版并实际�
 | ME | 协议 / 版本来源 | HBM 2.0 子集（驱动支持2.2），256-byte MTU，单 MKHI client；BIOS $MN2 manifest 提取 16.1.42.2872；原版驱动 fw_ver 与 8 次标准 ioctl/MKHI 查询一致 |
 | ME | 明确边界 | 协议模型，不执行 CSME 固件；没有实现完整 ME、PTT、AMT、Boot Guard 证明、密钥/签名、provisioning 或固件更新；未知 MKHI 命令返回不支持 |
 | PCH SRAM | PCI / 实际存储窗口 | 00:14.2 8086:7a27 rev11 / subsystem1462:7e07；BAR0 16KiB + BAR2 4KiB，64bit MMIO RAM；各256字节写读一致并恢复原值；未宣称执行 ME 共享固件 |
-| 内核 | 新镜像 SHA256 | b80345fc0ee03210253875fd961e8d0b2fcc305b48a876070e1ddc525a644084 |
+| 内核 | 新镜像 SHA256 | 6b64e38cb94c14233d20436d8385217ad05d4b4b40815bd3310c75855602d7cf |
 | 显示与传感器 | 当前未验收项 | 原版 CPU-X 外频显示 -21474836.48MHz、电压0.120V、倍频/温度缺失；不能作为真实频率/电压读数；未改 CPU-X 输出，保留为缺口 |
 | USB | 等时停止/恢复修复 | 保留未执行TD地址及cycle state；修复前3/3跳过，修复后39/39恢复正确；另10次初测+26次回归录音启停，无TRB错误；未修改原版ALSA/Linux xHCI驱动 |
 
@@ -133,7 +133,7 @@ Sunshine增量更新：2026-10-14 20:33 EDT。已安装官方稳定版并实际�
 | Sunshine | 管理 / 客户端 | https://10.20.1.2:47990；user / [凭据省略]；Moonlight手动添加10.20.1.2并通过PIN首次配对；名称Ubuntu-EMU-RTX3080 |
 | Sunshine | 开机自启 | user服务app-dev.lizardbyte.app.Sunshine.service，别名sunshine；default.target+graphical-session.target；Linger=yes；实际重启未登录KDE时active/running、NRestarts=0 |
 | Sunshine | 画面 / 编码 | NVIDIA Xorg无显示器1920×1080/60Hz、X11捕获；RTX3080 h264_nvenc/hevc_nvenc通过自身编码探测；AV1不广播；SDDM保持密码登录 |
-| Sunshine | 输入 / 内核 | user新增input组；官方udev规则访问uinput/uhid；匹配#5内核源码编译原版uhid.ko并在重启自动加载；内核镜像SHA不变 |
+| Sunshine | 输入 / 内核 | user新增input组；官方udev规则访问uinput/uhid；原版uhid.ko在同ABI的#6内核自动加载；按用户要求保留官方虚拟HID |
 | Sunshine | 音频 / 验收范围 | PipeWire/Pulse/WirePlumber active，未登录时auto_null/monitor；上游.233管理接口认证HTTP200；未连接真实Moonlight客户端，端到端串流/音频/手柄尚未验收 |
 | Sunshine | 安全与权限参数 | LAN管理，UPnP disabled；user进程；root拥有helper复制当前Xorg授权至用户运行目录；X11使用CAP_SYS_NICE+p，未保留KMS所需CAP_SYS_ADMIN文件能力 |
 | Sunshine | 安装包 / 二进制SHA256 | deb c38e9c705f650f8705f61702717e99bec34044c5028fcb8f23a08fe041292c21；sunshine 61e1ecbc8db2df786b9760c652aa4b9885dff36c57d4af09616344314cb7c34c |
@@ -193,3 +193,21 @@ VM detections: 0/85
 最终完整性清单：FINAL_PERIPHERALS_SHA256SUMS〔原始工作区：FINAL_PERIPHERALS_SHA256SUMS〕。旧有阶段性SHA256清单保持不变。
 
 Sunshine新增配置、原始日志与散列见安装记录〔原始工作区：sunshine-20261014/README.md〕和SUNSHINE_SHA256SUMS〔原始工作区：sunshine-20261014/SUNSHINE_SHA256SUMS〕。
+
+2026-10-15 增量：构建身份改为 Kbuild 的 builder@build；GPU ROM BAR 对齐内核已分配资源并保持 decode 关闭；删除串口启动参数。BogoMIPS 保留内核原值，它不是 CPU 性能或实时频率。Guest cpufreq 当前仍缺少可用后端。
+
+## 自动生成参数（2026-10-15）
+
+| 参数 | 当前实现 |
+|---|---|
+| 生成入口 | `vmcc batch plan` / `vmcc batch apply`；plan 离线，apply 默认只读预检 |
+| 硬件基线 | 13900K 8P16E、HT off、24c24t、64GiB、500GiB NVMe、Z790、RTX3080 |
+| 实例参数 | VMID、hostname、username/UID、IP/gateway/timezone、GPU、CPU/I/O亲和性、音频后端、onboot |
+| 独立身份 | system/board/chassis/DIMM/NVMe SN、UUID/EUI/NGUID/NQN/MAC、GPT/PARTUUID/ext4/FAT ID |
+| 干净状态 | fresh home、SSH、machine-id、EFI；不继承日志、工程备份、检测程序、CI来源与配对 |
+| 源盘处理 | 源 VM 停止；ro,noload 挂载；只读提取运行文件 |
+| 显卡冲突 | 并发独占；顺序共享必须显式允许、既有所有者停机、新实例onboot=0 |
+| 磁盘导入 | 只分配新 lvmthin 卷；零目标优化要求无origin且data_percent=0 |
+| 临时产物 | 成功导入后自动删除本批rootfs和raw；身份/回执/验收留管理端 |
+| 验收 | 两台首次/重启35/35；新实例原始VMAware0/85；不等于时序缺口已解决 |
+| 原机清理 | 新#6、串口移除、ROM修复已生效；广泛删除旧工程文件/账号与改hostname被自动审批拒绝，未执行 |

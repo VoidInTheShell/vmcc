@@ -16,7 +16,12 @@ sed -i 's/^SUBLEVEL = 0$/SUBLEVEL = 12/' Makefile
 cp "$repo_dir/profiles/kernel-6.8.12-generic.config" .config
 scripts/config --module UHID
 make olddefconfig
-export KBUILD_BUILD_VERSION=5
+# Standard Kbuild provenance overrides; no /proc/version or application hooks.
+export KBUILD_BUILD_VERSION=6
+export KBUILD_BUILD_USER=builder
+export KBUILD_BUILD_HOST=build
+export SOURCE_DATE_EPOCH=$(date -d "$(dpkg-parsechangelog -SDate)" +%s)
+export KBUILD_BUILD_TIMESTAMP=$(date -u -d "@$SOURCE_DATE_EPOCH" '+%a %b %d %T UTC %Y')
 make -j "${VMCC_BUILD_JOBS:-8}" bzImage modules
 make INSTALL_MOD_PATH="$output_dir" modules_install
 mkdir -p "$output_dir/boot"

@@ -29,6 +29,16 @@
 5. 未登记 VMID 原样链到原 launcher 的执行路径通过测试。
 6. 原机 QEMU SHA 仍为4369c050…，VM100/101仍运行；没有将测试构建安装回原机。
 
-代码语法、3项工具测试和新实例启动验证均已运行。脚本参数化后，以下**尚未运行**：在另一台 PVE 使用 install-host --apply 新建完整 VM、完整新克隆 KDE/RTX3080/NVMe/PortalWrt 联合验收、泛化 Sunshine 安装器的重启/Moonlight验收、参数化 fresh-disk 与完整内核重新构建、GPT/FS 规划UUID的离线应用。部署说明保留这些门槛，不将其写成一键完成。
+## 批量工厂实测（2026-10-15）
 
-独立实例测试仅验证身份机制和该配置可引导；新实例不能沿用原机 VMAware、时序、网络或 GPU 验收结果。
+- 原机重编译并启动 #6，builder@build；去除串口启动参数。NVIDIA、SDDM、Sunshine、ROM 资源恢复服务实际重启 active。
+- 从停止的原 VM 只读提取 7.9 GiB 文件集，创建两台各 500 GiB 的新 VM；同一张 RTX3080 顺序使用，禁止并发。两台使用不同 SN/UUID/MAC/IP、GPT/PARTUUID/ext4/FAT ID、machine-id 和 SSH host keys，只有指定桌面账号。
+- 第一实例首次检查发现三处 OCI 来源文件残留，修正规则后通过；清理后及重启后均为 35/35。保留首次 FAIL 记录在私有工作区，不隐去调试事实。
+- 第二实例使用修正后的工厂全流程生成，无需 Guest 内手工修补，首次与重启后均为 35/35。原始比较结果去除身份后保存为 `validation/factory-201.json`；第一实例重启结果为 `factory-200-reboot.json`。
+- 对比读取实际逐核 CPUID、25 个 PCI 设备/驱动、102 条 SMBIOS（规范化唯一身份后）、10 张常规 ACPI、内核 hash、DIMM 连号、NVMe、GPU、内存、网络与账号/文件状态；不是只比较生成配置。
+- 两台实际 OpenGL 4.6 direct rendering 使用 NVIDIA GeForce RTX3080；第二实例经 PortalWrt 的 HTTPS 请求返回 200。Sunshine 未登录自启并监听四个 IPv4 any TCP 端口；没有真实 Moonlight 客户端，串流仍 NOT RUN。
+- 8 项工具测试（含 100 组身份生成）、Python compileall、shell 语法与入口调用检查通过。新 thin volume 优化导入后占用约 1.72%，而非把 500 GiB 空白写满。
+
+完整重新构建 QEMU/OVMF 属于此前 v0.1.0 验收；本轮复用相同运行包。#6 内核为既有锁定源树的增量构建，完整内核从零构建没有重复执行。新主机、新 GPU、另一种 PVE 版本、真实 Moonlight、长期外围压力与 cpufreq 后端仍未验证。
+
+35/35 表示与当前硬件基线及干净实例规则对齐，不表示虚拟化不可检测。CPUID 时序、宿主缺少的指令及外围模型功能边界继续保留。新实例另行运行相同未修改的 VMAware 固定提交，二进制 SHA256 `734a78a947f393b6e72638f437053898ec914df93bc452d36e504fdd6aa54a7a`；本次 0/85、0%、confirmation=false，原始输出见 `validation/factory-201-vmaware-all.txt`。临时程序退出自动删除，输出只在管理端。

@@ -74,14 +74,18 @@ def init(args):
         'mac': ':'.join(f'{b:02X}' for b in mac),
         'network': {'address': str(interface), 'gateway': str(gateway), 'dns': str(gateway)},
         'timezone': args.timezone,
+        'account': {'username': getattr(args, 'username', 'user'),
+                    'uid': getattr(args, 'uid', 1000)},
         'clone_disk_identity_plan': {'gpt_guid': str(uuid.uuid4()),
                                      'efi_partuuid': str(uuid.uuid4()),
                                      'root_partuuid': str(uuid.uuid4()),
-                                     'root_ext4_uuid': str(uuid.uuid4())},
+                                     'root_ext4_uuid': str(uuid.uuid4()),
+                                     'efi_fat_id': secrets.token_hex(4).upper()},
         'clone_reset_required': ['machine-id', 'SSH host keys', 'DHCP DUID/client-id and leases',
                                 'NetworkManager connection UUID', 'Sunshine state/certificates/pairings',
                                 'EFI variable store', 'disk/partition/filesystem UUIDs if cloned'],
     }
+    validate(manifest)
     out.mkdir(parents=True, exist_ok=False)
     dump(out / 'identity.json', manifest)
     print(out / 'identity.json')
@@ -109,6 +113,29 @@ def validate(m):
         raise ValueError('NQN and serial differ')
     if not re.fullmatch(r'(?:[0-9A-F]{2}:){5}[0-9A-F]{2}',m['mac']) or int(m['mac'][:2],16) & 1:
         raise ValueError('expected a unicast MAC')
+    if not re.fullmatch(r'[a-z][a-z0-9-]{0,40}', m['name']):
+        raise ValueError('invalid hostname')
+    if not isinstance(m['vmid'], int) or not 100 <= m['vmid'] <= 999999999:
+        raise ValueError('invalid VMID')
+    n = m['network']; interface = ipaddress.IPv4Interface(n['address'])
+    gateway = ipaddress.IPv4Address(n['gateway']); ipaddress.IPv4Address(n['dns'])
+    if (gateway not in interface.network or gateway == interface.ip or
+            any(x in (interface.network.network_address, interface.network.broadcast_address)
+                for x in (gateway, interface.ip))):
+        raise ValueError('invalid static network')
+    if '..' in m['timezone'] or not (Path('/usr/share/zoneinfo') / m['timezone']).is_file():
+        raise ValueError('unknown timezone')
+    account = m.get('account', {'username': 'user', 'uid': 1000})
+    if (not re.fullmatch(r'[a-z][a-z0-9_-]{0,31}', account['username']) or
+            account['username'] in ('root', 'nobody') or
+            not isinstance(account['uid'], int) or not 1000 <= account['uid'] < 60000):
+        raise ValueError('invalid desktop account')
+    for key, value in m['clone_disk_identity_plan'].items():
+        if key == 'efi_fat_id':
+            if not re.fullmatch(r'[0-9A-F]{8}', value) or int(value, 16) == 0:
+                raise ValueError('invalid FAT volume ID')
+        else:
+            uuid.UUID(value)
 
 def set_smbios_string(b, offset, value):
     data = bytearray(b)
@@ -173,7 +200,7 @@ def render(args):
     common = ['--bios','ovmf','--machine','q35','--cores','24','--sockets','1','--memory','65536',
               '--cpu','host','--balloon','0','--tablet','0','--hotplug','0','--numa','0',
               '--vga','none','--serial0','socket','--vmgenid','0','--ostype','l26','--localtime','0',
-              '--affinity',','.join(map(str,vcpus)), '--onboot','1','--startup','order=2,up=20',
+              '--affinity',','.join(map(str,vcpus)), '--onboot',str(getattr(args,'onboot',1)),'--startup','order=2,up=20',
               '--name',m['name'],'--boot','order=sata0',
               '--efidisk0',args.efi_storage+':1,efitype=4m,pre-enrolled-keys=0',
               '--hostpci0',args.gpu+',pcie=1,x-vga=1',
@@ -192,11 +219,13 @@ def render(args):
                'bios_file':str(bios),'bios_sha256':BIOS_SHA,
                'disk_volume':args.disk,'bridge':args.bridge,'gpu_bdf':args.gpu,
                'audio_backend':args.audio_backend,
-               'network':m['network'],'timezone':m['timezone']}
+               'network':m['network'],'timezone':m['timezone'],
+               'account':m.get('account',{'username':'user','uid':1000}),
+               'onboot':bool(getattr(args,'onboot',1))}
     dump(out/'runtime.json',runtime); dump(out/'identity.json',m); dump(out/'qemu-args.json',qargs)
     dump(out/'clone-reset-plan.json',{'required':m['clone_reset_required'],'disk_identity':m['clone_disk_identity_plan'],
-                                    'automatic_disk_rewrite':False,
-                                    'reason':'Disk/partition/filesystem changes require offline boot-reference updates and a clone boot test.'})
+                                    'automatic_disk_rewrite':True,
+                                    'method':'factory creates new filesystems and boot references from this identity; apply/verify receipts remain on host'})
     sums=[]
     for p in sorted(out.rglob('*')):
         if p.is_file(): sums.append(hashlib.sha256(p.read_bytes()).hexdigest()+'  '+str(p.relative_to(out)))
@@ -228,10 +257,12 @@ def main():
     a.add_argument('--address',required=True);a.add_argument('--gateway',required=True)
     a.add_argument('--timezone',default='America/New_York');a.add_argument('--out',required=True);a.set_defaults(func=init)
     a.add_argument('--mac-prefix',help='optional assigned three-byte OUI, e.g. D8:FC:93; default is locally administered')
+    a.add_argument('--username',default='user');a.add_argument('--uid',type=int,default=1000)
     a=sub.add_parser('render');a.add_argument('--identity',required=True);a.add_argument('--out',required=True)
     a.add_argument('--disk',required=True);a.add_argument('--efi-storage',required=True);a.add_argument('--bridge',required=True)
     a.add_argument('--gpu',required=True);a.add_argument('--bios',required=True);a.add_argument('--audio-backend',default='none')
     a.add_argument('--vcpu-cpus',required=True);a.add_argument('--io-cpus',required=True);a.add_argument('--prefix',default='/opt/vmcc')
+    a.add_argument('--onboot',type=int,choices=(0,1),default=1)
     a.set_defaults(func=render)
     a=sub.add_parser('audit');a.add_argument('identities',nargs='+');a.set_defaults(func=audit)
     args=p.parse_args()

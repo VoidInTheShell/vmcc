@@ -1,84 +1,78 @@
-# 构建与部署
+# 构建、批量生成与验收
 
-## 前置与范围
+Intel VMX/KVM、PVE QEMU 10.1.2 系列、Ubuntu 24.04 amd64。宿主内核未修改。Guest 为自构建 6.8.12-generic #6，使用 Ubuntu linux=6.8.0-147.147 源包和仓库锁定配置，不是 Canonical 原版二进制。
 
-基线是 Intel VMX/KVM、PVE QEMU 10.1.2 系列、Ubuntu 24.04 amd64。原机宿主 Linux 为 6.17.2-1-pve，Guest 为真实构建的 6.8.12-generic #5。项目没有修改宿主 KVM 内核。现有专用 /usr/bin/kvm 启动器由 VMCC 的 fallback 链保留；部署新实例不替换原机 QEMU。
+每台并发实例需要独占 GPU 及 HDMI 音频、64 GiB RAM、500 GiB 的 PVE lvmthin 存储、24 个 vCPU 亲和 CPU 和另选 I/O CPU。存储池、VFIO、LAN bridge、PortalWrt 和上游路由先准备好；工厂不清除物理盘或改 WAN。单张 GPU 可以显式顺序使用，原 VM 必须停止、新 VM 必须 onboot=0；禁止并发占用。
 
-每台同时运行的实例需要可用的 RTX3080 及其音频功能、24 个可分配宿主 CPU 和互不重叠的 I/O CPU、64 GiB RAM、500 GiB 后端。GPU 先完成 IOMMU/VFIO 绑定与独占检查。项目不清除物理盘，不替用户重新划分 NVMe 存储池，也不自动抢占已分配设备。
+## 构建或取得运行包
 
-先准备好 PVE 存储、隔离 LAN bridge、用户自行提供的 PortalWrt 镜像、授权使用的 MSI BIOS，以及不含个人会话的 Ubuntu 模板。一个 LAN 可以共用原路由器并为新 Ubuntu 分配新地址；若复制整对 Ubuntu/PortalWrt，则需要另一块 WAN NIC、不同 WAN 地址和无重叠 LAN/上游路由。
-
-## 构建运行包
-
-在独立 Ubuntu 24.04 构建环境执行，不要把编译依赖装进正在使用的 PVE：
+独立 Ubuntu 24.04 构建环境执行，依赖和版本见各脚本与 PROVENANCE：
 
 ```bash
-sudo apt-get update
-sudo apt-get install -y build-essential ninja-build pkg-config python3-venv \
-  libglib2.0-dev libpixman-1-dev libgcrypt20-dev zlib1g-dev libaio-dev \
-  liburing-dev libasound2-dev libgnutls28-dev libjpeg-dev libpng-dev \
-  libslirp-dev git curl patch nasm uuid-dev acpica-tools
 tools/build-qemu.sh
 tools/build-ovmf.sh
-```
-
-QEMU tarball 由 SHA256 锁定，所有 98 项基线源码差异在 0001 补丁中；0002 是新复用版的外部 SPD 增量。构建脚本拒绝复用已有源目录，防止重复打补丁。OVMF 使用 edk2-stable202505，Host Bridge ID 改为 a700；实际执行的依旧是 OVMF。Release 运行包已含对应 QEMU、OVMF、libjpeg 及许可证。
-
-Guest 内核可复用清理后的原模板，或在 Ubuntu noble 开启对应 deb-src 后运行：
-
-```bash
-sudo apt-get install -y build-essential bc bison flex libssl-dev libelf-dev \
-  cpio kmod rsync dwarves zstd
 tools/build-kernel.sh
 ```
 
-生成的 boot/lib/usr 是 Guest 的 staging 内容；复制到新 Guest 后运行 depmod、update-initramfs、update-grub，再用同一源码生成的 headers/Module.symvers 重建 NVIDIA DKMS。UHID 在复用构建中直接启用为模块。内核不是 bit-for-bit 可复现承诺：编译时间、工具链和构建环境会影响散列。本轮未重新跑一次完整内核构建；原机内核和模块的真实运行验收见报告。
+也可使用 Release 的 runtime，包含 QEMU、OVMF、libjpeg 和许可证。Guest 内核 staging 需要相同 headers/Module.symvers 和 NVIDIA DKMS。Kbuild 固定 builder/build、版本 6、源包 changelog 时间，仍不承诺不同工具链的二进制完全一致。QEMU 的原始 tarball 与补丁均固定 SHA；MSI BIOS 和操作系统镜像由用户自行提供。
 
-## 生成并注册新实例
+## 只读生成源文件集
 
-若不克隆现有磁盘，可以从锁定的 `ghcr.io/catthehacker/ubuntu:act-24.04` OCI manifest（见 PROVENANCE）用 skopeo/umoci 解包准备 rootfs，安装 systemd-sysv、GRUB EFI、initramfs-tools、openssh-server、netplan.io、sudo、KDE/SDDM/Xorg 等，再把构建的内核 staging 合入。已有 rootfs 需先审阅账号、会话和 root 私有数据。`sudo tools/build-boot-disk.sh PREPARED_ROOTFS NEW_DISK.raw` 创建新的 500 GiB 稀疏普通文件并安装 EFI/GRUB；新建 GPT/分区/文件系统时各自生成独立身份，因此不需要对克隆 UUID 做原地改写。该参数化脚本保留自原始实际制盘流程，本轮只做语法检查，未额外创建 500 GiB 磁盘。输出只能是不存在的普通文件，不能指定块设备。
-
-按 README 的 init/render 命令生成身份和 bundle。磁盘参数指向已导入、没有被其他 VM 引用的独立卷。推荐导入离线清理后的模板副本；不要把源机磁盘或 efidisk 同时挂给另一台机器。默认音频后端为 none；需要宿主音频时显式给 render 添加 `--audio-backend plughw:0,0` 并确认该 PCM 可用。
-
-把源码目录、bundle、解压后的 runtime 和用户 BIOS 放到目标 PVE 后，先只读检查：
+源 VM 已安装所需 Ubuntu/KDE/SDDM/Xorg、内核与原版驱动、Sunshine。工厂复用这套软件包和运行文件，重新创建实例状态，不复制整盘。源 VM 停止后挂载 ro,noload，禁止日志回放：
 
 ```bash
-sudo python3 tools/install-host.py --bundle /path/to/bundle --runtime /path/to/runtime
+sudo python3 tools/capture-source.py --vmid 100 \
+  --out /var/lib/vmcc/seed --shutdown
 ```
 
-它检查 VMID、磁盘引用、GPU/VFIO、CPU、bridge、BIOS SHA、模型与 SPD 扩展；不会检查远端 IP 是否占用。检查通过后才执行注册：
+`--shutdown` 是显式停机操作；不指定时要求源 VM 已停止。源盘只读，输出目录必须不存在。提取排除源用户目录、root 工程资料、日志、CI runner 环境、旧内核、SSH host keys、租约、Sunshine 配对等。源文件集也应保存在管理端私有目录，不上传公开库。
+
+## 一次规划，批量创建
+
+复制 `examples/batch.json`，填写目标主机路径、存储、bridge 和每台机器的 VMID、名称、账号/UID、静态地址、时区、GPU、CPU 亲和性及音频后端。示例有两张不同 GPU；当前主机只有一张时只保留一项。
 
 ```bash
-sudo python3 tools/install-host.py --bundle /path/to/bundle --runtime /path/to/runtime --apply
-sudo sh /opt/vmcc/instances/200/create-vm.sh
+./vmcc batch plan --spec /private/batch.json --out instances/batch-001
 ```
 
-安装器保留 `/usr/bin/kvm.vmcc-original`，只分流登记 VMID，未登记 VMID 沿用原启动器；共享 runtime 已存在且不同则拒绝覆盖。create-vm.sh 创建一块新的 EFI variables 盘，不启动 VM。相同 PVE 版本下实际 `qm showcmd 200 --pretty` 仍应复核；安装器/完整新 VM 创建流程尚未在另一台 PVE 做端到端验证。
-
-## 克隆清理与首次启动
-
-`identity.json` 已生成 GPT/PARTUUID/ext4 UUID 的规划值，当前工具不会自动改磁盘。磁盘 GUID、分区 UUID、ext4/FAT ID 如需全部独立，应在离线副本上修改，并同步 fstab、GRUB、initramfs 中的引用；必须冷启动验收。没有经验证的通用文件系统改号器，因此这一步保留明确人工门槛，不能报告为已自动完成。
-
-新 VM 首次以隔离网络和 serial console 启动。将本项目及其 identity.json 放入 Guest：
+plan 只生成本地文件，包含独立身份、QEMU/SMBIOS/SPD 配置、磁盘身份和计划校验。查重失败不发布半成品计划。密码不在 JSON 或 Git 中：另外创建权限 0600 的密码文件，每行内容为该批次账号密码；分批可用不同密码文件。
 
 ```bash
-sudo python3 tools/guest-finalize.py --identity /path/to/identity.json
-sudo python3 tools/guest-finalize.py --identity /path/to/identity.json --reset-clone --apply
-sudo passwd user
+sudo ./vmcc batch apply --plan instances/batch-001 \
+  --password-file /private/account-password
+
+sudo ./vmcc batch apply --plan instances/batch-001 \
+  --password-file /private/account-password --apply --start
 ```
 
-工具用实际 DMI UUID 检查目标，重建 machine-id、SSH host keys、继承租约/NM/Sunshine 状态，配置静态 netplan、时区、user 和免密 sudo。旧配置放在 root 私有备份；应由操作者审阅后删除不需保留的旧克隆凭据。网络在重启后应用；从 serial console 操作，避免通过旧地址中断工作。
+第一次为只读预检。第二次依次：复制临时 rootfs、离线重建账号和状态、新建 500 GiB 普通稀疏镜像、写入计划中的 GPT/PARTUUID/ext4/FAT ID、更新 fstab/GRUB/initramfs、分配新的 PVE thin volume、导入、注册专用启动器并创建 VM。`--start` 才启动。每台新建独立 EFI variables 盘。
 
-Sunshine 使用官方 2026.914.233613 Ubuntu24.04 deb（散列见来源）。KDE/SDDM/Xorg、原版 NVIDIA、PipeWire 和 UHID 先可用，再执行 `tools/install-sunshine.py --deb /path/to/deb --name workstation-001 --apply`。它启用 linger、自启、X11/NVENC 和独立 Xauthority helper；需要在新实例设置 Web 凭据并重新 PIN 配对，不复制旧证书。新泛化安装器尚未做另一台 KDE 的重启验收；原机的自启已真实重启验证。
+如果 GPU 也在已停止源 VM 的配置中，显式加 `--allow-stopped-gpu-sharing`，并保持新实例 `onboot: 0`。预检拒绝运行中的设备归属、已有 VMID/登记、重复 GPU、无效 CPU/bridge/固件、容量不足和有响应的 IP。IP 探测不能证明所有休眠设备均无冲突，地址仍须由网络管理员预留。
 
-## PortalWrt 与上游
+`install-host.py` 保留 `/usr/bin/kvm.vmcc-original`，仅登记实例使用新 runtime，其他 VM 沿用现有启动器。已有 runtime 不同则拒绝覆盖。失败保留宿主回执和相关资源，不自动销毁或回退。只在分配磁盘前失败时可用 `--retry-before-allocation` 重做本计划的临时文件；分配资源后须按回执检查，禁止盲目重复执行。
 
-PortalWrt：4 核/4 GiB、与自编译镜像相同容量、OVMF/q35、物理 WAN NIC 独占直通、一个连接隔离 LAN 的虚拟 NIC。`tools/render-portal.py` 生成配置脚本，执行前审阅网卡名称、WAN 地址和上游。WAN 静态，不启 DHCP/DHCPv6 客户端；dnsmasq 限 LAN 并显式排除 WAN；fw4 保持 ACCEPT/NAT 并对 WAN DHCP 输入、输出和转发 DROP。脚本替换新路由器 network/dhcp/firewall，先保存旧配置，不重启网络；通过 serial console 再执行 reload。
+成功导入后删除本批临时 rootfs 和 sparse image；保留管理端 identity、配置 bundle 与分配回执。新 Guest 不放置项目目录、身份清单、调参脚本、验证日志或克隆备份。
 
-上游手动添加且持久化 `LAN_SUBNET via PORTAL_WAN_IP`，验证实际到新 Ubuntu 的 request/reply；单纯 route 表或端口监听不算网络验收。原机已验证的配置是来源记录，不是新实例可直接复用的 IP。
+## 实机数据验收
 
-## 回退与验收
+先从源 VM 读取基线，再对每个新实例读取真实数据。采集程序通过 SSH stdin 执行，不安装进 Guest：
 
-只注册未启动时：禁用对应 `vmcc-affinity@VMID` 服务，移走该 registry 文件和实例目录；所有 VMCC 实例均停机且不再登记后，才可恢复 `/usr/bin/kvm.vmcc-original`。不要删除其他实例的共享 runtime 或直接覆盖 PVE 的包文件。新建 VM/卷按实际归属单独回收，源机卷不涉及。正式启动后应先备份配置并同步回退 QEMU/ACPI/SMBIOS/Guest 内核，避免半套模型。
+```bash
+python3 tools/verify-instance.py --target user@SOURCE_IP \
+  --out /private/baseline
 
-验收至少覆盖：24c24t/8P16E/SMT off、实例身份与四条连号、DMI/ACPI/PCI 引用、NVMe UUID/NQN、原版驱动、GPU/KDE 实际渲染、Portal 实包路由与 WAN DHCP 抓包、Sunshine 未登录重启自启及真实 Moonlight、原版 VMAware 和独立 CPUID 时序。不得修改检测软件或把原机结果标成克隆机通过。
+python3 tools/verify-instance.py --target user@NEW_IP \
+  --baseline /private/baseline/actual.json \
+  --identity instances/batch-001/200/identity.json \
+  --out /private/acceptance-200
+```
+
+SSH 参数可重复 `--ssh-option`，如 `--ssh-option BatchMode=yes` 或 `--ssh-option ProxyJump=root@PVE_IP`。账号须能 `sudo -n`。输出不可覆盖；结果写到管理端，不放公开 Git。非 PASS 退出码为 1。创建成功、能 SSH、Sunshine 监听均不能单独代替整体验收。
+
+比较包括逐核 8P16E/24 线程、CPUID 功能、完整 PCI/原版驱动、SMBIOS 类型/句柄/内容（规范化唯一身份）、四条连号、ACPI、内核、内存、NVMe、GPU、唯一账号/SSH/machine-id、磁盘身份、网络、桌面/Sunshine/ROM 服务和残留。功能深入测试另用 `tools/probes/` 及报告中的外围测试方法。Sunshine 官方虚拟 HID 和 hypervisor bit=0 保持现有配置；SPD decode-dimms 对齐仍暂停。
+
+Sunshine Web 需要每实例新设凭据并重新配对，不继承原机证书。监听 IPv4 0.0.0.0，TCP 47984/47989/47990/48010、UDP 47998–48000 规则持久化；不主动启用或改变防火墙默认策略。Moonlight 实际串流仍须真实客户端验收。
+
+PortalWrt 可以共享现有路由器，每台 Ubuntu 用不同地址。新建路由器时见 `tools/render-portal.py`，另选 WAN NIC、WAN 地址和 LAN，并配置上游静态路由；WAN DHCP 禁止规则不能省略。
+
+新 thin volume 导入仅在刚分配、没有 origin、data_percent=0 时使用 qemu-img `--target-is-zero`；不用于现有盘或快照。语义见 [QEMU 官方文档](https://www.qemu.org/docs/master/tools/qemu-img.html#cmdoption-qemu-img-convert-target-is-zero)。

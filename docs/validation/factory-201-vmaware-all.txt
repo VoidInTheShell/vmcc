@@ -1,0 +1,95 @@
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking VMID...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking CPU brand...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking CPUID hypervisor bit...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking hypervisor str...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking thread count...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking MAC addresses...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking temperature...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking systemd virtualisation...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking chassis vendor...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking chassis type...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking Dockerenv...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking dmidecode output...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking dmesg output...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking hwmon presence...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking DLLs...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking Wine...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking hw.model...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking processes...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking default Linux user/host...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking gamarue ransomware technique...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking BOCHS CPU techniques...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking MacOS hw.memsize...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking MacOS registry IO-kit...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking IO registry grep...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking MacOS SIP...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking device handles...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking VPC invalid instructions...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking task segment and descriptor tables...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking STR instruction...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking mutex strings...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking thread count mismatch...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking Cuckoo...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking Azure Hyper-V...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking display...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking BlueStacks folders...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking CPUID signatures...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking Intel KGT signature...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking QEMU virtual DMI directory...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking QEMU USB...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking hypervisor directory (Linux)...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking User-mode Linux CPU...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking /dev/kmsg hypervisor message...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking VBox kernel module...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking /proc/sysinfo...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking DMI scan...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking SMBIOS VM bit...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking podman file...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking WSL string in /proc...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking drivers...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking virtual disks...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking virtual GPUs...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking power capabilities...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking QEMU fw_cfg device...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking virtual processors...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking AMD-SEV MSR...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking registry emulation...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking firmware...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking low file access count...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking container PID...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking PCI vendor/device ID...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking ACPI device signatures...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking undefined exceptions...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking DBVM hypervisor...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking boot logo...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking system profiler...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking kernel objects...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking NVRAM...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking model specific registers...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking instruction capabilities...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking interrupt shadows...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking hypervisor interception...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking KVM interception...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking single step behavior...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking instructions in compat mode...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking SVM exceptions...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking cgroup namespace...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking measured boot logs...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking TPM...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking EPT/NPT hooking...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking vCPU scheduling...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking instruction emulation...[0m
+[[38;2;239;75;75mNOT DETECTED[0m] [38;2;108;108;108mChecking timing anomalies...[0m
+[38;2;108;108;108m
+SHA-256: [38;2;255;255;255m734a78a947f393b6e72638f437053898ec914df93bc452d36e504fdd6aa54a7a[0m
+
+[1;97mVM brand: [0m[38;2;239;75;75mUnknown[0m
+[1;97mVM type: [0m[38;2;239;75;75mUnknown[0m
+[1;97mVM likeliness: [0m[38;2;239;75;75m0%[0m
+[1;97mVM confirmation: [0m[38;2;239;75;75mfalse[0m
+[1;97mVM detections: [0m[38;2;239;75;75m0/85[0m
+
+[1;97m===== CONCLUSION: [0m[38;2;239;75;75mRunning on bare metal[0m[1;97m =====[0m
+
+[38;2;108;108;108mSHA-256: [38;2;255;255;255m734a78a947f393b6e72638f437053898ec914df93bc452d36e504fdd6aa54a7a[0m
+Press Enter to exit...

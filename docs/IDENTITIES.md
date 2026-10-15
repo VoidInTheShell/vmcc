@@ -20,13 +20,13 @@
 | IP / DHCP reservation / hostname | 同二层内不同 | 必须指定地址；audit 比较提供的清单 | ARP 冲突、真实路由与流量另测 |
 | Portal LAN MAC / WAN 地址 / VMID | 新建路由器时独立 | 配置模板要求人工分配 | 同一个物理 WAN NIC 不能同时直通给两台 VM |
 | EFI variables / Boot entries | 每实例独立 | create-vm.sh 创建新 efidisk，禁止共用源机 efidisk | 实际启动并核对启动项 |
-| GPT disk GUID / 分区 PARTUUID | 克隆后应重新分配 | identity 生成规划值；**不自动重写磁盘** | 离线修改后更新 fstab/GRUB/initramfs 并冷启动 |
-| ext4 FS UUID / FAT volume ID | 克隆后盘级身份应独立 | ext4 规划值写入 clone-reset-plan；FAT ID 由新建或离线格式/改号工具产生 | 块设备与全部启动引用一致 |
-| Linux machine-id / D-Bus ID | 每实例不同 | guest-finalize --reset-clone 重建并同步 D-Bus 路径 | 重启后读取，勿在线复用原 machine-id |
-| SSH host keys | 每实例不同 | reset 删除旧 host keys 并 ssh-keygen -A | 指纹应不同；账号 authorized_keys 由操作者审阅 |
-| DHCP DUID / leases / NetworkManager UUID | 清理继承状态 | reset 移走租约/NM 状态和旧 connection 文件；新静态 netplan | 新启动后检查运行配置 |
-| Sunshine 证书 / UUID / 配对 / Web 凭据 | 每实例重新创建 | reset 移走旧 sunshine 目录；安装器不设置通用密码 | 新 Web 凭据、PIN 和真实客户端连接 |
-| 账号密码 / sudo 规则 | 自行设置凭据，权限可复用 | 创建 user 及免密 sudo；不在包中写密码 | passwd user 后核验 sudo -n |
+| GPT disk GUID / 分区 PARTUUID | 克隆后应重新分配 | identity 生成值；新建 GPT 时自动写入 | 自动更新 fstab/GRUB/initramfs，再冷启动核对 |
+| ext4 FS UUID / FAT volume ID | 克隆后盘级身份应独立 | ext4 UUID 与 FAT ID 均在 identity 中固定，新建文件系统时写入 | 块设备与全部启动引用一致 |
+| Linux machine-id / D-Bus ID | 每实例不同 | 离线置空 machine-id，首启生成；D-Bus 路径链接至同一文件 | 重启后读取，勿在线复用原 machine-id |
+| SSH host keys | 每实例不同 | 离线排除旧 host keys 并 ssh-keygen -A | 指纹应不同；账号 authorized_keys 由操作者审阅 |
+| DHCP DUID / leases / NetworkManager UUID | 清理继承状态 | 提取时排除租约/NM 状态和旧 connection 文件；新静态 netplan | 新启动后检查运行配置 |
+| Sunshine 证书 / UUID / 配对 / Web 凭据 | 每实例重新创建 | 不复制旧 sunshine 目录；每实例新建配置，不设置通用 Web 密码 | 新 Web 凭据、PIN 和真实客户端连接 |
+| 账号密码 / sudo 规则 | 自行设置凭据，权限可复用 | 按参数创建账号/UID及免密 sudo；密码从管理端 0600 文件读取 | 首次 SSH 后核验 sudo -n |
 | RTX3080 GPU UUID / SN / VBIOS | 来自实际直通设备 | 不篡改；新机器分配另一块可用 GPU | nvidia-smi；同一设备不能并发独占直通 |
 | 物理 WAN NIC 序列/MAC | 来自实际设备 | 不篡改 | 实际 BDF、驱动与 IOMMU group |
 | CPU Processor ID / CPUID 签名 | 同型号相同 | BFEBFBFF000B0671 等为型号/功能组合，不视为全球唯一 SN | 不人为改坏 CPUID 一致性 |

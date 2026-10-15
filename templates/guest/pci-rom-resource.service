@@ -1,0 +1,13 @@
+[Unit]
+Description=Restore assigned display ROM resource
+After=display-manager.service
+Wants=display-manager.service
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/nvidia-smi --query-gpu=name --format=csv,noheader
+ExecStart=/usr/local/libexec/pci-rom-resource --apply
+RemainAfterExit=yes
+
+[Install]
+WantedBy=graphical.target

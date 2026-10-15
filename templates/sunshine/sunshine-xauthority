@@ -3,7 +3,7 @@
 """Copy the active Xorg cookie to the dedicated user's private runtime."""
 from pathlib import Path
 import os,pwd,stat
-account=pwd.getpwnam(Path('/etc/vmcc/streaming-user').read_text().strip())
+account=pwd.getpwnam(Path('/etc/sunshine/streaming-user').read_text().strip())
 sddm=pwd.getpwnam('sddm')
 runtime=Path('/run/user')/str(account.pw_uid)
 for p in Path('/proc').iterdir():
